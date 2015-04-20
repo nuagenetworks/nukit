@@ -1401,7 +1401,7 @@ NUModuleTabViewModeIcon = 2;
         return;
     }
 
-    var popoverConfirmation = [[NUDataViewsController defaultController] popoverConfirmation],
+    var popoverConfirmation = [NUDataViewsController dataViewForName:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -1424,7 +1424,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)_performDeleteObjects:(id)aSender
 {
-    [[[NUDataViewsController defaultController] popoverConfirmation] close];
+    [[NUDataViewsController dataViewForName:@"popoverConfirmation"] close];
 
     var deleteRegistry = @{},
         cleanedObjects = [self modulePerformSelectionCleanupBeforeDeletion:[_currentSelectedObjects copy]];
@@ -3029,9 +3029,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Data View Management
 
-- (void)registerDataViewForClass:(Class)aClass
+- (void)registerDataViewWithName:(CPString)aName forClass:(Class)aClass
 {
-    var dataView = [[[NUDataViewsController defaultController] dataViewForClass:aClass] duplicate];
+    var dataView = [[NUDataViewsController dataViewForName:aName] duplicate];
     [_dataViews setObject:dataView forKey:aClass.name];
 }
 
@@ -3430,7 +3430,7 @@ NUModuleTabViewModeIcon = 2;
         CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
 
         // close any deletion in process if we are loading something to avoid incoherency
-        [[[NUDataViewsController defaultController] popoverConfirmation] close];
+        [[NUDataViewsController dataViewForName:@"popoverConfirmation"] close];
 
         // do not observe bounds change until we receive the next page
         [self _removeScrollViewObservers];

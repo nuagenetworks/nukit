@@ -203,7 +203,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         return;
     }
 
-    var popoverConfirmation = [[NUDataViewsController defaultController] popoverConfirmation],
+    var popoverConfirmation = [NUDataViewsController dataViewForName:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -230,7 +230,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [content removeObjectsInArray:_currentSelectedObjects];
     [self assignObjects:content];
 
-    [[[NUDataViewsController defaultController] popoverConfirmation] close];
+    [[NUDataViewsController dataViewForName:@"popoverConfirmation"] close];
 }
 
 
