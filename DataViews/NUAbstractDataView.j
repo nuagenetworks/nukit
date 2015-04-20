@@ -25,8 +25,8 @@
 @import <AppKit/CPView.j>
 @import <RESTCappuccino/NURESTObject.j>
 
-@import "NUUtilities.j"
-@import "NUSkin.j"
+@import "../UtilsNUUtilities.j"
+@import "../Skins/NUSkin.j"
 
 @global NUGeneralShowDebugToolTips
 @global NUNullDescriptionTransformer

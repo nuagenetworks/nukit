@@ -312,7 +312,7 @@ NUModuleTabViewModeIcon = 2;
                 [tableView setDisclosureControlPrototype:button];
                 [tableView setIndentationPerLevel:0];
                 _dataSource = [[NUOutlineViewDataSource alloc] init];
-                [self registerDataViewForClass:NUCategory];
+                [self registerDataViewWithName:@"categoryDataView" forClass:NUCategory];
                 break;
         }
 
