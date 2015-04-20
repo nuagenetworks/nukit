@@ -19,9 +19,9 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
-@import "../DataViews/NUDataViewsController.j"
-@import "../Model/NUVSDObject.j"
-@import "../ViewControllers/NUObjectsChooser.j"
+@import "NUDataViewsController.j"
+@import "NUVSDObject.j"
+@import "NUObjectsChooser.j"
 
 var NUAbstractObjectAssociatorLinkImage          = CPImageInBundle("button-link.png", 12.0, 12.0),
     NUAbstractObjectAssociatorLinkPressedImage   = CPImageInBundle("button-link-pressed.png", 12.0, 12.0),

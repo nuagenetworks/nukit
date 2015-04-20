@@ -19,8 +19,7 @@
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPPopover.j>
 
-var NUDataViewsControllerDefault,
-    NUDataViewsControllerDataViewsRegistry = @{};
+var NUDataViewsControllerDataViewsRegistry = @{};
 
 @implementation NUDataViewsController : CPViewController
 {

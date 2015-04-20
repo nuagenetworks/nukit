@@ -20,10 +20,10 @@
 @import <AppKit/CPButton.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPView.j>
+
 @import "NUModule.j"
 @import "NUOverlayTextField.j"
 @import "NUStackView.j"
-
 
 
 @implementation NUModuleSelfParent : NUModule

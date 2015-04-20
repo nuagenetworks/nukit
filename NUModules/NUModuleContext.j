@@ -27,12 +27,13 @@
 @import <RESTCappuccino/NURESTError.j>
 @import <TNKit/TNAlert.j>
 
-@import "NUDataTransferController.j"
-@import "NUValidation.j"
-@import "NUSkin.j"
-@import "NUCompoundTransformer.j"
 @import "NUCheckboxStateToBooleanValueTransformer.j"
+@import "NUCompoundTransformer.j"
+@import "NUDataTransferController.j"
+@import "NUSkin.j"
 @import "NUUtilities.j"
+@import "NUValidation.j"
+
 
 @global CPApp
 @global NUModuleActionEdit

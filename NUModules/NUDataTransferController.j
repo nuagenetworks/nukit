@@ -18,6 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPView.j>
 @import <AppKit/CPViewAnimation.j>
+
 @import "NUSkin.j"
 
 var NUDataTransferControllerSingleton = nil;

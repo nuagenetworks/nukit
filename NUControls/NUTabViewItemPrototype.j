@@ -18,8 +18,8 @@
 @import <Foundation/Foundation.j>
 @import <TNKit/TNTabView.j>
 
-@import "NUUtilities.j"
 @import "NUSkin.j"
+@import "NUUtilities.j"
 
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 

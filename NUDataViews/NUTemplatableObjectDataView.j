@@ -15,9 +15,10 @@
 *
 */
 
-
 @import <Foundation/Foundation.j>
-@import <NUKit/NUAbstractDataView.j>
+@import <AppKit/CPImageView.j>
+@import <AppKit/CPView.j>
+@import "NUAbstractDataView.j"
 
 
 @implementation NUTemplatableObjectDataView : NUAbstractDataView

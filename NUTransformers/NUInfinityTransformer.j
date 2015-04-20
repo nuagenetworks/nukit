@@ -15,7 +15,6 @@
 *
 */
 
-
 @import <Foundation/Foundation.j>
 
 @implementation NUInfinityTransformer: CPValueTransformer

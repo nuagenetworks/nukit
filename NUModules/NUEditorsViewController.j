@@ -19,6 +19,7 @@
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPView.j>
 @import <RESTCappuccino/NURESTObject.j>
+
 @import "NUSkin.j"
 
 @class NUModule

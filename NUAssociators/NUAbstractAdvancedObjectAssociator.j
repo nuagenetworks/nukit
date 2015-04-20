@@ -17,7 +17,7 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPButton.j>
-@import "../Model/NUVSDObject.j"
+@import "NUVSDObject.j"
 @import "NUAbstractObjectAssociator.j"
 
 @class NUModuleContext
