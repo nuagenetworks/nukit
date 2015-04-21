@@ -173,6 +173,7 @@ var NUInspectorWindowsRegistry = @{},
     [fieldObjectParentID unbind:CPValueBinding];
     [fieldObjectLastUpdatedDate unbind:CPValueBinding];
     [fieldObjectName unbind:CPValueBinding];
+    [fieldObjectLastUpdatedBy unbind:CPValueBinding];
 }
 
 
@@ -294,6 +295,7 @@ var NUInspectorWindowsRegistry = @{},
         [[anItem representedObject] setCurrentParent:nil];
     }
 }
+
 
 #pragma mark -
 #pragma mark Utilities
