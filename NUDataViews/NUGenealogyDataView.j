@@ -46,50 +46,9 @@
 
     var nullDescriptionOptions = @{CPValueTransformerNameBindingOption: NUNullDescriptionTransformerName};
 
-    // TODO: Let's add a displayName and displayDescription to the model, so we can use this here.
-    switch ([_objectValue RESTName])
-    {
-        case [NUEvent RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"type" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"eventReceivedTime" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue typeImage]];
-            break;
-
-        case [NUEnterprise RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"name" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"description" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue avatarImage]];
-            break;
-
-        case [NUUser RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"fullName" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"userName" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue avatarImage]];
-            break;
-
-        case [NUMulticastRange RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"minAddress" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"maxAddress" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue icon]]
-            break;
-
-        case [NULicense RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"version" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"company" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue icon]]
-            break;
-
-        case [NUMirrorDestination RESTName]:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"name" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"destinationIP" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue icon]]
-            break;
-
-        default:
-            [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"name" options:nil];
-            [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"description" options:nullDescriptionOptions];
-            [imageViewIcon setImage:[_objectValue icon]]
-    }
+    [fieldName bind:CPValueBinding toObject:_objectValue withKeyPath:@"displayName" options:nil];
+    [fieldDescription bind:CPValueBinding toObject:_objectValue withKeyPath:@"displayDescription" options:nullDescriptionOptions];
+    [imageViewIcon bind:CPValueBinding toObject:_objectValue withKeyPath:@"displayIcon" options:nil];
 }
 
 

@@ -31,8 +31,8 @@ NUKitParameterExperimentalMode     = NO;
 NUKitParameterVeryExperimentalMode = NO;
 NUKitParameterCuccapSupported      = NO;
 
-var NUKitDelegate_didLogin_   = 1 << 1,
-    NUKitDelegate_willLogout_ = 1 << 2;
+var NUKitDelegate_didLogin_     = 1 << 1,
+    NUKitDelegate_willLogout_   = 1 << 2;
 
 
 @implementation NUKit : CPObject
@@ -291,7 +291,6 @@ var NUKitDelegate_didLogin_   = 1 << 1,
 
     if ([_delegate respondsToSelector:@selector(applicationWillLogout:)])
         _implementedDelegateMethods |= NUKitDelegate_willLogout_;
-
 }
 
 - (void)_sendDelegateDidLogin
@@ -483,7 +482,7 @@ var NUKitDelegate_didLogin_   = 1 << 1,
 #pragma mark -
 #pragma mark Inspector Management
 
-- (IBAction)openInspector:(id)aSender
+- (void)openInspectorForSelectedObject
 {
     var responder = [[CPApp keyWindow] firstResponder],
         inspectedObject;
@@ -525,7 +524,6 @@ var NUKitDelegate_didLogin_   = 1 << 1,
     }
 
     var inspector = [NUInspectorWindowController new];
-
     [inspector window];
     [inspector setInspectedObject:anObject];
     [inspector showWindow:self];

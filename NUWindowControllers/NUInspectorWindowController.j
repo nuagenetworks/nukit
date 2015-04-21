@@ -143,8 +143,8 @@ var NUInspectorWindowsRegistry = @{};
 
     [buttonOpenDoc setBordered:NO];
     [buttonOpenDoc setButtonType:CPMomentaryChangeButton];
-    [buttonOpenDoc setValue:CPImageInBundle("button-help.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonOpenDoc setValue:CPImageInBundle("button-help-pressed.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonOpenDoc setValue:CPImageInBundle("button-help.png", 18, 18, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonOpenDoc setValue:CPImageInBundle("button-help-pressed.png", 18, 18, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
 
     [tabViewMain setDelegate:self];
     _configure_nuage_tabview(tabViewMain, NO);
@@ -501,5 +501,23 @@ var NUInspectorWindowsRegistry = @{};
 /*    if (anItem == _tabViewItemMetadata)
         [metadatasController willShow];
 */}
+
+
+
+- (void)loadWindow
+{
+    if (_window)
+        return;
+
+    [[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"] loadCibFile:[self windowCibPath] externalNameTable:@{ CPCibOwner: _cibOwner }];
+}
+
+- (CPString)windowCibPath
+{
+    if (_windowCibPath)
+        return _windowCibPath;
+
+    return [[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"] pathForResource:_windowCibName + @".cib"];
+}
 
 @end

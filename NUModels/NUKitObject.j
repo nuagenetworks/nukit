@@ -25,4 +25,25 @@
     [NURESTOBJECT_ICONS_CACHE setObject:anIcon forKey:[self RESTName]];
 }
 
+- (CPString)displayName
+{
+    if ([self respondsToSelector:@selector(name)])
+        return [self name];
+
+    return "No display name";
+}
+
+- (CPString)displayDescription
+{
+    if ([self respondsToSelector:@selector(description)])
+        return [self description];
+
+    return "No display description";
+}
+
+- (CPImage)displayIcon
+{
+    return [self icon];
+}
+
 @end
