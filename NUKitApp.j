@@ -20,115 +20,84 @@
 @import @"NULoginWindowController.j"
 @import @"NUMessagesWindowController.j"
 
-var NUKitLoginWindowController,
-    NUKitServerFaultWindowController,
-    NUKitMessagesWindowController,
-    NUKitRESTUserClass,
-    NUKitExternalWindows = [],
-    NUKitLockedPopover,
-    NUKitLockedPopoverView,
-    NUKitCopyright;
-
-
-
 NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
 
+var NUKitDefaultKit;
+
 @implementation NUKit : CPObject
-
-
-#pragma mark -
-#pragma mark Configuration
-
-+ (void)setCopyright:(CPString)aCopyright
 {
-    NUKitCopyright = aCopyright;
+    CPBundle                        _bundle                         @accessors(getter=bundle);
+    CPString                        _copyright                      @accessors(property=copyright);
+    id                              _RESTUser                       @accessors(property=RESTUser);
+    NULoginWindowController         _loginWindowController          @accessors(getter=loginWindowController);
+    NUMessagesWindowController      _messagesWindowController       @accessors(getter=messagesWindowController);
+    NUServerFaultWindowController   _serverFaultWindowController    @accessors(getter=serverFaultWindowController);
+
+    CPArray                         _externalWindows;
+    CPPopover                       _lockedPopover;
+    CPView                          _lockedPopoverView;
 }
 
-+ (CPSrting)copyright
++ (NUKit)kit
 {
-    return NUKitCopyright;
+    if (!NUKitDefaultKit)
+        NUKitDefaultKit = [NUKit new];
+
+    return NUKitDefaultKit;
 }
 
-+ (void)setDefaultRESTUserClass:(Class)aClass
+- (id)init
 {
-    NUKitRESTUserClass = aClass
-}
+    if (self = [super init])
+    {
+        _bundle                      = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]
+        _externalWindows             = [];
+        _loginWindowController       = [NULoginWindowController new];
+        _messagesWindowController    = [NUMessagesWindowController new];
+        _serverFaultWindowController = [NUServerFaultWindowController new];
 
-+ (id)defaultRESTUser
-{
-    return [NUKitRESTUserClass defaultUser];
-}
+        _lockedPopover = [[CPView alloc] init];
+        [_lockedPopover setBackgroundColor:NUSkinColorWhite];
+        [_lockedPopover setAlphaValue:0.5];
+        [_lockedPopover setInAnimation:@"fadeInHalf" duration:0.5];
+        [_lockedPopover setOutAnimation:@"fadeOutHalf" duration:0.5];
+    }
 
+    return self;
+}
 
 #pragma mark -
 #pragma mark Helpers
 
-+ (CPBundle)bundle
-{
-    return [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
-}
-
-+ (void)sendLogOutNotification
+- (void)sendLogOutNotification
 {
     [[CPNotificationCenter defaultCenter] postNotificationName:NUKitUserLoggedOutNotification object:self];
 }
 
-
-#pragma mark -
-#pragma mark Initialization
-
-+ (void)loadFrameworkDataViews
+- (void)loadFrameworkDataViews
 {
     [[[NUInternalDataViewsLoader alloc] initWithCibName:@"DataViews" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]] load];
 }
 
 
 #pragma mark -
-#pragma mark Accessing Default Controllers
-
-+ (NULoginWindowController)defaultLoginWindowController
-{
-    if (!NUKitLoginWindowController)
-        NUKitLoginWindowController = [NULoginWindowController new];
-
-    return NUKitLoginWindowController;
-}
-
-+ (NUServerFaultWindowController)defaultServerFaultWindowController
-{
-    if (!NUKitServerFaultWindowController)
-        NUKitServerFaultWindowController = [NUServerFaultWindowController new];
-
-    return NUKitServerFaultWindowController;
-}
-
-+ (NUMessagesWindowController)defaultMessagesWindowController
-{
-    if (!NUKitMessagesWindowController)
-        NUKitMessagesWindowController = [NUMessagesWindowController new];
-
-    return NUKitMessagesWindowController;
-}
-
-
-#pragma mark -
 #pragma mark External Platform Windows Mamagement
 
-+ (void)registerExternalWindow:(CPPlatformWindow)aWindow
+- (void)registerExternalWindow:(CPPlatformWindow)aWindow
 {
-    if (![NUKitExternalWindows containsObject:aWindow])
-        [NUKitExternalWindows addObject:aWindow];
+    if (![_externalWindows containsObject:aWindow])
+        [_externalWindows addObject:aWindow];
 }
 
-+ (void)unregisterExternalWindow:(CPPlatformWindow)aWindow
+- (void)unregisterExternalWindow:(CPPlatformWindow)aWindow
 {
-    if ([NUKitExternalWindows containsObject:aWindow])
-        [NUKitExternalWindows removeObject:aWindow];
+    if ([_externalWindows containsObject:aWindow])
+        [_externalWindows removeObject:aWindow];
 }
 
-+ (void)closeExternalWindows
+- (void)closeExternalWindows
 {
-    var windows = [NUKitExternalWindows copy];
+    var windows = [_externalWindows copy];
 
     for (var i = [windows count] - 1; i >= 0; i--)
         [windows[i] orderOut:nil];
@@ -142,41 +111,32 @@ NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
 
 - (void)lockCurrentPopover
 {
-    if (!NUKitLockedPopover)
-    {
-        NUKitLockedPopover = [[CPView alloc] init];
-        [NUKitLockedPopover setBackgroundColor:NUSkinColorWhite];
-        [NUKitLockedPopover setAlphaValue:0.5];
-        [NUKitLockedPopover setInAnimation:@"fadeInHalf" duration:0.5];
-        [NUKitLockedPopover setOutAnimation:@"fadeOutHalf" duration:0.5];
-    }
-
     var latestWindow = [[CPApp windows] lastObject];
 
     if ([latestWindow className] == _CPPopoverWindow)
     {
-        NUKitLockedPopover = latestWindow._delegate;
+        _lockedPopover = latestWindow._delegate;
 
-        if ([NUKitLockedPopover behavior] == CPPopoverBehaviorTransient)
+        if ([_lockedPopover behavior] == CPPopoverBehaviorTransient)
         {
-            [NUKitLockedPopover setBehavior:CPPopoverBehaviorApplicationDefined];
+            [_lockedPopover setBehavior:CPPopoverBehaviorApplicationDefined];
 
-            var contentView = [[NUKitLockedPopover contentViewController] view];
-            [NUKitLockedPopover setFrame:[contentView bounds]];
+            var contentView = [[_lockedPopover contentViewController] view];
+            [_lockedPopover setFrame:[contentView bounds]];
 
-            [contentView addSubview:NUKitLockedPopover];
+            [contentView addSubview:_lockedPopover];
         }
         else
-            NUKitLockedPopover = nil;
+            _lockedPopover = nil;
     }
 }
 
 - (void)unlockCurrentPopover
 {
-    if (NUKitLockedPopover)
+    if (_lockedPopover)
     {
-        [NUKitLockedPopover removeFromSuperview];
-        [NUKitLockedPopover setBehavior:CPPopoverBehaviorTransient];
+        [_lockedPopover removeFromSuperview];
+        [_lockedPopover setBehavior:CPPopoverBehaviorTransient];
     }
 }
 

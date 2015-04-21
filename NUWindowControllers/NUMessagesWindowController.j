@@ -243,7 +243,7 @@ var NUMessagesWindowControllerDefault;
 
     // this will make an eventual popover semi-transient if needed
     // to avoid closing it when user interact with the alert.
-    [NUKit lockCurrentPopover];
+    [[NUKit kit] lockCurrentPopover];
 
     [super showWindow:aSender];
 }
@@ -256,7 +256,7 @@ var NUMessagesWindowControllerDefault;
 
     [self close];
 
-    [NUKit unlockCurrentPopover];
+    [[NUKit kit] unlockCurrentPopover];
 }
 
 - (IBAction)sendReply:(id)aSender

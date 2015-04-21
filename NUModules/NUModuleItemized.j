@@ -76,10 +76,10 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     [_checkBoxShowName setAction:@selector(changeShowNames:)];
     [_checkBoxShowName setToolTip:@"Show meaning of icons"];
 
-    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal, CPThemeStateHighlighted];
-    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-left.png", 25, 25, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateSelected];
-    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-left.png", 25, 25, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateSelected, CPThemeStateHighlighted];
+    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal, CPThemeStateHighlighted];
+    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-left.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateSelected];
+    [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-left.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateSelected, CPThemeStateHighlighted];
 
     [tableView setAllowsEmptySelection:NO];
 }

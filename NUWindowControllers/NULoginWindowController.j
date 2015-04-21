@@ -57,7 +57,7 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
 
 - (void)windowDidLoad
 {
-    [labelCopyright setStringValue:[NUKit copyright]];
+    [labelCopyright setStringValue:[[NUKit kit]  copyright]];
     [self _launchAnimationLabelCopyright];
 
     [imageViewLogo setImage:CPImageInBundle("Branding/logo-application.png")];
@@ -121,8 +121,8 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     [[NURESTLoginController defaultController] setURL:URL];
     [[NURESTLoginController defaultController] setAPIKey:nil];
 
-    [[NUKit defaultRESTUser] setID:nil];
-    [[NUKit defaultRESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
+    [[[NUKit kit]  RESTUser] setID:nil];
+    [[[NUKit kit]  RESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
 }
 
 - (void)performAutoLoginWithUserInfo:(CPString)someUserInfo organization:(CPString)anOrganization url:(CPString)anURL
@@ -132,13 +132,13 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     var URL = [self _computeRestBaseURL],
         JSONinfo = JSON.parse(atob(someUserInfo));
 
-    [[NUKit defaultRESTUser] objectFromJSON:JSONinfo];
+    [[[NUKit kit]  RESTUser] objectFromJSON:JSONinfo];
 
-    [[NURESTLoginController defaultController] setUser:[[NUKit defaultRESTUser] userName]];
+    [[NURESTLoginController defaultController] setUser:[[[NUKit kit]  RESTUser] userName]];
     [[NURESTLoginController defaultController] setCompany:anOrganization];
     [[NURESTLoginController defaultController] setPassword:nil];
     [[NURESTLoginController defaultController] setURL:URL];
-    [[NURESTLoginController defaultController] setAPIKey:[[NUKit defaultRESTUser] APIKey]];
+    [[NURESTLoginController defaultController] setAPIKey:[[[NUKit kit]  RESTUser] APIKey]];
 
     [self _loginComplete];
 }
@@ -167,8 +167,8 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     [[NURESTLoginController defaultController] setURL:currentFullURL];
 
     // get user informations
-    [[NUKit defaultRESTUser] setID:nil];
-    [[NUKit defaultRESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
+    [[[NUKit kit]  RESTUser] setID:nil];
+    [[[NUKit kit]  RESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
 }
 
 - (void)_didFetchUser:(id)anUser connection:(NURESTConnection)aConnection
@@ -205,10 +205,10 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
             break;
 
         case NURESTConnectionResponseCodeSuccess:
-            [[NUKit defaultRESTUser] setEnterpriseName:[fieldEnterprise stringValue]];
+            [[[NUKit kit]  RESTUser] setEnterpriseName:[fieldEnterprise stringValue]];
 
             // define the API Token from the newly fecthed current user
-            [[NURESTLoginController defaultController] setAPIKey:[[NUKit defaultRESTUser] APIKey]];
+            [[NURESTLoginController defaultController] setAPIKey:[[[NUKit kit]  RESTUser] APIKey]];
 
             if (![[self window] isVisible])
             {

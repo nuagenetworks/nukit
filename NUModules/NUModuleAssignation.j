@@ -81,8 +81,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         {
             [_buttonFirstAssign setBordered:NO];
             [_buttonFirstAssign setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign-pressed.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign.png", 32.0, 32.0, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign-pressed.png", 32.0, 32.0, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstAssign setTarget:self];
             [_buttonFirstAssign setAction:@selector(openAssignObjectPopover:)];
 
