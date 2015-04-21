@@ -91,7 +91,7 @@ var NUInspectorWindowsRegistry = @{},
 
 + (void)registerAdditionalModuleClass:(Class)aClass cibName:(CPString)aCibName displayDecisionFunction:(Function)aFunction
 {
-    var info = @{"moduleClass": aClass, "decisionFunction": aFunction, "cibName": aCibName}
+    var info = @{"moduleClass": aClass, "decisionFunction": aFunction, "cibName": aCibName};
     [NUInspectorWindowAdditionalModuleClasses setObject:info forKey:[aClass moduleIdentifier]];
 }
 
