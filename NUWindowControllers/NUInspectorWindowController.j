@@ -159,6 +159,9 @@ var NUInspectorWindowsRegistry = @{},
     [fieldObjectParentID bind:CPValueBinding toObject:self withKeyPath:@"inspectedObject.parentID" options:noInfoTransformer];
     [fieldObjectLastUpdatedDate bind:CPValueBinding toObject:self withKeyPath:@"inspectedObject.formatedLastUpdatedDate" options:noInfoTransformer];
     [fieldObjectName bind:CPValueBinding toObject:self withKeyPath:@"inspectedObject.name" options:noInfoTransformer];
+    [fieldObjectLastUpdatedBy bind:CPValueBinding toObject:self withKeyPath:@"inspectedObject.lastUpdatedBy" options:nil];
+
+    [fieldObjectOwner setStringValue:[_inspectedObject owner] || @"system"];
 }
 
 - (void)_unbindControls
@@ -199,50 +202,6 @@ var NUInspectorWindowsRegistry = @{},
 
     [_dataSourceAttributes setContent:content];
     [tableViewAttributes reloadData];
-}
-
-
-#pragma mark -
-#pragma mark Users
-
-- (void)_reloadOwner
-{
-    if (![_inspectedObject owner])
-    {
-        [fieldObjectOwner setStringValue:@"system"];
-        return;
-    }
-
-    var user = [NUUser RESTObjectWithID:[_inspectedObject owner]];
-    [user fetchAndCallSelector:@selector(_didFetchOwner:connection:) ofObject:self];
-}
-
-- (void)_didFetchOwner:(NUUser)aUser connection:(NURESTConnection)aConnection
-{
-    if ([aConnection responseCode] != NURESTConnectionResponseCodeSuccess)
-        [fieldObjectOwner setStringValue:[_inspectedObject owner]];
-    else
-        [fieldObjectOwner setStringValue:[aUser userName] + " (" + [aUser fullName] + ")"];
-}
-
-- (void)_reloadLastUpdater
-{
-    if (![_inspectedObject lastUpdatedBy])
-    {
-        [fieldObjectLastUpdatedBy setStringValue:@"system"];
-        return;
-    }
-
-    var user = [NUUser RESTObjectWithID:[_inspectedObject lastUpdatedBy]];
-    [user fetchAndCallSelector:@selector(_didFetchLastUpdater:connection:) ofObject:self];
-}
-
-- (void)_didFetchLastUpdater:(NUUser)aUser connection:(NURESTConnection)aConnection
-{
-    if ([aConnection responseCode] != NURESTConnectionResponseCodeSuccess)
-        [fieldObjectLastUpdatedBy setStringValue:[_inspectedObject lastUpdatedBy]];
-    else
-        [fieldObjectLastUpdatedBy setStringValue:[aUser userName] + " (" + [aUser fullName] + ")"];
 }
 
 
@@ -343,11 +302,14 @@ var NUInspectorWindowsRegistry = @{},
 {
     var customAPIVersion = [[NUKit kit] valueForApplicationArgument:@"apiversion"];
 
-    var bundle      = [CPBundle mainBundle],
-        baseURL     = [[[NURESTLoginController defaultController] URL] baseURL],
-        version     = customAPIVersion.replace(".", "_") || [bundle objectForInfoDictionaryKey:@"NUAPIVersion"].replace(".", "_"),
-        docPath     = [bundle objectForInfoDictionaryKey:@"NUAPIDocumentationURL"].replace(new RegExp("s^\/", "g"), ""),
-        finalPath   = docPath + "/V" + version + "/" + [_inspectedObject RESTName] + ".html";
+    if (customAPIVersion)
+        customAPIVersion = customAPIVersion.replace(".", "_");
+
+    var bundle    = [CPBundle mainBundle],
+        baseURL   = [[[NURESTLoginController defaultController] URL] baseURL],
+        version   = customAPIVersion || [bundle objectForInfoDictionaryKey:@"NUAPIVersion"].replace(".", "_"),
+        docPath   = [bundle objectForInfoDictionaryKey:@"NUAPIDocumentationURL"].replace(new RegExp("s^\/", "g"), ""),
+        finalPath = docPath + "/V" + version + "/" + [_inspectedObject RESTName] + ".html";
 
     return [CPURL URLWithString:finalPath relativeToURL:baseURL];
 }
@@ -421,7 +383,6 @@ var NUInspectorWindowsRegistry = @{},
 
             case NUPushEventTypeUpdate:
                 [self _reloadAttributes];
-                [self _reloadLastUpdater];
                 break;
         }
     }
@@ -498,8 +459,6 @@ var NUInspectorWindowsRegistry = @{},
     [self _prepareTabViewItems];
     [self _prepareGenealogy];
     [self _reloadAttributes];
-    [self _reloadOwner];
-    [self _reloadLastUpdater];
 
     [fieldObjectRESTName setStringValue:[[_inspectedObject class] RESTName]];
 
