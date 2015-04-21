@@ -25,3 +25,4 @@
 @import "NUSkins.j"
 @import "NUTransformers.j"
 @import "NUUtils.j"
+@import "NUWindowControllers.j"

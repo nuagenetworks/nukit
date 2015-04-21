@@ -18,6 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPImage.j>
 @import <RESTCappuccino/NURESTBasicUser.j>
+@import "NUVSDEnterprise.j"
 
 @global NUUserAvatarDefault
 @global NUUserAvatarTypeBase64
@@ -37,6 +38,8 @@ NURESTUserRoleOrgUser       = @"ORGUSER";
     CPString    _avatarData         @accessors(property=avatarData);
     CPString    _avatarType         @accessors(property=avatarType);
     CPString    _email              @accessors(property=email);
+    CPString    _enterpriseID       @accessors(property=enterpriseID);
+    CPString    _enterpriseName     @accessors(property=enterpriseName);
     CPString    _firstName          @accessors(property=firstName);
     CPString    _lastName           @accessors(property=lastName);
     CPString    _mobileNumber       @accessors(property=mobileNumber);
@@ -75,13 +78,15 @@ NURESTUserRoleOrgUser       = @"ORGUSER";
 {
     if (self = [super init])
     {
+        [self exposeLocalKeyPathToREST:@"avatarData" searchable:NO];
+        [self exposeLocalKeyPathToREST:@"avatarType" searchable:NO];
         [self exposeLocalKeyPathToREST:@"email"];
+        [self exposeLocalKeyPathToREST:@"enterpriseID" searchable:NO];
+        [self exposeLocalKeyPathToREST:@"enterpriseName"];
         [self exposeLocalKeyPathToREST:@"firstName"];
         [self exposeLocalKeyPathToREST:@"lastName"];
         [self exposeLocalKeyPathToREST:@"mobileNumber"];
         [self exposeLocalKeyPathToREST:@"role"];
-        [self exposeLocalKeyPathToREST:@"avatarType" searchable:NO];
-        [self exposeLocalKeyPathToREST:@"avatarData" searchable:NO];
     }
 
     return self;
@@ -198,9 +203,41 @@ NURESTUserRoleOrgUser       = @"ORGUSER";
     }
 }
 
+- (void)setEnterpriseName:(CPString)aName
+{
+    if (_enterpriseName === aName)
+        return;
+
+    [self willChangeValueForKey:@"enterpriseName"];
+    [self willChangeValueForKey:@"information"];
+    _enterpriseName = aName;
+    [self didChangeValueForKey:@"enterpriseName"];
+    [self didChangeValueForKey:@"information"];
+}
+
 - (CPString)information
 {
-    return [CPString stringWithFormat:@"%s %s (%s) - %s", [_firstName lowercaseString], [_lastName lowercaseString], [_userName lowercaseString], [self roleName]];
+    switch (_role)
+    {
+        case NURESTUserRoleCSPRoot:
+        case NURESTUserRoleCSPOperator:
+            return [CPString stringWithFormat:@"%s %s (%s) - %s", [_firstName lowercaseString], [_lastName lowercaseString],
+                                                                    [_userName lowercaseString], [self roleName]];
+
+        case NURESTUserRoleOrgAdmin:
+        case NURESTUserRoleOrgUser:
+        case NURESTUserRoleOrgDesigner:
+            return [CPString stringWithFormat:@"%s %s (%s) - %s %s", [_firstName lowercaseString], [_lastName lowercaseString],
+                                                                    [_userName lowercaseString], [self roleName], [_enterpriseName lowercaseString]];
+    }
+}
+
+- (NUVSDEnterprise)currentEnterprise
+{
+    var enterprise = [NUVSDEnterprise new];
+    [enterprise setID:_enterpriseID];
+
+    return enterprise;
 }
 
 

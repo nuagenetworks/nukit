@@ -5,10 +5,10 @@
 @import "NUMetadataGlobal.j"
 @import "NUMetadataTag.j"
 @import "NUValidation.j"
+@import "NUVSDEnterprise.j"
 @import "NUVSDObject.j"
 @import "NUVSDRESTUser.j"
 
 [[NURESTModelController defaultController] registerModelClass:NUMetadata];
 [[NURESTModelController defaultController] registerModelClass:NUMetadataGlobal];
 [[NURESTModelController defaultController] registerModelClass:NUMetadataTag];
-[[NURESTModelController defaultController] registerModelClass:NUVSDObject];
