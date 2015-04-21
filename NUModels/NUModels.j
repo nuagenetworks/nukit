@@ -5,7 +5,6 @@
 @import "NUMetadataGlobal.j"
 @import "NUMetadataTag.j"
 @import "NUValidation.j"
-@import "NUVSDEnterprise.j"
 @import "NUVSDObject.j"
 @import "NUVSDRESTUser.j"
 

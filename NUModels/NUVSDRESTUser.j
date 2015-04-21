@@ -18,7 +18,6 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPImage.j>
 @import <RESTCappuccino/NURESTBasicUser.j>
-@import "NUVSDEnterprise.j"
 
 @global NUUserAvatarDefault
 @global NUUserAvatarTypeBase64
@@ -234,10 +233,7 @@ NURESTUserRoleOrgUser       = @"ORGUSER";
 
 - (NUVSDEnterprise)currentEnterprise
 {
-    var enterprise = [NUVSDEnterprise new];
-    [enterprise setID:_enterpriseID];
-
-    return enterprise;
+    throw "Implement me";
 }
 
 
