@@ -3039,7 +3039,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (IBAction)openInspector:(id)aSender
 {
-    [[CPApp delegate] openInspector:aSender];
+    [[NUKit kit] openInspectorForSelectedObject];
 }
 
 

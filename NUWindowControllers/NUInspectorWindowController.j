@@ -406,44 +406,6 @@ var NUInspectorWindowsRegistry = @{};
 
 
 #pragma mark -
-#pragma mark Overrides
-
-- (void)showWindow:(id)aSender
-{
-    if (!_inspectedObject)
-        return;
-
-    if ([[self window] isVisible])
-        return;
-
-    [self _prepareTabViewItems];
-    [self _prepareGenealogy];
-    [self _reloadAttributes];
-    [self _reloadOwner];
-    [self _reloadLastUpdater];
-
-    [fieldObjectRESTName setStringValue:[[_inspectedObject class] RESTName]];
-
-    [super showWindow:nil];
-
-    [NUInspectorWindowsRegistry setObject:self forKey:[_inspectedObject ID]];
-
-    var commonName = @"";
-
-    if ([_inspectedObject respondsToSelector:@selector(name)])
-        commonName = @" - " + [_inspectedObject name];
-
-    [[self window] setTitle:@"Inspector - " + [[_inspectedObject class] RESTName] + commonName];
-
-    [self registerForPushNotification];
-/*    [metadatasController setCurrentParent:_inspectedObject];*/
-    [self _bindControls];
-
-    [[NUKit kit] registerExternalWindow:[self window]];
-}
-
-
-#pragma mark -
 #pragma mark CPWindow Delegates
 
 - (void)windowWillClose:(CPWindow)aWindow
@@ -503,6 +465,42 @@ var NUInspectorWindowsRegistry = @{};
 */}
 
 
+#pragma mark -
+#pragma mark Overrides
+
+- (void)showWindow:(id)aSender
+{
+    if (!_inspectedObject)
+        return;
+
+    if ([[self window] isVisible])
+        return;
+
+    [self _prepareTabViewItems];
+    [self _prepareGenealogy];
+    [self _reloadAttributes];
+    [self _reloadOwner];
+    [self _reloadLastUpdater];
+
+    [fieldObjectRESTName setStringValue:[[_inspectedObject class] RESTName]];
+
+    [super showWindow:nil];
+
+    [NUInspectorWindowsRegistry setObject:self forKey:[_inspectedObject ID]];
+
+    var commonName = @"";
+
+    if ([_inspectedObject respondsToSelector:@selector(name)])
+        commonName = @" - " + [_inspectedObject name];
+
+    [[self window] setTitle:@"Inspector - " + [[_inspectedObject class] RESTName] + commonName];
+
+    [self registerForPushNotification];
+/*    [metadatasController setCurrentParent:_inspectedObject];*/
+    [self _bindControls];
+
+    [[NUKit kit] registerExternalWindow:[self window]];
+}
 
 - (void)loadWindow
 {

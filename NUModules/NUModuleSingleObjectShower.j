@@ -91,9 +91,8 @@
 
 - (IBAction)openInspector:(id)aSender
 {
-    [[CPApp delegate] openInspectorForObject:_currentParent];
+    [[NUKit kit] openInspectorForObject:_currentParent];
 }
-
 
 - (void)_didReceivePush:(CPNotification)aNotification
 {
