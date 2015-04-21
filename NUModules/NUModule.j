@@ -1650,24 +1650,7 @@ NUModuleTabViewModeIcon = 2;
     [[NUKit kit] registerExternalWindow:externalWindow];
 
     // add CSS and theme stuff
-    var externalDocument = plaformWindow._DOMWindow.document,
-        head             = externalDocument.getElementsByTagName('head')[0],
-        animatecss       = externalDocument.createElement('link'),
-        appcss           = externalDocument.createElement('link');
-
-    animatecss.id    = @"Resources/animate.css";
-    animatecss.rel   = @"stylesheet";
-    animatecss.type  = @"text/css";
-    animatecss.href  = @"Resources/animate.css";
-    animatecss.media = @"all";
-    head.appendChild(animatecss);
-
-    appcss.id    = @"Resources/app.css";
-    appcss.rel   = @"stylesheet";
-    appcss.type  = @"text/css";
-    appcss.href  = @"Resources/app.css";
-    appcss.media = @"all";
-    head.appendChild(appcss);
+    [[NUKit kit] installStyleSheetOnDocument:plaformWindow._DOMWindow.document];
 
     // Initialize the module, set the current parent and tell it it'll be shown
     [externalizedModule setCurrentParent:_currentParent];

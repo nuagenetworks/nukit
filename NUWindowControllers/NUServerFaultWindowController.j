@@ -58,7 +58,7 @@
 
 - (IBAction)logOut:(id)aSender
 {
-    [[CPApp delegate] logOut:aSender];
+    [[NUKit kit] performLogout];
 }
 
 - (IBAction)showWindow:(id)aSender

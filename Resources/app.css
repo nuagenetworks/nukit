@@ -1,0 +1,127 @@
+@font-face
+{
+    font-family: 'nes';
+    font-style: normal;
+    font-weight: 700;
+    src: local('PressStart2P'), local('PressStart2P'), url(Fonts/PressStart2P.woff) format('woff');
+}
+
+html
+{
+    margin:0;
+    padding:0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body
+{
+    background-color: #F2F2F2;
+    background-size: 100% 100%, 100% 100%;
+    font-family: Arial, Sans-Serif;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    margin:0;
+    padding:0;
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    backface-visibility: hidden;
+    perspective: 1000;
+}
+
+#loadingcontainer
+{
+    position: absolute;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#logo
+{
+    position: relative;
+    background-image: url(Branding/logo-loading.png);
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    background-size: 100px 100px;
+    height: 100px;
+    width: 100px;
+    left: -25%;
+    margin-bottom: 20px;
+}
+
+#loading
+{
+    position: relative;
+    vertical-align: middle;
+    width: 100px;
+    left: -25%;
+}
+
+#progress-indicator
+{
+    position: relative;
+    padding: 0px;
+    height: 5px;
+    border: 1px solid white;
+    border-radius: 18px;
+    background-color: white;
+}
+
+#progress-bar
+{
+    position: relative;
+    left: 0px;
+    display: block;
+    height: 5px;
+    background-color: #FFBB27;
+    border-radius: 18px;
+}
+
+#cappuccino-body .content
+{
+    display: table-cell;
+    vertical-align: top;
+}
+
+#noscript
+{
+    position: relative;
+    top: 35%;
+    padding: 1em 1.5em;
+    border: 5px solid #555;
+    border-radius: 16px;
+    background-color: white;
+    color: #555;
+    text-align: center;
+    font: bold 24px Arial, sans-serif;
+}
+
+#noscript a
+{
+    color: #98c0ff;
+    text-decoration: none;
+}
+
+
+.gmnoprint,
+.gmnoscreen {
+    display: none;
+}
+
+img[src="http://maps.gstatic.com/mapfiles/api-3/images/google_white2.png"] {
+    display: none;
+}
+
+img[src="http://maps.gstatic.com/mapfiles/api-3/images/google_white2_hdpi.png"] {
+    display: none;
+}

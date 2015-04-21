@@ -28,7 +28,7 @@
 @import "NUUtilities.j"
 @import "NUSkin.j"
 
-@global NUGeneralShowDebugToolTips
+@global NUKitParameterShowDebugToolTips
 @global NUNullDescriptionTransformer
 
 
@@ -193,7 +193,7 @@
 
 - (void)_defineDebugToolTips
 {
-    if (!NUGeneralShowDebugToolTips || !_objectValue || ![_objectValue isKindOfClass:NURESTObject])
+    if (!NUKitParameterShowDebugToolTips || !_objectValue || ![_objectValue isKindOfClass:NURESTObject])
         return;
 
     var toolTip = @"";

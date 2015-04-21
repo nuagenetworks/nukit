@@ -19,7 +19,7 @@
 
 // @import "../Resources/FileSaver.js"
 
-@global NUApplicationCuccapSupported
+@global NUKitParameterCuccapSupported
 
 function _configure_nuage_tabview(tabView)
 {
@@ -66,7 +66,7 @@ function _l(dict)
 
 function _cucappID(object, cucappID)
 {
-    if (NUApplicationCuccapSupported)
+    if (NUKitParameterCuccapSupported)
         [object setCucappIdentifier:cucappID];
 }
 
