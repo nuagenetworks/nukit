@@ -22,8 +22,6 @@
 var NUDataViewsControllerDataViewsRegistry = @{};
 
 @implementation NUDataViewsController : CPViewController
-{
-}
 
 #pragma mark -
 #pragma mark Class Methods
