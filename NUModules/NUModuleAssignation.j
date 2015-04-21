@@ -17,9 +17,10 @@
 
 @import <Foundation/Foundation.j>
 @import "NUModule.j"
+@import "NUObjectsChooser.j"
 
-@class NUObjectsChooser
 @class CPApp
+@class NUKit
 
 @global NUModuleAutoValidation
 
@@ -80,8 +81,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         {
             [_buttonFirstAssign setBordered:NO];
             [_buttonFirstAssign setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign-pressed.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstAssign setValue:CPImageInBundle("button-first-assign-pressed.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstAssign setTarget:self];
             [_buttonFirstAssign setAction:@selector(openAssignObjectPopover:)];
 

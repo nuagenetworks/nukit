@@ -49,7 +49,6 @@
     [self window]._windowView._DOMElement.style.WebkitAnimationName = "bounceInDown";
     [self window]._windowView._DOMElement.style.WebkitTransform = "translateZ(0)";
     [self window]._windowView._DOMElement.style.WebkitAnimationDuration  = "1s";
-
     [self window]._windowView._DOMElement.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
 }
 

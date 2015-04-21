@@ -26,12 +26,12 @@
 @import <RESTCappuccino/NURESTError.j>
 @import <RESTCappuccino/NURESTConfirmation.j>
 @import "NUUtilities.j"
+@import "NUSkin.j"
 
 @global CPApp
-@global NUAppControllerUserLoggedOutNotification
+@global NUKit
+@global NUKitUserLoggedOutNotification
 @global NUMainWindowController
-@global NUSkinColorGreyDark
-@global NUSkinColorWhite
 
 var NUMessagesWindowControllerDefault;
 
@@ -121,10 +121,7 @@ var NUMessagesWindowControllerDefault;
     _cucappID(buttonCancelAll, "message-button-cancel-all");
     _cucappID(buttonValidateAll, "message-button-validate-all");
 
-    [[CPNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(close)
-                                                 name:NUAppControllerUserLoggedOutNotification
-                                               object:nil];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(close) name:NUKitUserLoggedOutNotification object:nil];
 }
 
 - (id)initWithWindowCibName:(CPString)aName
@@ -246,7 +243,7 @@ var NUMessagesWindowControllerDefault;
 
     // this will make an eventual popover semi-transient if needed
     // to avoid closing it when user interact with the alert.
-    [[CPApp delegate] lockCurrentPopover];
+    [NUKit lockCurrentPopover];
 
     [super showWindow:aSender];
 }
@@ -259,7 +256,7 @@ var NUMessagesWindowControllerDefault;
 
     [self close];
 
-    [[CPApp delegate] unlockCurrentPopover];
+    [NUKit unlockCurrentPopover];
 }
 
 - (IBAction)sendReply:(id)aSender

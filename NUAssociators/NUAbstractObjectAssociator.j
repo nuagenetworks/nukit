@@ -23,10 +23,12 @@
 @import "NUVSDObject.j"
 @import "NUObjectsChooser.j"
 
-var NUAbstractObjectAssociatorLinkImage          = CPImageInBundle("button-link.png", 12.0, 12.0),
-    NUAbstractObjectAssociatorLinkPressedImage   = CPImageInBundle("button-link-pressed.png", 12.0, 12.0),
-    NUAbstractObjectAssociatorUnLinkImage        = CPImageInBundle("button-unlink.png", 12.0, 12.0),
-    NUAbstractObjectAssociatorUnLinkPressedImage = CPImageInBundle("button-unlink-pressed.png", 12.0, 12.0);
+@global NUKit
+
+var NUAbstractObjectAssociatorLinkImage          = CPImageInBundle("button-link.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
+    NUAbstractObjectAssociatorLinkPressedImage   = CPImageInBundle("button-link-pressed.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
+    NUAbstractObjectAssociatorUnLinkImage        = CPImageInBundle("button-unlink.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
+    NUAbstractObjectAssociatorUnLinkPressedImage = CPImageInBundle("button-unlink-pressed.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
 
 var NUAbstractObjectAssociator_didAssociatorFetchAssociatedObject_          = 1 << 1,
     NUAbstractObjectAssociator_didAssociatorAddAssociation_                 = 1 << 2,

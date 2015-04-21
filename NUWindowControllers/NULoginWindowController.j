@@ -27,6 +27,7 @@
 @import "NUDataTransferController.j"
 
 @global CPApp
+@global NUKit
 
 NULoginWindowControllerLoggedIn     = @"NULoginWindowControllerLoggedIn";
 NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
@@ -42,9 +43,6 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     @outlet CPTextField         labelCopyright;
     @outlet CPTextField         labelInfo;
     @outlet CPView              viewContainer;
-
-    id                          _RESTUser       @accessors(property=RESTUser);
-    CPSound                     _sound;
 }
 
 #pragma mark -
@@ -59,7 +57,7 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
 
 - (void)windowDidLoad
 {
-    [labelCopyright setStringValue:[[CPApp delegate] copyrightString]];
+    [labelCopyright setStringValue:[NUKit copyright]];
     [self _launchAnimationLabelCopyright];
 
     [imageViewLogo setImage:CPImageInBundle("Branding/logo-application.png")];
@@ -123,8 +121,8 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     [[NURESTLoginController defaultController] setURL:URL];
     [[NURESTLoginController defaultController] setAPIKey:nil];
 
-    [_RESTUser setID:nil];
-    [_RESTUser fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
+    [[NUKit defaultRESTUser] setID:nil];
+    [[NUKit defaultRESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
 }
 
 - (void)performAutoLoginWithUserInfo:(CPString)someUserInfo organization:(CPString)anOrganization url:(CPString)anURL
@@ -134,13 +132,13 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     var URL = [self _computeRestBaseURL],
         JSONinfo = JSON.parse(atob(someUserInfo));
 
-    [_RESTUser objectFromJSON:JSONinfo];
+    [[NUKit defaultRESTUser] objectFromJSON:JSONinfo];
 
-    [[NURESTLoginController defaultController] setUser:[_RESTUser userName]];
+    [[NURESTLoginController defaultController] setUser:[[NUKit defaultRESTUser] userName]];
     [[NURESTLoginController defaultController] setCompany:anOrganization];
     [[NURESTLoginController defaultController] setPassword:nil];
     [[NURESTLoginController defaultController] setURL:URL];
-    [[NURESTLoginController defaultController] setAPIKey:[_RESTUser APIKey]];
+    [[NURESTLoginController defaultController] setAPIKey:[[NUKit defaultRESTUser] APIKey]];
 
     [self _loginComplete];
 }
@@ -169,8 +167,8 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
     [[NURESTLoginController defaultController] setURL:currentFullURL];
 
     // get user informations
-    [_RESTUser setID:nil];
-    [_RESTUser fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
+    [[NUKit defaultRESTUser] setID:nil];
+    [[NUKit defaultRESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
 }
 
 - (void)_didFetchUser:(id)anUser connection:(NURESTConnection)aConnection
@@ -207,10 +205,10 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
             break;
 
         case NURESTConnectionResponseCodeSuccess:
-            [_RESTUser setEnterpriseName:[fieldEnterprise stringValue]];
+            [[NUKit defaultRESTUser] setEnterpriseName:[fieldEnterprise stringValue]];
 
             // define the API Token from the newly fecthed current user
-            [[NURESTLoginController defaultController] setAPIKey:[_RESTUser APIKey]];
+            [[NURESTLoginController defaultController] setAPIKey:[[NUKit defaultRESTUser] APIKey]];
 
             if (![[self window] isVisible])
             {
@@ -237,7 +235,6 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
 
             [self window]._windowView._DOMElement.addEventListener("webkitAnimationEnd", endFunction, NO);
             [self window]._windowView._DOMElement.addEventListener("animationend", endFunction, NO);
-            [_sound stop];
             break;
 
         default:
@@ -370,8 +367,6 @@ NULoginWindowControllerLoggedOut    = @"NULoginWindowControllerLoggedOut";
 
         labelCopyright._DOMElement.style.opacity = 0.4;
     }, 0);
-
-    [_sound play];
 }
 
 - (void)close

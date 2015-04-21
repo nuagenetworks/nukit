@@ -19,7 +19,7 @@
 @import "NUModule.j"
 
 @class CPApp
-
+@class NUKit
 
 @implementation NUModuleSingleObjectShower : NUModule
 {
@@ -45,8 +45,8 @@
 
     [buttonOpenInspector setBordered:NO];
     [buttonOpenInspector setButtonType:CPMomentaryChangeButton];
-    [buttonOpenInspector setValue:CPImageInBundle("button-view.png", 16.0, 16.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonOpenInspector setValue:CPImageInBundle("button-view-pressed.png", 16.0, 16.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonOpenInspector setValue:CPImageInBundle("button-view.png", 16.0, 16.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonOpenInspector setValue:CPImageInBundle("button-view-pressed.png", 16.0, 16.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
     _cucappID(buttonOpenInspector, @"button-open-inspector");
 }
 

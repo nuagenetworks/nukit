@@ -22,17 +22,12 @@
 @import "NUCategoryDataView.j"
 @import "NUMessageDataView.j"
 
-@implementation NUNUKitDataViewsLoader : NUAbstractDataViewsLoader
+@implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
     @outlet CPPopover           popoverConfirmation     @accessors(readonly);
     @outlet CPView              viewInvalidInput        @accessors(readonly);
     @outlet NUCategoryDataView  categoryDataView        @accessors(readonly);
     @outlet NUMessageDataView   messageDataView         @accessors(readonly);
-}
-
-+ (void)loadFrameworkDataViews
-{
-    [[[NUNUKitDataViewsLoader alloc] initWithCibName:@"DataViews" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]] load];
 }
 
 - (void)viewDidLoad

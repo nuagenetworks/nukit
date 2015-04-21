@@ -50,7 +50,8 @@
 
 
 @global CPApp
-@global NUAppControllerUserLoggedOutNotification
+@global NUKit
+@global NUKitUserLoggedOutNotification
 @global NURESTUserRoleCSPRoot
 @global NURESTUserRoleOrgAdmin
 @global _CPWindowDidChangeFirstResponderNotification
@@ -73,15 +74,12 @@ NUModuleActionDelete              = 2;
 NUModuleActionEdit                = 3;
 NUModuleActionExport              = 4;
 NUModuleActionImport              = 5;
-NUModuleActionImportPublishedItem = 6;
-NUModuleActionInstantiate         = 7;
-NUModuleActionPublishItem         = 8;
-NUModuleActionInspect             = 9;
+NUModuleActionInstantiate         = 6;
+NUModuleActionInspect             = 7;
 
 NUModuleTabViewModeText = 1;
 NUModuleTabViewModeIcon = 2;
 
-NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
 @implementation NUModule : CPViewController <CPTableViewDelegate, CPOutlineViewDelegate, CPPopoverDelegate, CPSplitViewDelegate, CPTabViewDelegate>
 {
@@ -392,8 +390,8 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
         {
             [_buttonFirstCreate setBordered:NO];
             [_buttonFirstCreate setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create-pressed.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create-pressed.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstCreate setTarget:self];
             [_buttonFirstCreate setAction:@selector(openNewObjectPopover:)];
 
@@ -406,8 +404,8 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
         {
             [_buttonFirstImport setBordered:NO];
             [_buttonFirstImport setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import-pressed.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstImport setValue:CPImageInBundle("button-first-import.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstImport setValue:CPImageInBundle("button-first-import-pressed.png", 32.0, 32.0, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstImport setTarget:self];
             [_buttonFirstImport setAction:@selector(import:)];
 
@@ -476,12 +474,11 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
     if (buttonOpenInExternalWindow)
     {
-
         [buttonOpenInExternalWindow setToolTip:@"Open this in an external browser window"];
         [buttonOpenInExternalWindow setBordered:NO];
         [buttonOpenInExternalWindow setButtonType:CPMomentaryChangeButton];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window.png", 16, 16, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window-pressed.png", 16, 16, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window.png", 16, 16, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window-pressed.png", 16, 16, [NUKit bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
         [buttonOpenInExternalWindow setTarget:self];
         [buttonOpenInExternalWindow setAction:@selector(openModuleInExternalWindow:)];
     }
@@ -539,7 +536,7 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
     [self configureCucappIDs];
     [self configureContexts];
 
-    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_userLoggedOut:) name:NUAppControllerUserLoggedOutNotification object:nil];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_userLoggedOut:) name:NUKitUserLoggedOutNotification object:nil];
 }
 
 - (BOOL)isTableBasedModule
@@ -761,19 +758,13 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
     var menuItemImport = [[CPMenuItem alloc] initWithTitle:@"Import..." action:@selector(import:) keyEquivalent:@""];
     [self registerMenuItem:menuItemImport forAction:NUModuleActionImport];
 
-    var menuImportPublishedItem = [[CPMenuItem alloc] initWithTitle:@"Open library..." action:@selector(importFromSharedLibrary:) keyEquivalent:@""];
-    [self registerMenuItem:menuImportPublishedItem forAction:NUModuleActionImportPublishedItem];
-
     var menuItemExport = [[CPMenuItem alloc] initWithTitle:@"Export" action:@selector(exportSelectedObjects:) keyEquivalent:@""];
     [self registerMenuItem:menuItemExport forAction:NUModuleActionExport];
-
-    var menuPublishItem = [[CPMenuItem alloc] initWithTitle:@"Publish to library" action:@selector(publishSelectedObjectsToSharedLibrary:) keyEquivalent:@""];
-    [self registerMenuItem:menuPublishItem forAction:NUModuleActionPublishItem];
 
     var menuInspect = [[CPMenuItem alloc] initWithTitle:@"Inspect" action:@selector(openInspector:) keyEquivalent:@""];
     [self registerMenuItem:menuInspect forAction:NUModuleActionInspect];
 
-    return [NUModuleActionAdd, NUModuleActionEdit, NUModuleActionDelete, NUModuleActionInstantiate, NUModuleActionImport, NUModuleActionImportPublishedItem, NUModuleActionExport, NUModuleActionPublishItem, NUModuleActionInspect];
+    return [NUModuleActionAdd, NUModuleActionEdit, NUModuleActionDelete, NUModuleActionInstantiate, NUModuleActionImport, NUModuleActionExport,  NUModuleActionInspect];
 }
 
 - (void)registerMenuItem:(CPMenuItem)aMenuItem forAction:(int)anAction
@@ -1233,7 +1224,6 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
     {
         [self setAction:NUModuleActionEdit permitted:NO];
         [self setAction:NUModuleActionInstantiate permitted:NO];
-        [self setAction:NUModuleActionPublishItem permitted:NO];
         [self setAction:NUModuleActionExport permitted:NO];
     }
 
@@ -1565,12 +1555,6 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
 - (IBAction)import:(id)aSender
 {
-    if ([[CPApp currentEvent] modifierFlags] & CPShiftKeyMask)
-    {
-        [self importFromSharedLibrary:aSender];
-        return;
-    }
-
     [self importInObject:_currentParent usingAction:[self actionForSender:aSender]];
 }
 
@@ -1663,7 +1647,7 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
     // open the window and register it
     [externalWindow makeKeyAndOrderFront:nil];
-    [[CPApp delegate] registerExternalWindow:externalWindow];
+    [NUKit registerExternalWindow:externalWindow];
 
     // add CSS and theme stuff
     var externalDocument = plaformWindow._DOMWindow.document,
@@ -1707,7 +1691,7 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
     [self setCurrentParent:nil];
 
     // close the window
-    [[CPApp delegate] unregisterExternalWindow:_externalWindow];
+    [NUKit unregisterExternalWindow:_externalWindow];
     [_externalWindow orderOut:nil];
 }
 
@@ -3077,27 +3061,6 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
 
 #pragma mark -
-#pragma mark Shared Library Managemement
-
-- (IBAction)importFromSharedLibrary:(id)aSender
-{
-    var library = [[CPApp delegate] publishedItemLibraryController],
-        objectPrototype = [self createObjectWithRESTName:[[[_contextRegistry allValues] lastObject] identifier]];
-
-    if ([aSender isKindOfClass:CPMenuItem])
-        aSender = [self defaultPopoverTargetForMenuItem];
-
-    [library showLibraryOnView:aSender objectType:[[objectPrototype class] RESTResourceName] parentObject:_currentParent];
-}
-
-- (IBAction)publishSelectedObjectsToSharedLibrary:(id)aSender
-{
-    var library = [[CPApp delegate] publishedItemLibraryController];
-    [library publishObject:[_currentSelectedObjects firstObject]];
-}
-
-
-#pragma mark -
 #pragma mark Editor Management
 
 - (void)showModuleEditor:(BOOL)shouldShow
@@ -3473,7 +3436,7 @@ NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
         return;
 
     [self didCloseFromExternalWindow];
-    [[CPApp delegate] unregisterExternalWindow:[self externalWindow]];
+    [NUKit unregisterExternalWindow:[self externalWindow]];
 }
 
 #pragma mark -

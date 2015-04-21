@@ -39,7 +39,7 @@ framework ("NUKit", function(task)
     task.setAuthor("Antoine Mercadal");
     task.setEmail("antoine@nuagenetworks.net");
     task.setSummary("NUKit");
-    task.setSources((new FileList("**/*.j")).exclude(FILE.join("Build", "**")));
+    task.setSources(new FileList("**/*.j"));
     task.setFlattensSources(true);
     task.setResources(new FileList("Resources/**/**"));
     task.setInfoPlistPath("Info.plist");
