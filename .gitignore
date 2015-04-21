@@ -11,3 +11,4 @@ debug.txt
 *.xCodeSupport*
 *.XcodeSupport*
 *Build/*
+*.xcodeproj
