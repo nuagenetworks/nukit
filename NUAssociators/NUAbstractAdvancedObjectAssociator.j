@@ -17,7 +17,7 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPButton.j>
-@import "NUVSDObject.j"
+@import "NUKitObject.j"
 @import "NUAbstractObjectAssociator.j"
 
 @class NUModuleContext
@@ -25,7 +25,7 @@
 
 @implementation NUAbstractAdvancedObjectAssociator : NUAbstractObjectAssociator
 {
-    NUVSDObject     _currentAssociationObject    @accessors(property=currentAssociationObject);
+    id              _currentAssociationObject    @accessors(property=currentAssociationObject);
 
     NUModuleContext _currentContext;
 }
@@ -60,12 +60,12 @@
     throw ("implement me");
 }
 
-- (void)updateAssociationObject:(NUVSDObject)anAssociationObject withAssociatedObject:(NUVSDObject)anAssociatedObject
+- (void)updateAssociationObject:(id)anAssociationObject withAssociatedObject:(id)anAssociatedObject
 {
     throw ("implement me");
 }
 
-- (void)didUpdateAssociatedObject:(NUVSDObject)anAssociatedObject
+- (void)didUpdateAssociatedObject:(id)anAssociatedObject
 {
 
 }
@@ -215,14 +215,14 @@
     [anObjectChooser closeModulePopover];
 }
 
-- (void)moduleContext:(NUModuleContext)aContext didSaveObject:(NUVSDObject)anObject connection:(NURESTConnection)aConnection
+- (void)moduleContext:(NUModuleContext)aContext didSaveObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     [self _sendDelegateDidAssociatorChangeAssociation];
     [self _sendDelegateDidAssociatorAddAssociation];
     [self setModified:NO];
 }
 
-- (void)moduleContext:(NUModuleContext)aContext didDeleteObject:(NUVSDObject)anObject connection:(NURESTConnection)aConnection
+- (void)moduleContext:(NUModuleContext)aContext didDeleteObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     [self _sendDelegateDidAssociatorChangeAssociation];
     [self _sendDelegateDidAssociatorRemoveAssociation];

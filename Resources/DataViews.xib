@@ -4,9 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NUNUKitDataViewsLoader">
+        <customObject id="-2" userLabel="File's Owner" customClass="NUInternalDataViewsLoader">
             <connections>
                 <outlet property="categoryDataView" destination="594" id="650"/>
+                <outlet property="genealogyDataView" destination="HzC-Bl-p8Z" id="ERl-2R-BQZ"/>
                 <outlet property="messageDataView" destination="1955" id="1956"/>
                 <outlet property="popoverConfirmation" destination="667" id="677"/>
                 <outlet property="view" destination="BJR-qr-SUM" id="mrH-NH-QPl"/>
@@ -142,6 +143,54 @@
                     </userDefinedRuntimeAttributes>
                 </button>
             </subviews>
+        </customView>
+        <customView id="HzC-Bl-p8Z" customClass="NUGenealogyDataView">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="56"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView id="34p-a7-qJo">
+                    <rect key="frame" x="9" y="0.0" width="183" height="43"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <subviews>
+                        <textField verticalHuggingPriority="750" id="fzF-8w-KAw">
+                            <rect key="frame" x="39" y="21" width="131" height="14"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Domain Name" id="Izv-zT-WqQ">
+                                <font key="font" metaFont="smallSystem"/>
+                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField verticalHuggingPriority="750" id="f8K-eu-nJ5">
+                            <rect key="frame" x="39" y="7" width="131" height="13"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Description" id="UuU-Bc-6be">
+                                <font key="font" metaFont="miniSystem"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <imageView id="uRR-pK-RWi">
+                            <rect key="frame" x="10" y="9" width="24" height="24"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="pcj-eH-hZI"/>
+                        </imageView>
+                    </subviews>
+                </customView>
+                <box horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="ceT-1q-g9X">
+                    <rect key="frame" x="98" y="42" width="5" height="14"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                    <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <font key="titleFont" metaFont="system"/>
+                </box>
+            </subviews>
+            <connections>
+                <outlet property="fieldDescription" destination="f8K-eu-nJ5" id="O4S-om-5zr"/>
+                <outlet property="fieldName" destination="fzF-8w-KAw" id="Oyw-S7-bDg"/>
+                <outlet property="imageViewIcon" destination="uRR-pK-RWi" id="TSH-Sb-0OL"/>
+                <outlet property="viewContainer" destination="34p-a7-qJo" id="lnk-SS-EYv"/>
+            </connections>
         </customView>
     </objects>
     <resources>

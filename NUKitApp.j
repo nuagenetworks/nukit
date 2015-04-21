@@ -481,6 +481,58 @@ var NUKitDelegate_didLogin_   = 1 << 1,
 
 
 #pragma mark -
+#pragma mark Inspector Management
+
+- (IBAction)openInspector:(id)aSender
+{
+    var responder = [[CPApp keyWindow] firstResponder],
+        inspectedObject;
+
+    switch ([responder className])
+    {
+        case @"CPTableView":
+            inspectedObject = [[responder dataSource] objectAtIndex:[responder selectedRow]];
+            break;
+
+        case @"NUGroupItemTableView":
+            inspectedObject = [[[[responder dataSource] content] objectAtIndex:[responder selectedRow]] objectValue];
+            break;
+
+        case @"CPOutlineView":
+            inspectedObject = [responder itemAtRow:[responder selectedRow]];
+            break;
+
+        case @"NUTreeView":
+        case @"NUGraphView":
+            inspectedObject = [[responder selectedItems] firstObject];
+            break;
+    }
+
+    [self openInspectorForObject:inspectedObject];
+}
+
+- (void)openInspectorForObject:(id)anObject
+{
+    if (![anObject isKindOfClass:NURESTObject])
+        return;
+
+    var inspectedObjectID = [anObject ID];
+
+    if ([NUInspectorWindowController isInspectorOpenedForObjectWithID:inspectedObjectID])
+    {
+        [[NUInspectorWindowController inspectorForObjectWithID:inspectedObjectID] makeKeyInspector];
+        return;
+    }
+
+    var inspector = [NUInspectorWindowController new];
+
+    [inspector window];
+    [inspector setInspectedObject:anObject];
+    [inspector showWindow:self];
+}
+
+
+#pragma mark -
 #pragma mark Popover Locking
 
 - (void)lockCurrentPopover

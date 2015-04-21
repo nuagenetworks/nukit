@@ -109,7 +109,7 @@ var NUAdvancedFilteringViewControllerDefault;
 #pragma mark -
 #pragma mark Popover Management
 
-- (void)openPopoverOnView:(id)aSender forModule:(NUModule)aModule object:(NUVSDObject)anObject predicateFormat:(CPString)aString
+- (void)openPopoverOnView:(id)aSender forModule:(NUModule)aModule object:(id)anObject predicateFormat:(CPString)aString
 {
     [self closePopover];
 
@@ -170,7 +170,7 @@ var NUAdvancedFilteringViewControllerDefault;
     }
 }
 
-- (CPArray)_rowTemplatesForObject:(NUVSDObject)anObject
+- (CPArray)_rowTemplatesForObject:(id)anObject
 {
     if (!anObject)
         return [];

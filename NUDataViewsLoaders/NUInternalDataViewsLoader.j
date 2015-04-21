@@ -21,6 +21,7 @@
 @import "NUAbstractDataViewsLoader.j"
 @import "NUCategoryDataView.j"
 @import "NUMessageDataView.j"
+@import "NUGenealogyDataView.j"
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
@@ -28,6 +29,7 @@
     @outlet CPView              viewInvalidInput        @accessors(readonly);
     @outlet NUCategoryDataView  categoryDataView        @accessors(readonly);
     @outlet NUMessageDataView   messageDataView         @accessors(readonly);
+    @outlet NUGenealogyDataView genealogyDataView       @accessors(readonly);
 }
 
 - (void)viewDidLoad

@@ -20,7 +20,7 @@
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
 @import "NUDataViewsRegistry.j"
-@import "NUVSDObject.j"
+@import "NUKitObject.j"
 @import "NUObjectsChooser.j"
 
 @global NUKit
@@ -50,7 +50,7 @@ var BUTTONS_SIZE = 12;
     id                          _currentParent              @accessors(property=currentParent);
     id                          _delegate                   @accessors(property=delegate);
     int                         _displayMode                @accessors(property=displayMode);
-    NUVSDObject                 _currentAssociatedObject    @accessors(property=currentAssociatedObject);
+    id                          _currentAssociatedObject    @accessors(property=currentAssociatedObject);
 
     BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
@@ -194,7 +194,7 @@ var BUTTONS_SIZE = 12;
     throw ("implement me");
 }
 
-- (NUVSDObject)parentOfAssociatedObjects
+- (id)parentOfAssociatedObjects
 {
     throw ("implement me");
 }
@@ -223,11 +223,11 @@ var BUTTONS_SIZE = 12;
 #pragma mark -
 #pragma mark Internal Subclass Delegates
 
-- (void)didUpdateAssociatedObject:(NUVSDObject)anObject
+- (void)didUpdateAssociatedObject:(id)anObject
 {
 }
 
-- (void)didFetchAssociatedObject:(NUVSDObject)anObject
+- (void)didFetchAssociatedObject:(id)anObject
 {
 }
 
@@ -235,7 +235,7 @@ var BUTTONS_SIZE = 12;
 {
 }
 
-- (void)didSetCurrentParent:(NUVSDObject)aParent
+- (void)didSetCurrentParent:(id)aParent
 {
 }
 
@@ -284,7 +284,7 @@ var BUTTONS_SIZE = 12;
     [_buttonCleanAssociatedObject setEnabled:shouldEnable];
 }
 
-- (void)setCurrentAssociatedObject:(NUVSDObject)anObject
+- (void)setCurrentAssociatedObject:(id)anObject
 {
     if (anObject == _currentAssociatedObject)
         return;
@@ -433,7 +433,7 @@ var BUTTONS_SIZE = 12;
     [self _sendDelegateDidAssociatorFetchAssociatedObject];
 }
 
-- (void)_updateDataViewWithAssociatedObject:(NUVSDObject)anAssociatedObject
+- (void)_updateDataViewWithAssociatedObject:(id)anAssociatedObject
 {
     if (![_viewAssociatorContainer superview])
     {

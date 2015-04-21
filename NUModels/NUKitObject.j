@@ -1,6 +1,6 @@
 /*
-*   Filename:         NUMetadatasFetcher.j
-*   Created:          Tue Feb 10 11:55:03 PST 2015
+*   Filename:         NUKitObject.j
+*   Created:          Tue Feb 10 12:41:26 PST 2015
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
 *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
@@ -16,16 +16,13 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <RESTCappuccino/NURESTFetcher.j>
+@import <RESTCappuccino/NURESTObject.j>
 
-@class NUMetadata
+@implementation NUKitObject : NURESTObject
 
-
-@implementation NUMetadatasFetcher : NURESTFetcher
-
-+ (Class)managedObjectClass
+- (void)overrideIcon:(CPImage)anIcon
 {
-    return NUMetadata;
+    [NURESTOBJECT_ICONS_CACHE setObject:anIcon forKey:[self RESTName]];
 }
 
 @end

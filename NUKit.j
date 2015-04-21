@@ -24,7 +24,6 @@
 @import "NUDataViewsLoaders.j"
 @import "NUModels.j"
 @import "NUModules.j"
-@import "NURESTFetchers.j"
 @import "NUSkins.j"
 @import "NUTransformers.j"
 @import "NUUtils.j"

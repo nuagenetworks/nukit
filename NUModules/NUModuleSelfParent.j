@@ -125,7 +125,7 @@
     return ![_currentContext modified];
 }
 
-- (void)moduleDidSetCurrentParent:(NUVSDObject)aParent
+- (void)moduleDidSetCurrentParent:(id)aParent
 {
     [super moduleDidSetCurrentParent:aParent];
     [self setCurrentContextWithIdentifier:[aParent RESTName]];
@@ -221,7 +221,7 @@
     return shouldManage;
 }
 
-- (NUVSDObject)createObjectWithRESTName:(CPString)anIdenfier
+- (id)createObjectWithRESTName:(CPString)anIdenfier
 {
     return [[_currentParent class] new];
 }

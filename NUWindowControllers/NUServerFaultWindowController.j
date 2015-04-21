@@ -18,7 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPWindowController.j>
 
-@global CPApp
+@global NUKit
 
 /*! Control the window displayed when server is unreachable
 */

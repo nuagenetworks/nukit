@@ -54,7 +54,7 @@
 #pragma mark -
 #pragma mark Configuration
 
-- (void)showObject:(NUVSDObject)anObject dataView:(CPView)aDataView view:(id)aView title:(CPString)aTitle
+- (void)showObject:(id)anObject dataView:(CPView)aDataView view:(id)aView title:(CPString)aTitle
 {
     // load view if needed;
     [self view];
@@ -68,7 +68,7 @@
     [anObject fetchAndCallSelector:@selector(_didFetchObject:connection:) ofObject:self];
 }
 
-- (void)_didFetchObject:(NUVSDObject)anObject connection:(NURESTConnection)aConnection
+- (void)_didFetchObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
         return;

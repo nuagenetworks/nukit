@@ -172,7 +172,7 @@
 #pragma mark -
 #pragma mark Overrides
 
-- (void)setCurrentParent:(NUVSDObject)aParent
+- (void)setCurrentParent:(id)aParent
 {
     // we create a copy, so we won't be discarding the real parent objects when we close the popover
     [super setCurrentParent:[aParent duplicate]];

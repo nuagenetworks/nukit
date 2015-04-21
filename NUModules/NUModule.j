@@ -46,7 +46,7 @@
 @import "NUSkin.j"
 @import "NUTabViewItemPrototype.j"
 @import "NUTotalNumberValueTransformer.j"
-@import "NUVSDObject.j"
+@import "NUKitObject.j"
 
 
 @global CPApp
@@ -665,12 +665,12 @@ NUModuleTabViewModeIcon = 2;
     [viewMainTableViewContainer setBorderColor:NUSkinColorGreyLight];
 }
 
-- (void)showOnView:(CPView)aView forParentObject:(NUVSDObject)aParentObject
+- (void)showOnView:(CPView)aView forParentObject:(id)aParentObject
 {
     [self showOnView:aView relativeToRect:nil forParentObject:aParentObject];
 }
 
-- (void)showOnView:(CPView)aView relativeToRect:(CGRect)aRect forParentObject:(NUVSDObject)aParentObject
+- (void)showOnView:(CPView)aView relativeToRect:(CGRect)aRect forParentObject:(id)aParentObject
 {
     [self view];
 
@@ -705,7 +705,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Parent Management
 
-- (void)setCurrentParent:(NUVSDObject)aParent
+- (void)setCurrentParent:(id)aParent
 {
     if ([aParent isKindOfClass:NUCategory])
         [CPException raise:CPInternalInconsistencyException reason:"Cannot set a NUCategory as current parent"];
@@ -733,7 +733,7 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Parent Management Internal API
 
-- (void)moduleDidSetCurrentParent:(NUVSDObject)aParent
+- (void)moduleDidSetCurrentParent:(id)aParent
 {
 }
 
@@ -1084,7 +1084,7 @@ NUModuleTabViewModeIcon = 2;
         [self setPaginationSynchronizing:NO];
 }
 
-- (void)_fetcher:(NURESTFetcher)aFetcher ofObject:(NUVSDObject)anObject didCountChildren:(int)aCount
+- (void)_fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didCountChildren:(int)aCount
 {
     [self setPaginationSynchronizing:NO];
     [self setTotalNumberOfEntities:aCount];
@@ -2117,7 +2117,7 @@ NUModuleTabViewModeIcon = 2;
     [self _manageGettingStartedVisibility];
 }
 
-- (void)_refetchObject:(NUVSDObject)anObject hierarchy:(BOOL)shouldRefreshHierarchy
+- (void)_refetchObject:(id)anObject hierarchy:(BOOL)shouldRefreshHierarchy
 {
     _reloadHierarchyAfterRefetch = shouldRefreshHierarchy;
 
@@ -2125,7 +2125,7 @@ NUModuleTabViewModeIcon = 2;
         [anObject fetchAndCallSelector:@selector(_didRefetchObject:connection:) ofObject:self];
 }
 
-- (void)_didRefetchObject:(NUVSDObject)anObject connection:(NURESTConnection)aConnection
+- (void)_didRefetchObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_reloadHierarchyAfterRefetch)
         [tableView deselectAll];
@@ -2146,7 +2146,7 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
-- (void)_updateCurrentEditedObjectWithObjectIfNeeded:(NUVSDObject)anObject
+- (void)_updateCurrentEditedObjectWithObjectIfNeeded:(id)anObject
 {
     if (![[_currentContext editedObject] isEqual:anObject])
         return;
@@ -2693,7 +2693,7 @@ NUModuleTabViewModeIcon = 2;
         // we create a dummy object for table view because it will be faster.
         // wiht outline view, it's not working because of the item cache.
 
-        var dummyObject = isTableView ? [NUVSDObject RESTObjectWithID:IDs[i]] : [_dataSource objectWithID:IDs[i]];
+        var dummyObject = isTableView ? [NUKitObject RESTObjectWithID:IDs[i]] : [_dataSource objectWithID:IDs[i]];
         [dummyObjects addObject:dummyObject];
     }
 
@@ -2747,7 +2747,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Category Management
 
-- (NUCategory)categoryForObject:(NUVSDObject)anObject
+- (NUCategory)categoryForObject:(id)anObject
 {
 }
 
@@ -2772,7 +2772,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Content Management
 
-- (void)_cleanChildren:(CPArray)someChildren ofObject:(NUVSDObject)anObject fetcher:(NURESTFetcher)aFetcher
+- (void)_cleanChildren:(CPArray)someChildren ofObject:(id)anObject fetcher:(NURESTFetcher)aFetcher
 {
     if (!someChildren)
         return nil;
@@ -2900,7 +2900,7 @@ NUModuleTabViewModeIcon = 2;
     [self _manageGettingStartedVisibility];
 }
 
-- (NUVSDObject)createObjectWithRESTName:(CPString)anIdenfier
+- (id)createObjectWithRESTName:(CPString)anIdenfier
 {
     var context = [self contextWithIdentifier:anIdenfier],
         keyPath = [context fetcherKeyPath],
@@ -3113,12 +3113,12 @@ NUModuleTabViewModeIcon = 2;
 {
 }
 
-- (CPString)moduleEditorTitleForObject:(NUVSDObject)anObject
+- (CPString)moduleEditorTitleForObject:(id)anObject
 {
     return [anObject name];
 }
 
-- (CPImage)moduleEditorImageTitleForObject:(NUVSDObject)anObject
+- (CPImage)moduleEditorImageTitleForObject:(id)anObject
 {
     return [anObject icon];
 }
@@ -3144,7 +3144,7 @@ NUModuleTabViewModeIcon = 2;
 - (void)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
 {
     var dataView = [self _dataViewForObject:anItem],
-        key = _dataViewIdentifierPrefix + @"_" + ([anItem isKindOfClass:NUVSDObject] ? [anItem RESTName] : [anItem UID]),
+        key = _dataViewIdentifierPrefix + @"_" + ([anItem isKindOfClass:NUKitObject] ? [anItem RESTName] : [anItem UID]),
         view = [anOutlineView makeViewWithIdentifier:key owner:self];
 
     if (!view)
@@ -3242,7 +3242,7 @@ NUModuleTabViewModeIcon = 2;
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     var item = [_dataSource objectAtIndex:aRow],
-        key  = _dataViewIdentifierPrefix + @"_" + ([item isKindOfClass:NUVSDObject] ? [item RESTName] : [item UID]),
+        key  = _dataViewIdentifierPrefix + @"_" + ([item isKindOfClass:NUKitObject] ? [item RESTName] : [item UID]),
         view = [aTableView makeViewWithIdentifier:key owner:self];
 
     if (!view)

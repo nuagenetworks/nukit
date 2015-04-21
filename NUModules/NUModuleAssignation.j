@@ -140,7 +140,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     throw "Not implemented";
 }
 
-- (NUVSDObject)parentOfAssociatedObject
+- (id)parentOfAssociatedObject
 {
     throw "Not implemented";
 }

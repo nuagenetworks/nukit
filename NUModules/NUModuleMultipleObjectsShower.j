@@ -44,7 +44,7 @@
 #pragma mark -
 #pragma mark Configuration
 
-- (void)configureWithParentObject:(NUVSDObject)aParent childrenClass:(Class)aChildrenClass fetcherKeyPath:(CPString)aFetcherKeyPath dataView:(CPView)aDataView title:(CPString)aTitle contentSize:(CGSize)aSize
+- (void)configureWithParentObject:(id)aParent childrenClass:(Class)aChildrenClass fetcherKeyPath:(CPString)aFetcherKeyPath dataView:(CPView)aDataView title:(CPString)aTitle contentSize:(CGSize)aSize
 {
     // load view is needed
     [self view];
