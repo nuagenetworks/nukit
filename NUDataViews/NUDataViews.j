@@ -1,5 +1,5 @@
 @import "NUAbstractDataView.j"
-@import "NUDataViewsController.j"
+@import "NUDataViewsRegistry.j"
 @import "NUTemplatableObjectDataView.j"
 @import "NUInternalDataViewsLoader.j"
 @import "NUAbstractDataViewsLoader.j"

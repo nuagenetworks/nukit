@@ -1,5 +1,5 @@
 /*
-*   Filename:         NUDataViewsController.j
+*   Filename:         NUDataViewsRegistry.j
 *   Created:          Tue Oct  9 11:54:33 PDT 2012
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
@@ -16,12 +16,10 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <AppKit/CPViewController.j>
-@import <AppKit/CPPopover.j>
 
-var NUDataViewsControllerDataViewsRegistry = @{};
+var NUDataViewsRegistryDataViewsRegistry = @{};
 
-@implementation NUDataViewsController : CPViewController
+@implementation NUDataViewsRegistry : CPObject
 
 #pragma mark -
 #pragma mark Class Methods
@@ -33,13 +31,13 @@ var NUDataViewsControllerDataViewsRegistry = @{};
 
 + (void)registerDataView:(NUAsbtractDataView)aDataView forName:(CPString)aName
 {
-    if (![NUDataViewsControllerDataViewsRegistry containsKey:aName])
-        [NUDataViewsControllerDataViewsRegistry setObject:aDataView forKey:aName];
+    if (![NUDataViewsRegistryDataViewsRegistry containsKey:aName])
+        [NUDataViewsRegistryDataViewsRegistry setObject:aDataView forKey:aName];
 }
 
 + (void)dataViewForName:(CPString)aName
 {
-    return [NUDataViewsControllerDataViewsRegistry objectForKey:aName];
+    return [NUDataViewsRegistryDataViewsRegistry objectForKey:aName];
 }
 
 @end

@@ -19,7 +19,7 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
-@import "NUDataViewsController.j"
+@import "NUDataViewsRegistry.j"
 @import "NUVSDObject.j"
 @import "NUObjectsChooser.j"
 
