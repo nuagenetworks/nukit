@@ -1,6 +1,7 @@
+
 /*
-*   Filename:         NUKit.j
-*   Created:          Mon Apr 20 16:05:31 PDT 2015
+*   Filename:         NUMetadataGlobal.j
+*   Created:          Tue Feb 10 12:37:30 PST 2015
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
 *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
@@ -15,13 +16,19 @@
 *
 */
 
-@import "NUAssociators.j"
-@import "NUControls.j"
-@import "NUDataSources.j"
-@import "NUDataViews.j"
-@import "NUModels.j"
-@import "NUModules.j"
-@import "NURESTFetchers.j"
-@import "NUSkins.j"
-@import "NUTransformers.j"
-@import "NUUtils.j"
+@import <Foundation/Foundation.j>
+@import "NUMetadata.j"
+
+
+@implementation NUMetadataGlobal : NUMetadata
+
+
+#pragma mark -
+#pragma mark Initialization
+
++ (CPString)RESTName
+{
+    return @"globalmetadata";
+}
+
+@end

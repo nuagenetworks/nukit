@@ -18,8 +18,8 @@
 @import <Foundation/Foundation.j>
 @import <RESTCappuccino/NURESTObject.j>
 
-@class NUMetadataGlobalsFetcher
-@class NUMetadatasFetcher
+@import "NUMetadataGlobalsFetcher.j"
+@import "NUMetadatasFetcher.j"
 
 NUNuageObjectEntityScopeEnterprise  = @"ENTERPRISE";
 NUNuageObjectEntityScopeGlobal      = @"GLOBAL";

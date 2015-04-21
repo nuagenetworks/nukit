@@ -1,6 +1,6 @@
 /*
-*   Filename:         NUKit.j
-*   Created:          Mon Apr 20 16:05:31 PDT 2015
+*   Filename:         NUMetadataGlobalsFetcher.j
+*   Created:          Tue Feb 10 12:38:33 PST 2015
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
 *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
@@ -15,13 +15,17 @@
 *
 */
 
-@import "NUAssociators.j"
-@import "NUControls.j"
-@import "NUDataSources.j"
-@import "NUDataViews.j"
-@import "NUModels.j"
-@import "NUModules.j"
-@import "NURESTFetchers.j"
-@import "NUSkins.j"
-@import "NUTransformers.j"
-@import "NUUtils.j"
+@import <Foundation/Foundation.j>
+@import <RESTCappuccino/NURESTFetcher.j>
+
+@class NUMetadataGlobal
+
+
+@implementation NUMetadataGlobalsFetcher : NURESTFetcher
+
++ (Class)managedObjectClass
+{
+    return NUMetadataGlobal;
+}
+
+@end

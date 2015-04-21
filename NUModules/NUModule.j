@@ -81,6 +81,7 @@ NUModuleActionInspect             = 9;
 NUModuleTabViewModeText = 1;
 NUModuleTabViewModeIcon = 2;
 
+NUKitBundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
 @implementation NUModule : CPViewController <CPTableViewDelegate, CPOutlineViewDelegate, CPPopoverDelegate, CPSplitViewDelegate, CPTabViewDelegate>
 {
@@ -291,7 +292,6 @@ NUModuleTabViewModeIcon = 2;
     _totalNumberOfEntities                              = -1;
     _usesPagination                                     = [[self class] isTableBasedModule];
 
-
     _contextualMenu = [[CPMenu alloc] init];
     [_contextualMenu setAutoenablesItems:NO];
 
@@ -392,8 +392,8 @@ NUModuleTabViewModeIcon = 2;
         {
             [_buttonFirstCreate setBordered:NO];
             [_buttonFirstCreate setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create-pressed.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create-pressed.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstCreate setTarget:self];
             [_buttonFirstCreate setAction:@selector(openNewObjectPopover:)];
 
@@ -406,8 +406,8 @@ NUModuleTabViewModeIcon = 2;
         {
             [_buttonFirstImport setBordered:NO];
             [_buttonFirstImport setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import-pressed.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstImport setValue:CPImageInBundle("button-first-import.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstImport setValue:CPImageInBundle("button-first-import-pressed.png", 32.0, 32.0, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstImport setTarget:self];
             [_buttonFirstImport setAction:@selector(import:)];
 
@@ -476,11 +476,12 @@ NUModuleTabViewModeIcon = 2;
 
     if (buttonOpenInExternalWindow)
     {
+
         [buttonOpenInExternalWindow setToolTip:@"Open this in an external browser window"];
         [buttonOpenInExternalWindow setBordered:NO];
         [buttonOpenInExternalWindow setButtonType:CPMomentaryChangeButton];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window.png", CGSizeMake(16, 16)) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window-pressed.png", CGSizeMake(16, 16)) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window.png", 16, 16, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window-pressed.png", 16, 16, NUKitBundle) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
         [buttonOpenInExternalWindow setTarget:self];
         [buttonOpenInExternalWindow setAction:@selector(openModuleInExternalWindow:)];
     }
@@ -1747,7 +1748,7 @@ NUModuleTabViewModeIcon = 2;
         {
             _tabViewItem._icon            = CPImageInBundle("tabitem-icon-" + iconIdentifier + ".png", 16, 16, [CPBundle bundleForClass:[self class]]);
             _tabViewItem._iconHighlighted = CPImageInBundle("tabitem-icon-" + iconIdentifier + "-selected.png", 16, 16, [CPBundle bundleForClass:[self class]]);
-            _tabViewItem._iconSelected    = CPImageInBundle("tabitem-icon-" + iconIdentifier + "-selected.png", 16, 16), [CPBundle bundleForClass:[self class]];
+            _tabViewItem._iconSelected    = CPImageInBundle("tabitem-icon-" + iconIdentifier + "-selected.png", 16, 16, [CPBundle bundleForClass:[self class]]);
             _tabViewItem._tooltip         = [[self class] moduleName];
         }
     }
