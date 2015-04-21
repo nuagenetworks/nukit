@@ -529,6 +529,10 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     [inspector showWindow:self];
 }
 
+- (void)registerAdditionalInspectorModuleClass:(Class)aClass cibName:(CPString)aCibName displayDecisionFunction:(Function)aFunction
+{
+    [NUInspectorWindowController registerAdditionalModuleClass:aClass cibName:aCibName displayDecisionFunction:aFunction];
+}
 
 #pragma mark -
 #pragma mark Popover Locking

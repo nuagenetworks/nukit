@@ -23,15 +23,9 @@
 @import <TNKit/TNTableViewDataSource.j>
 @import <TNKit/TNTabView.j>
 @import <RESTCappuccino/NURESTPushCenter.j>
-
-@class NURESTLoginController
-@class NURESTModelController
-@class NUUser
-@class NUKitObject
-@class NUMetadata
-@class NUMetadataGlobal
-@class NUMetadataTag
-@class NUEnterprise
+@import <RESTCappuccino/NURESTLoginController.j>
+@import <RESTCappuccino/NURESTModelController.j>
+@import "NUKitObject.j"
 
 @global CPApp
 @global NUKit
@@ -40,7 +34,8 @@
 @global NUPushEventTypeUpdate
 @global NUPushEventTypeRevoke
 
-var NUInspectorWindowsRegistry = @{};
+var NUInspectorWindowsRegistry = @{},
+    NUInspectorWindowAdditionalModuleClasses = @{};
 
 #define VERTICAL_LINE_SIZE_HEIGHT 14
 
@@ -61,8 +56,6 @@ var NUInspectorWindowsRegistry = @{};
     @outlet CPTextField                 fieldObjectParentType;
     @outlet CPTextField                 fieldObjectRESTName;
     @outlet CPView                      viewTabInformation;
-    @outlet CPView                      viewTabMetadata;
-    @outlet NUMetadatasViewController   metadatasController;
     @outlet TNTabView                   tabViewMain;
 
     int                                 _openingOffset      @accessors(property=openingOffset);
@@ -70,10 +63,7 @@ var NUInspectorWindowsRegistry = @{};
 
     BOOL                                _isListeningForPush;
     CPArray                             _genealogy;
-    CPArray                             _ignoredRESTNamesForMetadata;
-    CPTabViewItem                       _tabViewItemAPIDocumentation;
     CPTabViewItem                       _tabViewItemInfo;
-    CPTabViewItem                       _tabViewItemMetadata;
     CPView                              _dataViewPrototype;
     id                                  _rootObject;
     TNTableViewDataSource               _dataSourceAttributes;
@@ -99,6 +89,12 @@ var NUInspectorWindowsRegistry = @{};
     NUInspectorWindowsRegistry = @{};
 }
 
++ (void)registerAdditionalModuleClass:(Class)aClass cibName:(CPString)aCibName displayDecisionFunction:(Function)aFunction
+{
+    var info = @{"moduleClass": aClass, "decisionFunction": aFunction, "cibName": aCibName}
+    [NUInspectorWindowAdditionalModuleClasses setObject:info forKey:[aClass moduleIdentifier]];
+}
+
 
 #pragma mark -
 #pragma mark Initialization
@@ -120,8 +116,6 @@ var NUInspectorWindowsRegistry = @{};
         contentView = [[self window] contentView];
 
     [[self window] setDelegate:self];
-
-    _ignoredRESTNamesForMetadata = [[NUMetadata RESTName], [NUMetadataGlobal RESTName], [NUMetadataTag RESTName], [NUEnterprise RESTName]];
 
     _dataSourceGenealogy = [[TNTableViewDataSource alloc] init];
     [_dataSourceGenealogy setTable:tableViewGenealogy];
@@ -149,16 +143,6 @@ var NUInspectorWindowsRegistry = @{};
     [tabViewMain setDelegate:self];
     _configure_nuage_tabview(tabViewMain, NO);
 
-    _tabViewItemInfo = [[CPTabViewItem alloc] initWithIdentifier:@"info"];
-    [_tabViewItemInfo setLabel:@"Info"];
-    [_tabViewItemInfo setView:viewTabInformation];
-
-    _tabViewItemMetadata = [[CPTabViewItem alloc] initWithIdentifier:@"metadata"];
-    [_tabViewItemMetadata setLabel:@"Metadata"];
-    [_tabViewItemMetadata setView:viewTabMetadata];
-
-    [[metadatasController view] setFrame:[viewTabMetadata bounds]];
-    [viewTabMetadata addSubview:[metadatasController view]];
 }
 
 
@@ -304,14 +288,53 @@ var NUInspectorWindowsRegistry = @{};
 
 - (void)_prepareTabViewItems
 {
-    [tabViewMain addTabViewItem:_tabViewItemInfo];
+    var tabViewItemInspector = [[CPTabViewItem alloc] initWithIdentifier:@"info"];
+    [tabViewItemInspector setLabel:@"Info"];
+    [tabViewItemInspector setView:viewTabInformation];
+    [tabViewMain addTabViewItem:tabViewItemInspector];
 
-    if (![_ignoredRESTNamesForMetadata containsObject:[_inspectedObject RESTName]])
-        [tabViewMain addTabViewItem:_tabViewItemMetadata];
+    for (var i = [[NUInspectorWindowAdditionalModuleClasses allValues] count] - 1; i >= 0; i--)
+    {
+        var info             = [NUInspectorWindowAdditionalModuleClasses allValues][i],
+            moduleClass      = [info objectForKey:@"moduleClass"],
+            moduleCibName    = [info objectForKey:@"cibName"],
+            decisionFunction = [info objectForKey:@"decisionFunction"];
+
+        if (!decisionFunction(_inspectedObject))
+            continue;
+
+        var tabViewItem = [[CPTabViewItem alloc] initWithIdentifier:[moduleClass moduleIdentifier]],
+            module      = [[moduleClass alloc] initWithCibName:moduleCibName bundle:[CPBundle mainBundle]];
+
+        [[module view] setFrame:[viewTabInformation bounds]];
+
+        [tabViewItem setLabel:[moduleClass moduleName]];
+        [tabViewItem setRepresentedObject:module];
+        [tabViewItem setView:[module view]];
+
+        [tabViewMain addTabViewItem:tabViewItem];
+    }
 
     [tabViewMain selectTabViewItemAtIndex:0];
 }
 
+- (void)_showModuleOfTabItem:(CPTabViewItem)anItem
+{
+    if ([[anItem representedObject] isKindOfClass:NUModule])
+    {
+        [[anItem representedObject] setCurrentParent:_inspectedObject];
+        [[anItem representedObject] willShow];
+    }
+}
+
+- (void)_hideModuleOfTabItem:(CPTabViewItem)anItem
+{
+    if ([[anItem representedObject] isKindOfClass:NUModule])
+    {
+        [[anItem representedObject] willHide];
+        [[anItem representedObject] setCurrentParent:nil];
+    }
+}
 
 #pragma mark -
 #pragma mark Utilities
@@ -411,11 +434,9 @@ var NUInspectorWindowsRegistry = @{};
 - (void)windowWillClose:(CPWindow)aWindow
 {
     [self unregisterFromPushNotification];
-/*    [metadatasController willHide];*/
+    [self _hideModuleOfTabItem:[tabViewMain selectedTabViewItem]];
     [self _unbindControls];
-
     [[NUKit kit] unregisterExternalWindow:[self window]];
-
     [NUInspectorWindowsRegistry removeObjectForKey:[_inspectedObject ID]];
 
     _inspectedObject = nil;
@@ -454,15 +475,13 @@ var NUInspectorWindowsRegistry = @{};
 
 - (void)tabView:(TNTabView)aTabView willSelectTabViewItem:(CPTabViewItem)anItem
 {
-/*    if ([aTabView selectedTabViewItem] == _tabViewItemMetadata)
-        [metadatasController willHide];
-*/}
+    [self _hideModuleOfTabItem:[tabViewMain selectedTabViewItem]];
+}
 
 - (void)tabView:(TNTabView)aTabView didSelectTabViewItem:(CPTabViewItem)anItem
 {
-/*    if (anItem == _tabViewItemMetadata)
-        [metadatasController willShow];
-*/}
+    [self _showModuleOfTabItem:anItem];
+}
 
 
 #pragma mark -
@@ -496,7 +515,6 @@ var NUInspectorWindowsRegistry = @{};
     [[self window] setTitle:@"Inspector - " + [[_inspectedObject class] RESTName] + commonName];
 
     [self registerForPushNotification];
-/*    [metadatasController setCurrentParent:_inspectedObject];*/
     [self _bindControls];
 
     [[NUKit kit] registerExternalWindow:[self window]];
