@@ -6,3 +6,8 @@ Documentation
 *Build
 debug.txt
 *.tm_properties
+*.DS_Store
+*Frameworks/*
+*.xCodeSupport*
+*.XcodeSupport*
+*Build/*
