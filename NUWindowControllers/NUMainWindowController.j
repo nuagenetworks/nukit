@@ -26,8 +26,6 @@
 
 @class NUKit
 
-@global NUAppControllerWorldReadyNotification
-
 var NUMainWindowControllerDefault = nil,
     NUMainWindowControllerDefaultBodyBackgound;
 
@@ -44,7 +42,6 @@ var NUMainWindowControllerDefault = nil,
 
     NUModule                                    _coreModule;
     BOOL                                        _ignoreWindowSize;
-    BOOL                                        _otherUniversesNotified;
     CPArray                                     _principalModules;
     NUModule                                    _visiblePrincipalModule;
 }
@@ -64,7 +61,6 @@ var NUMainWindowControllerDefault = nil,
         NUMainWindowControllerDefault              = self;
         NUMainWindowControllerDefaultBodyBackgound = document.body.style.backgroundImage;
         _principalModules                          = [];
-        _otherUniversesNotified                    = NO;
     }
 
     return self;
@@ -237,17 +233,6 @@ var NUMainWindowControllerDefault = nil,
     DOMWindow.addEventListener("animationend", aFunction, NO);
 }
 
-- (void)_notifyOtherUniversesReadyIfNeeded
-{
-    if (_otherUniversesNotified)
-        return;
-
-    _otherUniversesNotified = YES;
-
-    // we notify eventual cucumber process that we are ready
-    [[CPNotificationCenter defaultCenter] postNotificationName:NUAppControllerWorldReadyNotification object:self];
-}
-
 
 #pragma mark -
 #pragma mark Actions
@@ -303,8 +288,6 @@ var NUMainWindowControllerDefault = nil,
         [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"information" options:nil];
         [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"avatarImage" options:nil];
 
-        [self _notifyOtherUniversesReadyIfNeeded];
-
         [[self window] setDelegate:self];
         [[NUKitToolBar defaultToolBar] setNeedsLayout];
 
@@ -314,9 +297,6 @@ var NUMainWindowControllerDefault = nil,
     [super showWindow:aSender];
 }
 
-/*! Hide the window and notify enterprise controller
-    @param aSender the sender of the action
-*/
 - (void)close
 {
     if (![[self window] isVisible])

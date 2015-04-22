@@ -41,15 +41,14 @@
 - (void)windowDidLoad
 {
     var contentView = [[self window] contentView];
-
     [[contentView subviewWithTag:@"logout"] setBGColor:@"red"];
 
-    [imageViewLogo setImage:CPImageInBundle("Branding/logo-application.png")];
+    [imageViewLogo setImage:[[NUKit kit] applicationLogo]];
 
-    [self window]._windowView._DOMElement.style.WebkitAnimationName = "bounceInDown";
-    [self window]._windowView._DOMElement.style.WebkitTransform = "translateZ(0)";
-    [self window]._windowView._DOMElement.style.WebkitAnimationDuration  = "1s";
-    [self window]._windowView._DOMElement.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
+    [self window]._windowView._DOMElement.style.WebkitAnimationName     = "bounceInDown";
+    [self window]._windowView._DOMElement.style.WebkitTransform         = "translateZ(0)";
+    [self window]._windowView._DOMElement.style.WebkitAnimationDuration = "1s";
+    [self window]._windowView._DOMElement.style.backgroundColor         = "rgba(255, 255, 255, 0.8)";
 }
 
 

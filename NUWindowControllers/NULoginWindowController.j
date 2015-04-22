@@ -55,7 +55,7 @@
 - (void)windowDidLoad
 {
     [labelCopyright setStringValue:[[NUKit kit] copyright]];
-    [imageViewLogo setImage:CPImageInBundle("Branding/logo-application.png")];
+    [imageViewLogo setImage:[[NUKit kit] applicationLogo]];
     [labelCopyright setHidden:YES];
     [labelCopyright setAlphaValue:0.4];
 
