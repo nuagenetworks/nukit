@@ -89,8 +89,8 @@
 
     [buttonLogin setBordered:NO];
     [buttonLogin setButtonType:CPMomentaryChangeButton];
-    [buttonLogin setValue:CPImageInBundle("button-login.png", 24, 24, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonLogin setValue:CPImageInBundle("button-login-pressed.png", 24, 24, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonLogin setValue:NUImageInKit("button-login.png", 24, 24) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonLogin setValue:NUImageInKit("button-login-pressed.png", 24, 24) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
     _cucappID(buttonLogin, @"button-login");
 
     _cucappID(fieldLogin, "field-login");

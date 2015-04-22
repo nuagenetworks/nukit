@@ -389,8 +389,8 @@ NUModuleTabViewModeIcon = 2;
         {
             [_buttonFirstCreate setBordered:NO];
             [_buttonFirstCreate setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create.png", 32.0, 32.0, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstCreate setValue:CPImageInBundle("button-first-create-pressed.png", 32.0, 32.0, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstCreate setValue:NUImageInKit("button-first-create.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstCreate setValue:NUImageInKit("button-first-create-pressed.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstCreate setTarget:self];
             [_buttonFirstCreate setAction:@selector(openNewObjectPopover:)];
 
@@ -403,8 +403,8 @@ NUModuleTabViewModeIcon = 2;
         {
             [_buttonFirstImport setBordered:NO];
             [_buttonFirstImport setButtonType:CPMomentaryChangeButton];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import.png", 32.0, 32.0, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-            [_buttonFirstImport setValue:CPImageInBundle("button-first-import-pressed.png", 32.0, 32.0, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+            [_buttonFirstImport setValue:NUImageInKit("button-first-import.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+            [_buttonFirstImport setValue:NUImageInKit("button-first-import-pressed.png", 32.0, 32.0) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
             [_buttonFirstImport setTarget:self];
             [_buttonFirstImport setAction:@selector(import:)];
 
@@ -476,8 +476,8 @@ NUModuleTabViewModeIcon = 2;
         [buttonOpenInExternalWindow setToolTip:@"Open this in an external browser window"];
         [buttonOpenInExternalWindow setBordered:NO];
         [buttonOpenInExternalWindow setButtonType:CPMomentaryChangeButton];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window.png", 16, 16, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-        [buttonOpenInExternalWindow setValue:CPImageInBundle(@"button-new-window-pressed.png", 16, 16, [[NUKit kit] bundle]) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+        [buttonOpenInExternalWindow setValue:NUImageInKit(@"button-new-window.png", 16, 16) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+        [buttonOpenInExternalWindow setValue:NUImageInKit(@"button-new-window-pressed.png", 16, 16) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
         [buttonOpenInExternalWindow setTarget:self];
         [buttonOpenInExternalWindow setAction:@selector(openModuleInExternalWindow:)];
     }

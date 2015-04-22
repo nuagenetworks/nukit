@@ -51,6 +51,13 @@ function createDownload(content, filename, extension)
     delete a;
 }
 
+function NUImageInKit()
+{
+    var args = Array.prototype.slice.call(arguments);
+    args.push([[NUKit kit] bundle]);
+    return CPImageInBundle.apply(this, args);
+}
+
 /*
     Quick Accessors and Developers Sweets
 */
