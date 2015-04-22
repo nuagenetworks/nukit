@@ -23,6 +23,7 @@
 @import "NUDataSources.j"
 @import "NUDataViews.j"
 @import "NUDataViewsLoaders.j"
+@import "NUHierarchyControllers.j"
 @import "NUModels.j"
 @import "NUModules.j"
 @import "NUSkins.j"
