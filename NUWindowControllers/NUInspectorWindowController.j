@@ -26,6 +26,9 @@
 @import <RESTCappuccino/NURESTLoginController.j>
 @import <RESTCappuccino/NURESTModelController.j>
 @import "NUKitObject.j"
+@import "NUDataViewsRegistry.j"
+@import "NUSkin.j"
+@import "NUModule.j"
 
 @global CPApp
 @global NUKit

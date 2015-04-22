@@ -21,6 +21,7 @@
 @import @"NUMessagesWindowController.j"
 @import @"NUInspectorWindowController.j"
 @import @"NUMainWindowController.j"
+@import @"NUInternalDataViewsLoader.j"
 
 NUKitUserLoggedInNotification = @"NUKitUserLoggedInNotification";
 NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
@@ -252,6 +253,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         [NUModule setAutoConfirm:YES]
     }
 
+    [NURESTConnection setTimeoutValue:3000];
     if ([self valueForApplicationArgument:@"notimeout"])
         [NURESTConnection setTimeoutValue:nil];
 

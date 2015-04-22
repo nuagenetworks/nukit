@@ -16,7 +16,6 @@ windowTitle             = "$TM_DISPLAYNAME — ${CWD/^.*\///} $TM_SCM_BRANCH"
 projectDirectory        = "$CWD"
 showInvisibles          = true
 invisiblesMap           = "~ \t┊"
-TM_MAKE_FILE            = '${CWD}/buildArchipel -bag'
 
 [ *.j ]
 fileType                = "source.js.objj"

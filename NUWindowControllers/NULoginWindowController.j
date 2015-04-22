@@ -166,7 +166,6 @@
         [self window]._windowView._DOMElement.removeEventListener("animationend", arguments.callee, NO);
 
         [self setButtonLoginEnabled:YES];
-        [self setMessage:@""];
         [labelCopyright setHidden:NO];
     };
 
@@ -195,6 +194,7 @@
         [self window]._windowView._DOMElement.removeEventListener("webkitAnimationEnd", arguments.callee, NO);
         [self window]._windowView._DOMElement.removeEventListener("animationend", arguments.callee, NO);
 
+        [self setMessage:@""];
         [self setButtonLoginEnabled:YES];
         [super close];
     };
