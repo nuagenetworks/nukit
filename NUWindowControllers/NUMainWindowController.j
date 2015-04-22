@@ -19,21 +19,13 @@
 @import <AppKit/CPWindowController.j>
 @import <AppKit/CPPopover.j>
 @import <RESTCappuccino/RESTCappuccino.j>
-@import <NUKit/NUUtilities.j>
-
+@import "NUUtilities.j"
 @import "NUKitToolBar.j"
+@import "NUModule.j"
+@import "NUDataTransferController.j"
 
-@class NUDataTransferController
-@class NUMessagesWindowController
-@class NUModule
-@class NUDCConfigurationViewController
-@class NUMonitoringConsoleViewController
-@class NUVSPConfigurationViewController
 @class NUKit
 
-@global NURESTUserRoleCSPRoot
-@global NURESTUserRoleCSPOperator
-@global CPApp
 @global NUAppControllerWorldReadyNotification
 
 var NUMainWindowControllerDefault = nil,
@@ -137,7 +129,7 @@ var NUMainWindowControllerDefault = nil,
     [viewMainContainer addSubview:moduleView];
 }
 
-- (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton
+- (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton availableToRoles:(CPArray)someRoles
 {
     [_principalModules addObject:aModule];
 
@@ -153,19 +145,7 @@ var NUMainWindowControllerDefault = nil,
     [aButton setTarget:self];
     [aButton setAction:@selector(switchPrincipalModule:)]
 
-    [toolBar registerButton:aButton];
-}
-
-
-#pragma mark -
-#pragma mark ToolBar Management
-
-- (void)_manageAdditionalToolBarItems
-{
-    if (_currentUserHasRoles([NURESTUserRoleCSPRoot, NURESTUserRoleCSPOperator]))
-        [toolBar setAdvancedItemsHidden:NO];
-    else
-        [toolBar setAdvancedItemsHidden:YES];
+    [toolBar registerButton:aButton forRoles:someRoles];
 }
 
 
@@ -315,7 +295,6 @@ var NUMainWindowControllerDefault = nil,
         window.document.body.style.backgroundImage = @"";
 
         [self _hideCurrentPrincipalModule];
-        [self _manageAdditionalToolBarItems];
         [self _manageVisibilityOfWindowSizeWarning];
 
         [_coreModule setCurrentParent:[[NUKit kit] RESTUser]];
@@ -327,6 +306,7 @@ var NUMainWindowControllerDefault = nil,
         [self _notifyOtherUniversesReadyIfNeeded];
 
         [[self window] setDelegate:self];
+        [[NUKitToolBar defaultToolBar] setNeedsLayout];
 
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
     }];

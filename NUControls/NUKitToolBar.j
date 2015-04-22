@@ -32,7 +32,7 @@ var NUKitToolBarDefault;
 
     CPView                  _viewSeparator;
     CPButton                _buttonLogout;
-    CPArray                 _buttons;
+    CPDictionary            _buttonsRegistry;
     CPView                  _viewIcon;
     id                      _applicationNameBoundObject;
     CPString                _applicationNameBoundKeyPath;
@@ -64,7 +64,7 @@ var NUKitToolBarDefault;
 
 - (void)_init
 {
-    _buttons = [];
+    _buttonsRegistry = @{};
 
     _buttonLogout = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
     [_buttonLogout setBordered:NO];
@@ -108,9 +108,9 @@ var NUKitToolBarDefault;
     [_viewIcon setObjectValue:anEnterprise];
 }
 
-- (void)registerButton:(CPButton)aButton
+- (void)registerButton:(CPButton)aButton forRoles:(CPArray)someRoles
 {
-    [_buttons addObject:aButton];
+    [_buttonsRegistry setObject:someRoles forKey:aButton];
     [self setNeedsLayout];
 }
 
@@ -166,6 +166,7 @@ var NUKitToolBarDefault;
     [self bindApplicationIconToObject:_applicationIconBoundObject withKeyPath:_applicationIconBoundKeyPath];
 }
 
+
 #pragma mark -
 #pragma mark Layout
 
@@ -173,9 +174,19 @@ var NUKitToolBarDefault;
 {
     [super layoutSubviews];
 
-    var buttonsList = [_buttons copy];
+    var buttonsList = [];
 
-    [buttonsList addObject:_viewSeparator];
+    for (var i = 0, c = [[_buttonsRegistry allKeys] count]; i < c; i++)
+    {
+        var button = [_buttonsRegistry allKeys][i];
+
+        if ([[_buttonsRegistry objectForKey:button] containsObject:[[[NUKit kit] RESTUser] role]])
+            [buttonsList addObject:button];
+    }
+
+    if ([buttonsList count] > 1)
+        [buttonsList addObject:_viewSeparator];
+
     [buttonsList addObject:_buttonLogout];
 
     [stackViewButtons setSubviews:buttonsList];

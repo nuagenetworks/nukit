@@ -142,10 +142,11 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     [_mainWindowController registerCoreModule:aModule];
 }
 
-- (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton
+- (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton availableToRoles:(CPArray)someRoles
 {
-    [_mainWindowController registerPrincipalModule:aModule accessButton:aButton];
+    [_mainWindowController registerPrincipalModule:aModule accessButton:aButton availableToRoles:someRoles];
 }
+
 
 #pragma mark -
 #pragma mark Utilities
