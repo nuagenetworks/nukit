@@ -19,6 +19,8 @@
 @import @"NUServerFaultWindowController.j"
 @import @"NULoginWindowController.j"
 @import @"NUMessagesWindowController.j"
+@import @"NUInspectorWindowController.j"
+@import @"NUMainWindowController.j"
 
 NUKitUserLoggedInNotification = @"NUKitUserLoggedInNotification";
 NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
@@ -43,6 +45,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     NULoginWindowController         _loginWindowController          @accessors(getter=loginWindowController);
     NUMessagesWindowController      _messagesWindowController       @accessors(getter=messagesWindowController);
     NUServerFaultWindowController   _serverFaultWindowController    @accessors(getter=serverFaultWindowController);
+    NUMainWindowController          _mainWindowController           @accessors(property=mainWindowController);
 
     CPArray                         _externalWindows;
     CPPopover                       _lockedPopover;
@@ -50,8 +53,6 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     id                              _delegate;
     unsigned                        _implementedDelegateMethods;
     BOOL                            _isAppClosing;
-
-    id                              _mainWindowController           @accessors(property=mainWindowController);
 }
 
 
@@ -74,7 +75,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 {
     if (self = [super init])
     {
-        _bundle                      = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
+        _bundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
         [self installStyleSheetOnDocument:document];
 
@@ -82,6 +83,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         _loginWindowController       = [NULoginWindowController new];
         _messagesWindowController    = [NUMessagesWindowController new];
         _serverFaultWindowController = [NUServerFaultWindowController new];
+        _mainWindowController        = [NUMainWindowController new];
 
         _lockedPopoverView = [CPView new];
         [_lockedPopoverView setBackgroundColor:NUSkinColorWhite];
@@ -130,6 +132,15 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     head.appendChild(spinnercss);
 }
 
+- (void)registerCoreModule:(NUModule)aModule
+{
+    [_mainWindowController registerCoreModule:aModule];
+}
+
+- (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton
+{
+    [_mainWindowController registerPrincipalModule:aModule accessButton:aButton];
+}
 
 #pragma mark -
 #pragma mark Utilities

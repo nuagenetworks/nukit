@@ -1,5 +1,6 @@
 @import "NUExpandableSearchField.j"
 @import "NUFileDropController.j"
+@import "NUKitToolBar.j"
 @import "NUNetworkTextField.j"
 @import "NUNumericTextField.j"
 @import "NUOverlayTextField.j"

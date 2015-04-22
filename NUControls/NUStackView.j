@@ -18,8 +18,12 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPView.j>
 
+NUStackViewModeHorizontal = 1;
+NUStackViewModeVertical   = 2;
+
 @implementation NUStackView : CPView
 {
+    int     _mode   @accessors(property=mode);
     CGInset _margin @accessors(property=margin);
 }
 
@@ -37,7 +41,8 @@
 
 - (void)_init
 {
-    _margin = CGInsetMakeZero();
+    _mode = _mode || NUStackViewModeVertical;
+    _margin = _margin || CGInsetMakeZero();
 }
 
 
@@ -45,6 +50,14 @@
 #pragma mark Layout
 
 - (void)layoutSubviews
+{
+    if (_mode == NUStackViewModeVertical)
+        [self _layoutVertical];
+    else
+        [self _layoutHorizontal];
+}
+
+- (void)_layoutVertical
 {
     var views     = [self subviews],
         frame     = [self frame],
@@ -71,6 +84,32 @@
     [self setFrame:frame];
 }
 
+- (void)_layoutHorizontal
+{
+    var views     = [self subviews],
+        frame     = [self frame],
+        height    = frame.size.height,
+        currentX  = _margin.left;
+
+    for (var i = 0, c = [views count]; i < c; i++)
+    {
+        var currentView  = views[i],
+            currentFrame = [currentView frame];
+
+        currentFrame.origin.x   = currentX;
+        currentFrame.origin.y   = _margin.top;
+        currentFrame.size.height = height - _margin.top - _margin.bottom;
+
+        [currentView setAutoresizingMask:CPViewHeightSizable];
+        [currentView setFrame:currentFrame];
+
+        currentX += currentFrame.size.width + _margin.right;
+    }
+
+    frame.size.width = currentX;
+
+    [self setFrame:frame];
+}
 
 #pragma mark -
 #pragma mark CPCoding compliance
