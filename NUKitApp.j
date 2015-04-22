@@ -40,24 +40,23 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 @implementation NUKit : CPObject
 {
     CPBundle                        _bundle                         @accessors(getter=bundle);
+    CPImage                         _applicationLogo                @accessors(property=applicationLogo);
+    CPImage                         _companyLogo                    @accessors(property=companyLogo);
+    CPString                        _applicationName                @accessors(property=applicationName);
+    CPString                        _companyName                    @accessors(property=companyName);
     CPString                        _copyright                      @accessors(property=copyright);
     id                              _RESTUser                       @accessors(property=RESTUser);
     NULoginWindowController         _loginWindowController          @accessors(getter=loginWindowController);
+    NUMainWindowController          _mainWindowController           @accessors(property=mainWindowController);
     NUMessagesWindowController      _messagesWindowController       @accessors(getter=messagesWindowController);
     NUServerFaultWindowController   _serverFaultWindowController    @accessors(getter=serverFaultWindowController);
-    NUMainWindowController          _mainWindowController           @accessors(property=mainWindowController);
 
-    CPString                        _companyName                    @accessors(property=companyName);
-    CPString                        _applicationName                @accessors(property=applicationName);
-    CPImage                         _companyLogo                    @accessors(property=companyLogo);
-    CPImage                         _applicationLogo                @accessors(property=applicationLogo);
-
+    BOOL                            _isAppClosing;
     CPArray                         _externalWindows;
     CPPopover                       _lockedPopover;
     CPView                          _lockedPopoverView;
     id                              _delegate;
     unsigned                        _implementedDelegateMethods;
-    BOOL                            _isAppClosing;
 }
 
 
@@ -85,10 +84,11 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         [self installStyleSheetOnDocument:document];
 
         _externalWindows             = [];
+
         _loginWindowController       = [NULoginWindowController new];
+        _mainWindowController        = [NUMainWindowController new];
         _messagesWindowController    = [NUMessagesWindowController new];
         _serverFaultWindowController = [NUServerFaultWindowController new];
-        _mainWindowController        = [NUMainWindowController new];
 
         _lockedPopoverView = [CPView new];
         [_lockedPopoverView setBackgroundColor:NUSkinColorWhite];
@@ -566,6 +566,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 {
     [NUInspectorWindowController registerAdditionalModuleClass:aClass cibName:aCibName displayDecisionFunction:aFunction];
 }
+
 
 #pragma mark -
 #pragma mark Popover Locking
