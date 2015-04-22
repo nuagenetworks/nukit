@@ -25,14 +25,14 @@
 @class _NUNetworkElementTextField
 @class _NUFakeTextField
 
+@global CPApp
+
+
 var CPZeroKeyCode = 48,
     CPNineKeyCode = 57,
     CPAKeyCode = 97,
-    CPFKeyCode = 102;
-
-@global CPApp
-
-var SELECTING_COLOR;
+    CPFKeyCode = 102,
+    SELECTING_COLOR;
 
 NUNetworkIPV4Mode = 0;
 NUNetworkIPV6Mode = 1;
@@ -41,6 +41,7 @@ NUNetworkMACMode  = 2;
 var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     NUNetworkTextField_mathWithRegex_forValue_   = 1 << 2,
     NUNetworkTextField_errorMessage_forValue_    = 1 << 3;
+
 
 @implementation NUNetworkTextField : CPTextField
 {

@@ -19,7 +19,9 @@
 @import "NUModule.j"
 
 @class NUKit
-@class CPApp
+
+@global CPApp
+
 
 @implementation NUModuleSingleObjectShower : NUModule
 {

@@ -17,8 +17,8 @@
 
 @import <Foundation/Foundation.j>
 @import <TNKit/TNTableViewDataSource.j>
+
 @import "NUModule.j"
-@import "NUAdvancedFilteringViewController.j"
 
 
 @implementation NUObjectsChooser : NUModule

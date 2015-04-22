@@ -15,7 +15,6 @@
 *
 */
 
-
 @import <Foundation/Foundation.j>
 @import <AppKit/CPComboBox.j>
 
@@ -24,6 +23,7 @@ var NUComboBoxCompletionTest = function(object, index, context)
 {
     return object.toString().toLowerCase().indexOf(context.toLowerCase()) === 0;
 };
+
 
 @implementation CPComboBox (CaseInsensitiveComplete)
 

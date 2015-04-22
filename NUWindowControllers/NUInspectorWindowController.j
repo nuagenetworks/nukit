@@ -25,17 +25,19 @@
 @import <RESTCappuccino/NURESTPushCenter.j>
 @import <RESTCappuccino/NURESTLoginController.j>
 @import <RESTCappuccino/NURESTModelController.j>
+
 @import "NUKitObject.j"
-@import "NUDataViewsRegistry.j"
 @import "NUSkin.j"
 @import "NUModule.j"
 
+@class NUKit
+
 @global CPApp
-@global NUKit
 @global NUNullToNoInformationTransformerName
 @global NUPushEventTypeDelete
 @global NUPushEventTypeUpdate
 @global NUPushEventTypeRevoke
+
 
 var NUInspectorWindowsRegistry = @{},
     NUInspectorWindowAdditionalModuleClasses = @{};
@@ -107,7 +109,7 @@ var NUInspectorWindowsRegistry = @{},
     if (self = [super initWithWindowCibName:@"InspectorWindow"])
     {
         _openingOffset     = [NUInspectorWindowsRegistry count];
-        _dataViewPrototype = [[NUDataViewsRegistry dataViewForName:@"genealogyDataView"] duplicate];
+        _dataViewPrototype = [[[NUKit kit] dataViewWithIdentifier:@"genealogyDataView"] duplicate];
     }
 
     return self;

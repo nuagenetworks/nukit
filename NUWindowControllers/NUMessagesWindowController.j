@@ -27,12 +27,13 @@
 @import <RESTCappuccino/NURESTConfirmation.j>
 @import "NUUtilities.j"
 @import "NUSkin.j"
-@import "NUDataViewsRegistry.j"
+
+@class NUKit
 
 @global CPApp
-@global NUKit
 @global NUKitUserLoggedOutNotification
 @global NUMainWindowController
+
 
 var NUMessagesWindowControllerDefault;
 
@@ -306,7 +307,7 @@ var NUMessagesWindowControllerDefault;
 */
 - (int)tableView:(CPTabView)aTableView heightOfRow:(int)aRow
 {
-    return [[NUDataViewsRegistry dataViewForName:@"messageDataView"] frameSize].height;
+    return [[[NUKit kit] dataViewWithIdentifier:@"messageDataView"] frameSize].height;
 }
 
 /*! Table View Delegate
@@ -318,7 +319,7 @@ var NUMessagesWindowControllerDefault;
 
     if (!view)
     {
-        view = [[NUDataViewsRegistry dataViewForName:@"messageDataView"] duplicate];
+        view = [[[NUKit kit] dataViewWithIdentifier:@"messageDataView"] duplicate];
         [view setIdentifier:key];
     }
 

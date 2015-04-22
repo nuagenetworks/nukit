@@ -18,10 +18,9 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPWindowController.j>
 
-@global NUKit
+@class NUKit
 
-/*! Control the window displayed when server is unreachable
-*/
+
 @implementation NUServerFaultWindowController : CPWindowController
 {
     @outlet CPImageView imageViewLogo;

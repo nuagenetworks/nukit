@@ -22,6 +22,7 @@
 
 @import "NUSkin.j"
 
+
 @implementation NUOverlayTextField : CPView
 {
     CPTextField _targetTextField    @accessors(getter=targetTextField);

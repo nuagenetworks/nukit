@@ -19,6 +19,7 @@
 
 @global CPApp
 
+
 @implementation CPMenuItem (noview)
 
 - (CPView)view

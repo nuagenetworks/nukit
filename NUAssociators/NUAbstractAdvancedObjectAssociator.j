@@ -17,10 +17,10 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPButton.j>
-@import "NUKitObject.j"
-@import "NUAbstractObjectAssociator.j"
 
-@class NUModuleContext
+@import "NUAbstractObjectAssociator.j"
+@import "NUKitObject.j"
+@import "NUModuleContext.j"
 
 
 @implementation NUAbstractAdvancedObjectAssociator : NUAbstractObjectAssociator

@@ -17,6 +17,7 @@
 
 @import <AppKit/CPTabViewItem.j>
 
+
 @implementation CPTabViewItem (RepresentedObject)
 
 - (void)setRepresentedObject:(id)anObject

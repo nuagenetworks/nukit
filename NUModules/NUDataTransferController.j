@@ -21,7 +21,9 @@
 
 @import "NUSkin.j"
 
+
 var NUDataTransferControllerSingleton = nil;
+
 
 @implementation NUDataTransferController : CPObject
 {

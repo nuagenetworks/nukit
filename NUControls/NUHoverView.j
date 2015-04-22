@@ -23,10 +23,11 @@
 
 @global CPApp
 
+
 NUHoverViewTriggerWidth = 10;
 
-var NUHoverViewDelegate_hoverViewDidShow    = 1 << 1,
-    NUHoverViewDelegate_hoverViewDidHide    = 1 << 2;
+var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
+    NUHoverViewDelegate_hoverViewDidHide = 1 << 2;
 
 
 @implementation NUHoverView : CPControl

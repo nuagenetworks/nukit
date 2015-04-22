@@ -19,13 +19,15 @@
 @import "NUModule.j"
 @import "NUObjectsChooser.j"
 
-@class CPApp
 @class NUKit
 
+@global CPApp
 @global NUModuleAutoValidation
 
-NUModuleAssignationActionAssign = @"NUModuleAssignationActionAssign";
+
+NUModuleAssignationActionAssign   = @"NUModuleAssignationActionAssign";
 NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
+
 
 @implementation NUModuleAssignation : NUModule
 {
@@ -204,7 +206,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         return;
     }
 
-    var popoverConfirmation = [NUDataViewsRegistry dataViewForName:@"popoverConfirmation"],
+    var popoverConfirmation = [[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -231,7 +233,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [content removeObjectsInArray:_currentSelectedObjects];
     [self assignObjects:content];
 
-    [[NUDataViewsRegistry dataViewForName:@"popoverConfirmation"] close];
+    [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
 }
 
 

@@ -1,24 +1,9 @@
 /*
-****************************************************************************
-*
 *   Filename:         CPOutlineView+Expand.j
-*
-*   Created:          Mon Apr  2 11:23:45 PST 2012
-*
-*   Description:      Cappuccino UI
-*
-*   Project:          Cloud Network Automation - Nuage - Data Center Service Delivery - IPD
-*
-*
-***************************************************************************
-*
-*                 Source Control System Information
-*
-*   $Id: something $
-*
-*
-*
-****************************************************************************
+*   Created:          Wed Apr 22 12:08:29 PDT 2015
+*   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
+*   Description:      VSA
+*   Project:          VSD - Nuage - Data Center Service Delivery - IPD
 *
 * Copyright (c) 2011-2012 Alcatel, Alcatel-Lucent, Inc. All Rights Reserved.
 *
@@ -28,16 +13,13 @@
 *
 * Alcatel-Lucent is a trademark of Alcatel-Lucent, Inc.
 *
-*
-*****************************************************************************
 */
 
 @import <AppKit/CPOutlineView.j>
 
+
 @implementation CPOutlineView (ExpandAll)
 
-/*! Expand all items in the view
-*/
 - (void)expandAll
 {
     for (var count = 0; [self itemAtRow:count]; count++)
@@ -48,8 +30,6 @@
     }
 }
 
-/*! Collapse all items in the view
-*/
 - (void)collapseAll
 {
     for (var count = 0; [self itemAtRow:count]; count++)

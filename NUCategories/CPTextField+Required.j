@@ -19,9 +19,13 @@
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPImageView.j>
 
+@class NUKit
+
+
 var CPTextFieldImageRequired = nil;
 
 NUThemeStateError = CPThemeState("NUThemeStateError");
+
 
 @implementation CPTextField (RequiredMode)
 
@@ -76,7 +80,7 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
     {
         if (!self.__errorView)
         {
-            self.__errorView = [[NUDataViewsRegistry dataViewForName:@"viewInvalidInput"] duplicate];
+            self.__errorView = [[[NUKit kit] dataViewWithIdentifier:@"viewInvalidInput"] duplicate];
             [self.__errorView setAutoresizingMask:CPViewMinXMargin];
         }
 

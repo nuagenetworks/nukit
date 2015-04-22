@@ -20,6 +20,7 @@
 
 @global isNumber
 
+
 @implementation NUNumericTextField : CPTextField
 
 - (BOOL)_setStringValue:(CPString)aValue isNewValue:(BOOL)isNewValue errorDescription:(CPStringRef)anError

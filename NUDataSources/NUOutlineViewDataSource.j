@@ -25,10 +25,6 @@
 @global CPDragOperationNone
 
 
-/*! @ingroup tnkit
-    datasource of the snaphot outline view
-    NOT COMPLETE DO NOT USE
-*/
 @implementation NUOutlineViewDataSource : CPObject
 {
     CPArray         _content                @accessors(property=content);
@@ -45,9 +41,7 @@
 
 #pragma mark -
 #pragma mark Initialization
-/*! Initialization of the class
-    @return an initialized instance of TNVMCastDatasource
-*/
+
 - (id)init
 {
     if (self = [super init])
@@ -64,70 +58,50 @@
 #pragma mark -
 #pragma mark Data Information
 
-/*! return the number of object in datasource
-    @return number of objectss
-*/
 - (int)count
 {
     return [_content count];
 }
 
+
 #pragma mark -
 #pragma mark Data manipulation
 
-/*! add an object to the datasource
-    @param anObject the object to add
-*/
 - (void)addObject:(id)anObject
 {
     [_content addObject:anObject];
 }
 
-/*! add some objects to the datasource
-    @param someObjects array of objects to add
-*/
 - (void)addObjectsFromArray:(CPArray)someObjects
 {
     [_content addObjectsFromArray:someObjects];
 }
 
-/*! remove all objects from datasource
-*/
 - (void)removeAllObjects
 {
     [_content removeAllObjects];
 }
 
-/*! remove all objects from datasource
-*/
 - (void)removeObject:(id)anObject
 {
     [_content removeObject:anObject];
 }
 
-/*! return object at given index
-*/
 - (void)objectAtIndex:(int)anIndex
 {
     return [self filteredContent:_content][anIndex];
 }
 
-/*! return objects at given indexes
-*/
 - (void)objectsAtIndexes:(CPindexSet)someIndexes
 {
     return [[self filteredContent:_content] objectsAtIndexes:someIndexes];
 }
 
-/*! Sort the content
-*/
 - (void)sortUsingDescriptors:(CPArray)someDescriptors
 {
     [_content sortUsingDescriptors:someDescriptors];
 }
 
-/*! Returns the the full content, filtered with the given predicate
-*/
 - (CPArray)filteredArrayUsingPredicate:(CPPredicate)aPredicate
 {
     return [_content filteredArrayUsingPredicate:aPredicate];
@@ -282,8 +256,6 @@
 #pragma mark -
 #pragma mark Drag and Drop
 
-/*! DataSource delegate
-*/
 - (BOOL)outlineView:(CPOutlineView)outlineView writeItems:(CPArray)items toPasteboard:(CPPasteboard)thePasteBoard
 {
     if (_dragAndDropDelegate && [_dragAndDropDelegate respondsToSelector:@selector(dataSource:writeItems:toPasteboard:)])
@@ -292,8 +264,6 @@
     return NO;
 }
 
-/*! DataSource delegate
-*/
 - (CPDragOperation)outlineView:(CPOutlineView)outlineView validateDrop:(CPDraggingInfo)info proposedItem:(id)item proposedChildIndex:(CPInteger)index
 {
     if (_dragAndDropDelegate && [_dragAndDropDelegate respondsToSelector:@selector(dataSource:validateDrop:proposedItem:proposedChildIndex:)])
@@ -302,8 +272,6 @@
     return CPDragOperationNone;
 }
 
-/*! DataSource delegate
-*/
 - (BOOL)outlineView:(CPOutlineView)outlineView acceptDrop:(CPDraggingInfo)info item:(id)item childIndex:(CPInteger)index
 {
     if (_dragAndDropDelegate && [_dragAndDropDelegate respondsToSelector:@selector(dataSource:acceptDrop:item:childIndex:)])

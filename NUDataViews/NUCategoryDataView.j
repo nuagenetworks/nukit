@@ -17,7 +17,8 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPBox.j>
-@import <NUKit/NUAbstractDataView.j>
+
+@import "NUAbstractDataView.j"
 
 
 @implementation NUCategoryDataView : NUAbstractDataView

@@ -18,8 +18,9 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPPopover.j>
-@import "NUDataViewsRegistry.j"
-@import "NUDataViews.j"
+
+@class NUKit
+
 
 @implementation NUAbstractDataViewsLoader : CPViewController
 
@@ -30,7 +31,7 @@
     for (var i = [ivars count] - 1; i >= 0; i--)
     {
         var ivarName = ivars[i].name;
-        [NUDataViewsRegistry registerDataView:[self valueForKey:ivarName] forName:ivarName];
+        [[NUKit kit] registerDataView:[self valueForKey:ivarName] withIdentifier:ivarName];
     }
 }
 

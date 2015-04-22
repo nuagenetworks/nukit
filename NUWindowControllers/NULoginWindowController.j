@@ -27,8 +27,10 @@
 @import "NUDataTransferController.j"
 @import "EKShakeAnimation.j"
 
+@class NUKit
+
 @global CPApp
-@global NUKit
+
 
 @implementation NULoginWindowController : CPWindowController
 {

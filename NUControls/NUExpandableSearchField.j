@@ -19,8 +19,10 @@
 @import <AppKit/CPSearchField.j>
 @import <AppKit/CPViewAnimation.j>
 
-@global CPApp
 @class _CPPopoverWindow
+
+@global CPApp
+
 
 @implementation NUExpandableSearchField : CPSearchField
 {

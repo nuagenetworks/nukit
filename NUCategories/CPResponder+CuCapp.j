@@ -20,6 +20,7 @@
 
 @global NUKitParameterShowDebugToolTips
 
+
 @implementation CPResponder (CuCapp)
 
 - (void)setCucappIdentifier:(CPString)anIdentifier

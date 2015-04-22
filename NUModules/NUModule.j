@@ -37,7 +37,6 @@
 @import "NUAdvancedFilteringViewController.j"
 @import "NUCategory.j"
 @import "NUDataTransferController.j"
-@import "NUDataViewsRegistry.j"
 @import "NUEditorsViewController.j"
 @import "NUJobExport.j"
 @import "NUJobImport.j"
@@ -48,9 +47,9 @@
 @import "NUTotalNumberValueTransformer.j"
 @import "NUKitObject.j"
 
+@class NUKit
 
 @global CPApp
-@global NUKit
 @global NUKitUserLoggedOutNotification
 @global NURESTUserRoleCSPRoot
 @global NURESTUserRoleOrgAdmin
@@ -1393,7 +1392,7 @@ NUModuleTabViewModeIcon = 2;
         return;
     }
 
-    var popoverConfirmation = [NUDataViewsRegistry dataViewForName:@"popoverConfirmation"],
+    var popoverConfirmation = [[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -1416,7 +1415,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)_performDeleteObjects:(id)aSender
 {
-    [[NUDataViewsRegistry dataViewForName:@"popoverConfirmation"] close];
+    [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
 
     var deleteRegistry = @{},
         cleanedObjects = [self modulePerformSelectionCleanupBeforeDeletion:[_currentSelectedObjects copy]];
@@ -3000,7 +2999,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)registerDataViewWithName:(CPString)aName forClass:(Class)aClass
 {
-    var dataView = [[NUDataViewsRegistry dataViewForName:aName] duplicate];
+    var dataView = [[[NUKit kit] dataViewWithIdentifier:aName] duplicate];
     [_dataViews setObject:dataView forKey:aClass.name];
 }
 
@@ -3378,7 +3377,7 @@ NUModuleTabViewModeIcon = 2;
         CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
 
         // close any deletion in process if we are loading something to avoid incoherency
-        [[NUDataViewsRegistry dataViewForName:@"popoverConfirmation"] close];
+        [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
 
         // do not observe bounds change until we receive the next page
         [self _removeScrollViewObservers];

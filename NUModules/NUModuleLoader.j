@@ -18,10 +18,11 @@
 @import <Foundation/Foundation.j>
 @import <Foundation/CPNotificationCenter.j>
 
+
 var sharedNUModuleLoader;
 
-NUModuleLoaderStartLoadingNotification = @"NUModuleLoaderStartLoadingNotification";
-NUModuleLoaderModuleLoadedNotification = @"NUModuleLoaderModuleLoadedNotification";
+NUModuleLoaderStartLoadingNotification     = @"NUModuleLoaderStartLoadingNotification";
+NUModuleLoaderModuleLoadedNotification     = @"NUModuleLoaderModuleLoadedNotification";
 NUModuleLoaderAllModulesLoadedNotification = @"NUModuleLoaderAllModulesLoadedNotification";
 
 

@@ -17,6 +17,7 @@
 
 @import <AppKit/CPButton.j>
 
+
 @implementation CPButton (color)
 
 - (void)setRed

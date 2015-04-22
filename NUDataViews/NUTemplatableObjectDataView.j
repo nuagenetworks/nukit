@@ -18,6 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPImageView.j>
 @import <AppKit/CPView.j>
+
 @import "NUAbstractDataView.j"
 
 

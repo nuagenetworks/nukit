@@ -19,11 +19,12 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
-@import "NUDataViewsRegistry.j"
+
 @import "NUKitObject.j"
 @import "NUObjectsChooser.j"
 
-@global NUKit
+@class NUKit
+
 
 var NUAbstractObjectAssociatorLinkImage          = CPImageInBundle("button-link.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
     NUAbstractObjectAssociatorLinkPressedImage   = CPImageInBundle("button-link-pressed.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
@@ -39,6 +40,7 @@ NUObjectAssociatorDisplayModeDataView = 1;
 NUObjectAssociatorDisplayModeText = 2;
 
 var BUTTONS_SIZE = 12;
+
 
 @implementation NUAbstractObjectAssociator : CPViewController
 {

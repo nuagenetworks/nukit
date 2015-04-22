@@ -24,6 +24,7 @@
 
 @global FileReader
 
+
 isWinSafari = false;
 if (typeof(navigator) != "undefined")
 {
@@ -31,6 +32,7 @@ if (typeof(navigator) != "undefined")
 }
 
 var DCFileDropableTargets = [];
+
 
 @implementation NUFileDropController : CPObject
 {

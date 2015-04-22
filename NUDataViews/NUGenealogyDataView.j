@@ -16,16 +16,9 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <NUKit/NUAbstractDataView.j>
 
-@class NUEnterprise
-@class NUUser
-@class NUMulticastRange
-@class NUEvent
-@class NULicense
-@class NUMirrorDestination
-
-@global NUNullDescriptionTransformerName
+@import "NUAbstractDataView.j"
+@import "NUNullDescriptionTransformer.j"
 
 
 @implementation NUGenealogyDataView : NUAbstractDataView

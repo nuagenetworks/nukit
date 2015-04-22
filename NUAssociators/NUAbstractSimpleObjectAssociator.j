@@ -16,7 +16,9 @@
 */
 
 @import <Foundation/Foundation.j>
+
 @import "NUAbstractObjectAssociator.j"
+
 
 @implementation NUAbstractSimpleObjectAssociator : NUAbstractObjectAssociator
 

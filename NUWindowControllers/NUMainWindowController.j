@@ -26,7 +26,8 @@
 
 @class NUKit
 
-var NUMainWindowControllerDefault = nil,
+
+var NUMainWindowControllerDefault,
     NUMainWindowControllerDefaultBodyBackgound;
 
 

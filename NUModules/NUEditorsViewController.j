@@ -24,6 +24,7 @@
 
 @class NUModule
 
+
 var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 1;
 
 

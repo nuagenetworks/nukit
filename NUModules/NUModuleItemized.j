@@ -17,10 +17,13 @@
 
 
 @import <Foundation/Foundation.j>
+
 @import "NUModule.j"
 
-@global CPApp
 @class NUKit
+
+@global CPApp
+
 
 NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 
@@ -188,7 +191,7 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
         if ([_separatorIndexes containsObject:aRow])
             view = [_NUModuleItemizedSeparatorDataView new];
         else
-            view = [[NUDataViewsRegistry dataViewForName:@"itemizedModuleInformationDataView"] duplicate];
+            view = [[[NUKit kit] dataViewWithIdentifier:@"itemizedModuleInformationDataView"] duplicate];
 
         [view setIdentifier:key];
     }

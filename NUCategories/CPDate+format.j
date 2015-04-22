@@ -20,9 +20,7 @@
 
 @import "Resources/dateFormat.js"
 
-/*! @ingroup categories
-    CPDate with format
-*/
+
 @implementation CPDate (TNKit)
 
 + (CPString)dateWithFormat:(CPString)aFormat

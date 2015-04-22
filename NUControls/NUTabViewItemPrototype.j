@@ -21,6 +21,7 @@
 @import "NUSkin.j"
 @import "NUUtilities.j"
 
+
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 
 - (void)setObjectValue:(CPTabView)anItem
@@ -34,7 +35,6 @@
 }
 
 @end
-
 
 
 @implementation NUImageTabViewItemPrototype : TNTabItemPrototype

@@ -1,24 +1,9 @@
 /*
-****************************************************************************
-*
 *   Filename:         CPView+Border.j
-*
-*   Created:          Mon Apr  2 11:23:45 PST 2012
-*
-*   Description:      Cappuccino UI
-*
-*   Project:          Cloud Network Automation - Nuage - Data Center Service Delivery - IPD
-*
-*
-***************************************************************************
-*
-*                 Source Control System Information
-*
-*   $Id: something $
-*
-*
-*
-****************************************************************************
+*   Created:          Wed Apr 22 12:09:23 PDT 2015
+*   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
+*   Description:      VSA
+*   Project:          VSD - Nuage - Data Center Service Delivery - IPD
 *
 * Copyright (c) 2011-2012 Alcatel, Alcatel-Lucent, Inc. All Rights Reserved.
 *
@@ -28,22 +13,17 @@
 *
 * Alcatel-Lucent is a trademark of Alcatel-Lucent, Inc.
 *
-*
-*****************************************************************************
 */
 
 @import <AppKit/CPView.j>
 @import <AppKit/CPMenu.j>
-
-@class CPTextField
-@class CPCheckBox
+@import <AppKit/CPTextField.j>
+@import <AppKit/CPCheckBox.j>
 
 
 var __origin_removeFromSuperview_Implementation = class_getMethodImplementation(CPView, @selector(removeFromSuperview));
 
-/*! @ingroup categories
-    Categories that allows CPView with border
-*/
+
 @implementation CPView (BorderedView)
 
 - (void)_setBoxSizing
@@ -121,8 +101,6 @@ var __origin_removeFromSuperview_Implementation = class_getMethodImplementation(
     self._DOMElement.style.borderBottomRightRadius = aRadius + "px";
 }
 
-
-
 - (CPArray)subviewsWithTagLike:(id)aTag recursive:(BOOL)shouldLookTree
 {
     var ret = [CPArray array],
@@ -145,7 +123,6 @@ var __origin_removeFromSuperview_Implementation = class_getMethodImplementation(
 {
     return [self subviewWithTagLike:aTag recursive:NO];
 }
-
 
 - (void)subviewWithTag:(id)aTag recursive:(BOOL)shouldLookTree
 {
@@ -287,4 +264,5 @@ var __origin_removeFromSuperview_Implementation = class_getMethodImplementation(
     else if ([[self nextResponder] isKindOfClass:CPView])
         [super rightMouseDown:anEvent];
 }
+
 @end

@@ -18,10 +18,12 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPPopover.j>
+
 @import "NUAbstractDataViewsLoader.j"
 @import "NUCategoryDataView.j"
 @import "NUMessageDataView.j"
 @import "NUGenealogyDataView.j"
+
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {

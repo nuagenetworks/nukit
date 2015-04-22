@@ -15,8 +15,8 @@
 *
 */
 
-@import <Foundation/Foundation.j>
 @import <AppKit/CPScrollView.j>
+
 
 @implementation NUHorizontalScrollView : CPScrollView
 

@@ -18,12 +18,14 @@
 @import <Foundation/Foundation.j>
 @import <RESTCappuccino/RESTCappuccino.j>
 
-@import <NUKit/NUAbstractDataView.j>
+@import "NUAbstractDataView.j"
+
 
 var NUMessageDataViewImageCheckBoxOkStateOn,
     NUMessageDataViewImageCheckBoxOkStateOff,
     NUMessageDataViewImageCheckBoxOkStateOnPressed,
     NUMessageDataViewImageCheckBoxOkStateOffPressed;
+
 
 @implementation NUMessageDataView : NUAbstractDataView
 {

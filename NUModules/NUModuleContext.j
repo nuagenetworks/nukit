@@ -34,7 +34,6 @@
 @import "NUUtilities.j"
 @import "NUValidation.j"
 
-
 @global CPApp
 @global NUModuleActionEdit
 @global NUModuleActionInstantiate

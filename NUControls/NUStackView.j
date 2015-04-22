@@ -18,8 +18,10 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPView.j>
 
+
 NUStackViewModeHorizontal = 1;
 NUStackViewModeVertical   = 2;
+
 
 @implementation NUStackView : CPView
 {
