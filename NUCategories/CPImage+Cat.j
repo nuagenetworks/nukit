@@ -1,6 +1,6 @@
 /*
-*   Filename:         NUKit.j
-*   Created:          Mon Apr 20 16:05:31 PDT 2015
+*   Filename:         CPImage+Cat.j
+*   Created:          Thu Feb 12 16:59:57 PST 2015
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
 *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
@@ -15,18 +15,19 @@
 *
 */
 
-@import <Foundation/Foundation.j>
+@import <AppKit/CPImage.j>
 
-@import "NUAssociators.j"
-@import "NUCategories.j"
-@import "NUControls.j"
-@import "NUDataSources.j"
-@import "NUDataViews.j"
-@import "NUDataViewsLoaders.j"
-@import "NUKitApp.j"
-@import "NUModels.j"
-@import "NUModules.j"
-@import "NUSkins.j"
-@import "NUTransformers.j"
-@import "NUUtils.j"
-@import "NUWindowControllers.j"
+@global NUKitParameterCat
+
+
+@implementation CPImage (Cat)
+
+- (CPString)filename
+{
+    if (NUKitParameterCat)
+        return "http://thecatapi.com/api/images/get?format=src&type=jpg&size=small&" + [CPString UUID];
+    else
+        return _filename;
+}
+
+@end

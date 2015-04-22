@@ -23,7 +23,6 @@
 @import "NUNumericValueToMbpsTransformer.j"
 @import "NUNumericValueToMillisecondsTransformer.j"
 @import "NUNumericValueToSecondsUnitTransformer.j"
-@import "NUPermittedActionToStringTransformer.j"
 @import "NUSpeedToStringTransformer.j"
 @import "NUStringToCapitalizedStringTransformer.j"
 @import "NUTotalNumberValueTransformer.j"

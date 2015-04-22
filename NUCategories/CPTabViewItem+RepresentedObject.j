@@ -1,6 +1,6 @@
 /*
-*   Filename:         NUKit.j
-*   Created:          Mon Apr 20 16:05:31 PDT 2015
+*   Filename:         CPTabViewItem+representedObject.j
+*   Created:          Thu Oct 16 16:39:55 PDT 2014
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
 *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
@@ -15,18 +15,18 @@
 *
 */
 
-@import <Foundation/Foundation.j>
+@import <AppKit/CPTabViewItem.j>
 
-@import "NUAssociators.j"
-@import "NUCategories.j"
-@import "NUControls.j"
-@import "NUDataSources.j"
-@import "NUDataViews.j"
-@import "NUDataViewsLoaders.j"
-@import "NUKitApp.j"
-@import "NUModels.j"
-@import "NUModules.j"
-@import "NUSkins.j"
-@import "NUTransformers.j"
-@import "NUUtils.j"
-@import "NUWindowControllers.j"
+@implementation CPTabViewItem (RepresentedObject)
+
+- (void)setRepresentedObject:(id)anObject
+{
+    self.__representedObject = anObject;
+}
+
+- (id)representedObject
+{
+    return self.__representedObject;
+}
+
+@end
