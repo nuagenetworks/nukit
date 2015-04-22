@@ -239,7 +239,6 @@ var NUMainWindowControllerDefault = nil,
 
 - (IBAction)logOut:(id)aSender
 {
-    [toolBar setAdvancedItemsHidden:YES];
     [[NUKit kit] performLogout];
 }
 

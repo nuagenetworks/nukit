@@ -78,6 +78,8 @@ var NUKitToolBarDefault;
     [_buttonLogout setAction:@selector(performLogout)];
     _cucappID(_buttonLogout, @"button-toolbar-logout");
 
+    _cucappID(fieldApplicationName, @"toolbar-application-name");
+
     _viewSeparator = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 1, 32)];
     [_viewSeparator setBackgroundColor:NUSkinColorGrey];
 
@@ -99,11 +101,6 @@ var NUKitToolBarDefault;
 
 #pragma mark -
 #pragma mark Utilities
-
-- (void)setAdvancedItemsHidden:(BOOL)shouldHide
-{
-/*    [boxSeparator setHidden:shouldHide];*/
-}
 
 - (void)setCurrentEnterprise:(id)anEnterprise
 {
