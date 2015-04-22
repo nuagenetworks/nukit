@@ -206,7 +206,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         return;
     }
 
-    var popoverConfirmation = [[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"],
+    var popoverConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -233,7 +233,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [content removeObjectsInArray:_currentSelectedObjects];
     [self assignObjects:content];
 
-    [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
+    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
 }
 
 

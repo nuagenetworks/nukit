@@ -307,7 +307,7 @@ var NUMessagesWindowControllerDefault;
 */
 - (int)tableView:(CPTabView)aTableView heightOfRow:(int)aRow
 {
-    return [[[NUKit kit] dataViewWithIdentifier:@"messageDataView"] frameSize].height;
+    return [[[NUKit kit] registeredDataViewWithIdentifier:@"messageDataView"] frameSize].height;
 }
 
 /*! Table View Delegate
@@ -319,7 +319,7 @@ var NUMessagesWindowControllerDefault;
 
     if (!view)
     {
-        view = [[[NUKit kit] dataViewWithIdentifier:@"messageDataView"] duplicate];
+        view = [[[NUKit kit] registeredDataViewWithIdentifier:@"messageDataView"] duplicate];
         [view setIdentifier:key];
     }
 

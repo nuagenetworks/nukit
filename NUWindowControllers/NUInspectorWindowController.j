@@ -109,7 +109,7 @@ var NUInspectorWindowsRegistry = @{},
     if (self = [super initWithWindowCibName:@"InspectorWindow"])
     {
         _openingOffset     = [NUInspectorWindowsRegistry count];
-        _dataViewPrototype = [[[NUKit kit] dataViewWithIdentifier:@"genealogyDataView"] duplicate];
+        _dataViewPrototype = [[[NUKit kit] registeredDataViewWithIdentifier:@"genealogyDataView"] duplicate];
     }
 
     return self;

@@ -17,7 +17,6 @@
 
 @import <Foundation/Foundation.j>
 
-
 @import "NUAssociators.j"
 @import "NUCategories.j"
 @import "NUControls.j"
@@ -32,11 +31,11 @@
 @import "NUWindowControllers.j"
 
 
-NUKitUserLoggedInNotification = @"NUKitUserLoggedInNotification";
-NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
+var NUKitDataViewsRegistryDataViewsRegistry = @{},
+    NUKitDefaultKit;
 
-var NUKitDefaultKit,
-    NUKitDataViewsRegistryDataViewsRegistry = @{};
+NUKitUserLoggedInNotification  = @"NUKitUserLoggedInNotification";
+NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
 
 NUKitParameterShowDebugToolTips    = NO;
 NUKitParameterCat                  = NO;
@@ -311,7 +310,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 #pragma mark -
 #pragma mark Data View Management
 
-+ (void)registerDataView:(NUAsbtractDataView)aDataView withIdentifier:(CPString)aName
+- (void)registerDataView:(NUAsbtractDataView)aDataView withIdentifier:(CPString)aName
 {
     if (![NUKitDataViewsRegistryDataViewsRegistry containsKey:aName])
         [NUKitDataViewsRegistryDataViewsRegistry setObject:aDataView forKey:aName];
@@ -345,7 +344,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     for (var i = [windows count] - 1; i >= 0; i--)
         [windows[i] orderOut:nil];
 
-/*    [NUInspectorWindowController flushInspectorRegistry];*/
+    [NUInspectorWindowController flushInspectorRegistry];
 }
 
 

@@ -1392,7 +1392,7 @@ NUModuleTabViewModeIcon = 2;
         return;
     }
 
-    var popoverConfirmation = [[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"],
+    var popoverConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"],
         buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -1415,7 +1415,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)_performDeleteObjects:(id)aSender
 {
-    [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
+    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
 
     var deleteRegistry = @{},
         cleanedObjects = [self modulePerformSelectionCleanupBeforeDeletion:[_currentSelectedObjects copy]];
@@ -2999,7 +2999,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)registerDataViewWithName:(CPString)aName forClass:(Class)aClass
 {
-    var dataView = [[[NUKit kit] dataViewWithIdentifier:aName] duplicate];
+    var dataView = [[[NUKit kit] registeredDataViewWithIdentifier:aName] duplicate];
     [_dataViews setObject:dataView forKey:aClass.name];
 }
 
@@ -3377,7 +3377,7 @@ NUModuleTabViewModeIcon = 2;
         CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
 
         // close any deletion in process if we are loading something to avoid incoherency
-        [[[NUKit kit] dataViewWithIdentifier:@"popoverConfirmation"] close];
+        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
 
         // do not observe bounds change until we receive the next page
         [self _removeScrollViewObservers];

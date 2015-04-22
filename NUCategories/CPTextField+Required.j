@@ -80,7 +80,7 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
     {
         if (!self.__errorView)
         {
-            self.__errorView = [[[NUKit kit] dataViewWithIdentifier:@"viewInvalidInput"] duplicate];
+            self.__errorView = [[[NUKit kit] registeredDataViewWithIdentifier:@"viewInvalidInput"] duplicate];
             [self.__errorView setAutoresizingMask:CPViewMinXMargin];
         }
 

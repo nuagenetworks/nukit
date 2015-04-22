@@ -191,7 +191,7 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
         if ([_separatorIndexes containsObject:aRow])
             view = [_NUModuleItemizedSeparatorDataView new];
         else
-            view = [[[NUKit kit] dataViewWithIdentifier:@"itemizedModuleInformationDataView"] duplicate];
+            view = [[[NUKit kit] registeredDataViewWithIdentifier:@"itemizedModuleInformationDataView"] duplicate];
 
         [view setIdentifier:key];
     }
