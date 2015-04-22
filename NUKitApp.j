@@ -253,7 +253,6 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         [NUModule setAutoConfirm:YES]
     }
 
-    [NURESTConnection setTimeoutValue:3000];
     if ([self valueForApplicationArgument:@"notimeout"])
         [NURESTConnection setTimeoutValue:nil];
 
@@ -473,19 +472,23 @@ var NUKitDelegate_didLogin_     = 1 << 1,
             break;
 
         case NURESTConnectionResponseCodeNotFound:
+            [[self loginWindowController] shakeWindow];
             [[self loginWindowController] setMessage:@"Resource not found"];
             break;
 
         case NURESTConnectionResponseCodeUnauthorized:
+            [[self loginWindowController] shakeWindow];
             [[self loginWindowController] setMessage:@"Invalid credentials"];
             break;
 
         case NURESTConnectionResponseCodeConflict:
+            [[self loginWindowController] shakeWindow];
             var responseObject = [[aConnection responseData] JSONObject] || @"Unknown connection error";
             [[self loginWindowController] setMessage:responseObject.errors[0].descriptions[0].title];
             break;
 
         default:
+            [[self loginWindowController] shakeWindow];
             [[self loginWindowController] setMessage:@"Unable to connect to the endpoint"];
     }
 }

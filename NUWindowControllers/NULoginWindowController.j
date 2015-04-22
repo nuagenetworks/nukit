@@ -103,7 +103,7 @@
 
 - (void)shakeWindow
 {
-/*    [[EKShakeAnimation alloc] initWithView:[self window]._windowView];*/
+    [[EKShakeAnimation alloc] initWithView:[self window]._windowView];
 }
 
 - (void)setMessage:(CPString)aValue

@@ -27,6 +27,7 @@
 @import <RESTCappuccino/NURESTConfirmation.j>
 @import "NUUtilities.j"
 @import "NUSkin.j"
+@import "NUDataViewsRegistry.j"
 
 @global CPApp
 @global NUKit

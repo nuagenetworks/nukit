@@ -19,8 +19,10 @@
 @import <AppKit/CPControl.j>
 @import <AppKit/CPButton.j>
 @import <AppKit/CPBox.j>
+@import <AppKit/CPImageView.j>
 @import "NUSkin.j"
 @import "NUStackView.j"
+@import "NUUtilities.j"
 
 @class NUKit
 
