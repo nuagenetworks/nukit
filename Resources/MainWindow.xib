@@ -100,7 +100,6 @@
                             <outlet property="fieldApplicationName" destination="a08-iI-yLN" id="nVb-io-AcA"/>
                             <outlet property="imageApplicationIcon" destination="nbC-qi-bwW" id="fFR-Bp-vsy"/>
                             <outlet property="stackViewButtons" destination="Bx9-aq-Whk" id="4sa-zE-Kdk"/>
-                            <outlet property="viewIconContainer" destination="mG2-Ru-ysH" id="Uau-ek-uim"/>
                         </connections>
                     </customView>
                 </subviews>
