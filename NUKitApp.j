@@ -288,7 +288,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 - (void)registerSharedModule:(NUModule)aSharedModule withIdentifier:(CPString)anIdentifier
 {
-    if ([_sharedModules containsKey:anIdentifier])
+    if (![_sharedModules containsKey:anIdentifier])
         [_sharedModules setObject:aSharedModule forKey:anIdentifier];
 }
 
