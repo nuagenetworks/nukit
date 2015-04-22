@@ -143,6 +143,19 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     [_mainWindowController registerCoreModule:aModule];
 }
 
+- (void)registerPrincipalModule:(NUModule)aModule withButtonImage:(CPImage)anImage altImage:(CPImage)anAltImage toolTip:(CPString)aToolTip identifier:(CPString)anIdentifier availableToRoles:(CPArray)someRoles
+{
+    var button = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+    [button setBordered:NO];
+    [button setButtonType:CPMomentaryChangeButton];
+    [button setValue:anImage forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [button setValue:anAltImage forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [button setToolTip:aToolTip];
+    _cucappID(button, anIdentifier);
+
+    [self registerPrincipalModule:aModule accessButton:button availableToRoles:someRoles];
+
+}
 - (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton availableToRoles:(CPArray)someRoles
 {
     [_mainWindowController registerPrincipalModule:aModule accessButton:aButton availableToRoles:someRoles];

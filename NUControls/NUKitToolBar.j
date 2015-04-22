@@ -111,7 +111,7 @@ var NUKitToolBarDefault;
 
 - (void)registerButton:(CPButton)aButton forRoles:(CPArray)someRoles
 {
-    [_buttonsRegistry setObject:someRoles forKey:aButton];
+    [_buttonsRegistry setObject:someRoles || [CPNull null] forKey:aButton];
     [self setNeedsLayout];
 }
 
@@ -179,9 +179,10 @@ var NUKitToolBarDefault;
 
     for (var i = 0, c = [[_buttonsRegistry allKeys] count]; i < c; i++)
     {
-        var button = [_buttonsRegistry allKeys][i];
+        var button = [_buttonsRegistry allKeys][i],
+            roles = [_buttonsRegistry objectForKey:button];
 
-        if ([[_buttonsRegistry objectForKey:button] containsObject:[[[NUKit kit] RESTUser] role]])
+        if (roles == [CPNull null] || [roles containsObject:[[[NUKit kit] RESTUser] role]])
             [buttonsList addObject:button];
     }
 

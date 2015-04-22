@@ -25,6 +25,7 @@
 @import "NUSkin.j"
 @import "NUUtilities.j"
 @import "NUDataTransferController.j"
+@import "EKShakeAnimation.j"
 
 @global CPApp
 @global NUKit
