@@ -33,6 +33,7 @@ framework ("NUKit", function(task)
     task.setBuildIntermediatesPath(FILE.join(ENV["CAPP_BUILD"], "NUKit.build", configuration));
     task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], configuration));
 
+    task.setPreventsNib2Cib(true);
     task.setProductName("NUKit");
     task.setIdentifier("net.nuagenetworks.nukit");
     task.setVersion("1.0");

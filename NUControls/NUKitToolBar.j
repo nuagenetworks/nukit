@@ -22,6 +22,8 @@
 @import "NUSkin.j"
 @import "NUStackView.j"
 
+@class NUKit
+
 var NUKitToolBarDefault;
 
 @implementation NUKitToolBar : CPControl

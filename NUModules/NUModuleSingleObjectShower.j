@@ -18,8 +18,8 @@
 @import <Foundation/Foundation.j>
 @import "NUModule.j"
 
-@class CPApp
 @class NUKit
+@class CPApp
 
 @implementation NUModuleSingleObjectShower : NUModule
 {

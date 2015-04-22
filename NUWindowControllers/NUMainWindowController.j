@@ -19,10 +19,10 @@
 @import <AppKit/CPWindowController.j>
 @import <AppKit/CPPopover.j>
 @import <RESTCappuccino/RESTCappuccino.j>
-@import "NUUtilities.j"
+@import "NUDataTransferController.j"
 @import "NUKitToolBar.j"
 @import "NUModule.j"
-@import "NUDataTransferController.j"
+@import "NUUtilities.j"
 
 @class NUKit
 
