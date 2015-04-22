@@ -25,11 +25,11 @@
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
-    @outlet CPPopover           popoverConfirmation     @accessors(readonly);
-    @outlet CPView              viewInvalidInput        @accessors(readonly);
-    @outlet NUCategoryDataView  categoryDataView        @accessors(readonly);
-    @outlet NUMessageDataView   messageDataView         @accessors(readonly);
-    @outlet NUGenealogyDataView genealogyDataView       @accessors(readonly);
+    @outlet CPPopover               popoverConfirmation     @accessors(readonly);
+    @outlet CPView                  viewInvalidInput        @accessors(readonly);
+    @outlet NUCategoryDataView      categoryDataView        @accessors(readonly);
+    @outlet NUMessageDataView       messageDataView         @accessors(readonly);
+    @outlet NUGenealogyDataView     genealogyDataView       @accessors(readonly);
 }
 
 - (void)viewDidLoad

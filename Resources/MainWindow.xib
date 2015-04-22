@@ -67,6 +67,22 @@
                             <customView id="mG2-Ru-ysH">
                                 <rect key="frame" x="5" y="3" width="477" height="36"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <imageView id="nbC-qi-bwW">
+                                        <rect key="frame" x="5" y="5" width="29" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="0Eh-LO-PWU"/>
+                                    </imageView>
+                                    <textField verticalHuggingPriority="750" id="a08-iI-yLN">
+                                        <rect key="frame" x="40" y="10" width="430" height="17"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" title="Application Name" id="h0S-Zp-6ge">
+                                            <font key="font" metaFont="systemBold"/>
+                                            <color key="textColor" red="0.20270270109999999" green="0.20270270109999999" blue="0.20270270109999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
                             </customView>
                             <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="2Ak-cI-Bku">
                                 <rect key="frame" x="0.0" y="-2" width="697" height="5"/>
@@ -81,6 +97,8 @@
                             </customView>
                         </subviews>
                         <connections>
+                            <outlet property="fieldApplicationName" destination="a08-iI-yLN" id="nVb-io-AcA"/>
+                            <outlet property="imageApplicationIcon" destination="nbC-qi-bwW" id="fFR-Bp-vsy"/>
                             <outlet property="stackViewButtons" destination="Bx9-aq-Whk" id="4sa-zE-Kdk"/>
                             <outlet property="viewIconContainer" destination="mG2-Ru-ysH" id="Uau-ek-uim"/>
                         </connections>
@@ -90,7 +108,7 @@
             <connections>
                 <outlet property="initialFirstResponder" destination="341" id="484"/>
             </connections>
-            <point key="canvasLocation" x="516.5" y="351"/>
+            <point key="canvasLocation" x="236.5" y="352"/>
         </window>
         <customView id="Jq0-fb-wNi" userLabel="View Too Small">
             <rect key="frame" x="0.0" y="0.0" width="362" height="285"/>

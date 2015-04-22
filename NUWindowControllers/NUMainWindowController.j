@@ -22,15 +22,14 @@
 @import <NUKit/NUUtilities.j>
 
 @import "NUKitToolBar.j"
-/*@import "../Resources/app-version.js"*/
 
-@class NURESTUser
 @class NUDataTransferController
 @class NUMessagesWindowController
 @class NUModule
 @class NUDCConfigurationViewController
 @class NUMonitoringConsoleViewController
 @class NUVSPConfigurationViewController
+@class NUKit
 
 @global NURESTUserRoleCSPRoot
 @global NURESTUserRoleCSPOperator
@@ -154,7 +153,7 @@ var NUMainWindowControllerDefault = nil,
     [aButton setTarget:self];
     [aButton setAction:@selector(switchPrincipalModule:)]
 
-    [toolBar addButton:aButton];
+    [toolBar registerButton:aButton];
 }
 
 
@@ -216,7 +215,8 @@ var NUMainWindowControllerDefault = nil,
     [viewMainContainer addSubview:[aModule view]];
     _visiblePrincipalModule = aModule;
 
-    [_coreModule showDataCenterEnterpriseIcon:YES];
+    [[NUKitToolBar defaultToolBar] setTemporaryApplicationName:[[aModule class] moduleName]];
+    [[NUKitToolBar defaultToolBar] setTemporaryApplicationIcon:[[aModule class] moduleIcon]];
 }
 
 - (void)_hideCurrentPrincipalModule
@@ -229,7 +229,8 @@ var NUMainWindowControllerDefault = nil,
     [[_visiblePrincipalModule view] removeFromSuperview];
     _visiblePrincipalModule = nil;
 
-    [_coreModule showDataCenterEnterpriseIcon:NO];
+    [[NUKitToolBar defaultToolBar] resetTemporaryApplicationName];
+    [[NUKitToolBar defaultToolBar] resetTemporaryApplicationIcon];
 }
 
 - (void)_performWindowAnimation:(CPString)anAnimationName endFunction:(function)aFunction
@@ -284,7 +285,7 @@ var NUMainWindowControllerDefault = nil,
     if (_visiblePrincipalModule == module)
         [self _hideCurrentPrincipalModule];
     else
-        [self _showPrincipalModule:module withCurrentParent:[NURESTUser defaultUser]];
+        [self _showPrincipalModule:module withCurrentParent:[[NUKit kit] RESTUser]];
 }
 
 - (IBAction)ignoreWindowSizeWarning:(id)aSender
@@ -317,11 +318,11 @@ var NUMainWindowControllerDefault = nil,
         [self _manageAdditionalToolBarItems];
         [self _manageVisibilityOfWindowSizeWarning];
 
-        [_coreModule setCurrentParent:[NURESTUser defaultUser]];
+        [_coreModule setCurrentParent:[[NUKit kit] RESTUser]];
         [_coreModule willShow];
 
-        [fieldCurrentUser bind:CPValueBinding toObject:[NURESTUser defaultUser] withKeyPath:@"information" options:nil];
-        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[NURESTUser defaultUser] withKeyPath:@"avatarImage" options:nil];
+        [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"information" options:nil];
+        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"avatarImage" options:nil];
 
         [self _notifyOtherUniversesReadyIfNeeded];
 

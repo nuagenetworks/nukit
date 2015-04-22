@@ -47,6 +47,11 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     NUServerFaultWindowController   _serverFaultWindowController    @accessors(getter=serverFaultWindowController);
     NUMainWindowController          _mainWindowController           @accessors(property=mainWindowController);
 
+    CPString                        _companyName                    @accessors(property=companyName);
+    CPString                        _applicationName                @accessors(property=applicationName);
+    CPImage                         _companyLogo                    @accessors(property=companyLogo);
+    CPImage                         _applicationLogo                @accessors(property=applicationLogo);
+
     CPArray                         _externalWindows;
     CPPopover                       _lockedPopover;
     CPView                          _lockedPopoverView;
@@ -361,6 +366,20 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 
 #pragma mark -
+#pragma mark Application Name and Icon Management
+
+- (void)bindApplicationNameToObject:(id)anObject withKeyPath:(CPString)aKeyPath
+{
+    [[NUKitToolBar defaultToolBar] bindApplicationNameToObject:anObject withKeyPath:aKeyPath];
+}
+
+- (void)bindApplicationIconToObject:(id)anObject withKeyPath:(CPString)aKeyPath
+{
+    [[NUKitToolBar defaultToolBar] bindApplicationIconToObject:anObject withKeyPath:aKeyPath];
+}
+
+
+#pragma mark -
 #pragma mark Session Management
 
 - (void)manageLoginWindow
@@ -395,6 +414,8 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
     [self _sendLogInNotification];
     [self _sendDelegateDidLogin];
+
+    [[NUKitToolBar defaultToolBar] setNeedsLayout];
 }
 
 - (void)performLoginWithUserName:(CPString)aUserName organization:(CPString)anOrganization password:(CPString)aPassword url:(CPString)anURL
