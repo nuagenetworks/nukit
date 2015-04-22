@@ -54,6 +54,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
     BOOL                            _isAppClosing;
     CPArray                         _externalWindows;
+    CPArray                         _sharedModules;
     CPPopover                       _lockedPopover;
     CPView                          _lockedPopoverView;
     id                              _delegate;
@@ -85,6 +86,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         [self installStyleSheetOnDocument:document];
 
         _externalWindows             = [];
+        _sharedModules               = @{};
 
         _loginWindowController       = [NULoginWindowController new];
         _mainWindowController        = [NUMainWindowController new];
@@ -156,6 +158,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     [self registerPrincipalModule:aModule accessButton:button availableToRoles:someRoles];
 
 }
+
 - (void)registerPrincipalModule:(NUModule)aModule accessButton:(CPButton)aButton availableToRoles:(CPArray)someRoles
 {
     [_mainWindowController registerPrincipalModule:aModule accessButton:aButton availableToRoles:someRoles];
@@ -281,7 +284,22 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 
 #pragma mark -
-#pragma mark External Platform Windows Mamagement
+#pragma mark Shared Modules Management
+
+- (void)registerSharedModule:(NUModule)aSharedModule withIdentifier:(CPString)anIdentifier
+{
+    if ([_sharedModules containsKey:anIdentifier])
+        [_sharedModules setObject:aSharedModule forKey:anIdentifier];
+}
+
+- (NUModule)sharedModuleWithIdentifier:(CPString)anIdentifier
+{
+    return [_sharedModules objectForKey:anIdentifier];
+}
+
+
+#pragma mark -
+#pragma mark External Platform Windows Management
 
 - (void)registerExternalWindow:(CPPlatformWindow)aWindow
 {
