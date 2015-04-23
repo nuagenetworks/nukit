@@ -253,6 +253,7 @@ APP (BUILD_INFO["PROJECT_NAME"], function(task)
     task.setResources(new FILELIST("Resources/**"));
     task.setIndexFilePath("index.html");
     task.setInfoPlistPath("Info.plist");
+    task.setEnvironments([ENVIRONMENT.Browser]);
 
     if (CONFIGURATION === "Debug")
         task.setCompilerFlags("-DDEBUG -g");
