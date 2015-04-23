@@ -242,6 +242,7 @@ BUILDER ("BUILDER", function(task)
     if (BUILD_INFO["PROJECT_TYPE"] == "APPLICATION")
     {
         task.setIndexFilePath("index.html");
+        task.setEnvironments([ENVIRONMENT.Browser]);
 
         ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
         ENV["CAPP_BUILD"] = "./Build"
@@ -254,7 +255,6 @@ BUILDER ("BUILDER", function(task)
     task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], CONFIGURATION));
     task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O");
     task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
-    task.setEnvironments([ENVIRONMENT.Browser]);
     task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"] || false);
     task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
     task.setInfoPlistPath("Info.plist");
