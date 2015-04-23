@@ -21,10 +21,10 @@
 require("./Tools/config.jake");
 
 BUILD_INFO["PROJECT_NAME"]            = "NUKit";
-BUILD_INFO["PROJECT_IDENTIFIER"]      = "com.alcatel-lucent.nuage.vsp.nukit";
+BUILD_INFO["PROJECT_IDENTIFIER"]      = "net.nuagenetworks.nukit";
 BUILD_INFO["PROJECT_VERSION"]         = "1.0";
 BUILD_INFO["PROJECT_AUTHOR"]          = "Nuage Networks";
-BUILD_INFO["PROJECT_CONTACT"]         = "feedback @nospam@ yourcompany.com";
+BUILD_INFO["PROJECT_CONTACT"]         = "antoine@nuagenetworks.net";
 BUILD_INFO["PROJECT_SOURCES"]         = new FILELIST("**/*.j");
 BUILD_INFO["PROJECT_FLATTEN_SOURCES"] = true;
 BUILD_INFO["PROJECT_TYPE"]            = "FRAMEWORK";

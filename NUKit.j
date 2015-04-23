@@ -117,7 +117,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 - (void)loadFrameworkDataViews
 {
-    [[[NUInternalDataViewsLoader alloc] initWithCibName:@"DataViews" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]] load];
+    [[[NUInternalDataViewsLoader alloc] initWithCibName:@"DataViews" bundle:[self bundle]] load];
 }
 
 - (void)installStyleSheetOnDocument:(id)aDocument

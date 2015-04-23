@@ -24,25 +24,26 @@ if (typeof(window.location) != "undefined" && window.location.search && window.l
     NUSkinColorBlindModeEnabled = YES;
 
 
+var bundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
-NUSkinImageButtonPlus                 = CPImageInBundle(@"buttonbar-image-plus.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonPlusAlt              = CPImageInBundle(@"buttonbar-image-plus-alt.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonLink                 = CPImageInBundle(@"button-link.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonLinkAlt              = CPImageInBundle(@"button-link-pressed.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonUnlink               = CPImageInBundle(@"button-unlink.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonUnlinkAlt            = CPImageInBundle(@"button-unlink-pressed.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonMinus                = CPImageInBundle(@"buttonbar-image-minus.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonMinusAlt             = CPImageInBundle(@"buttonbar-image-minus-alt.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonEdit                 = CPImageInBundle(@"buttonbar-image-edit.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonEditAlt              = CPImageInBundle(@"buttonbar-image-edit-alt.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonInstantiate          = CPImageInBundle(@"buttonbar-image-instantiate.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonInstantiateAlt       = CPImageInBundle(@"buttonbar-image-instantiate-alt.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonHelp                 = CPImageInBundle(@"button-help.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageButtonHelpPressed          = CPImageInBundle(@"button-help-pressed.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageFullscreenEnter            = CPImageInBundle(@"fullscreen-enter.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageFullscreenEnterExit        = CPImageInBundle(@"fullscreen-exit.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageFullscreenEnterExitPressed = CPImageInBundle(@"fullscreen-exit-pressed.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
-NUSkinImageFullscreenEnterPressed     = CPImageInBundle(@"fullscreen-enter-pressed.png", 16.0, 16.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
+NUSkinImageButtonPlus                 = CPImageInBundle(@"buttonbar-image-plus.png", 16.0, 16.0, bundle);
+NUSkinImageButtonPlusAlt              = CPImageInBundle(@"buttonbar-image-plus-alt.png", 16.0, 16.0, bundle);
+NUSkinImageButtonLink                 = CPImageInBundle(@"button-link.png", 16.0, 16.0, bundle);
+NUSkinImageButtonLinkAlt              = CPImageInBundle(@"button-link-pressed.png", 16.0, 16.0, bundle);
+NUSkinImageButtonUnlink               = CPImageInBundle(@"button-unlink.png", 16.0, 16.0, bundle);
+NUSkinImageButtonUnlinkAlt            = CPImageInBundle(@"button-unlink-pressed.png", 16.0, 16.0, bundle);
+NUSkinImageButtonMinus                = CPImageInBundle(@"buttonbar-image-minus.png", 16.0, 16.0, bundle);
+NUSkinImageButtonMinusAlt             = CPImageInBundle(@"buttonbar-image-minus-alt.png", 16.0, 16.0, bundle);
+NUSkinImageButtonEdit                 = CPImageInBundle(@"buttonbar-image-edit.png", 16.0, 16.0, bundle);
+NUSkinImageButtonEditAlt              = CPImageInBundle(@"buttonbar-image-edit-alt.png", 16.0, 16.0, bundle);
+NUSkinImageButtonInstantiate          = CPImageInBundle(@"buttonbar-image-instantiate.png", 16.0, 16.0, bundle);
+NUSkinImageButtonInstantiateAlt       = CPImageInBundle(@"buttonbar-image-instantiate-alt.png", 16.0, 16.0, bundle);
+NUSkinImageButtonHelp                 = CPImageInBundle(@"button-help.png", 16.0, 16.0, bundle);
+NUSkinImageButtonHelpPressed          = CPImageInBundle(@"button-help-pressed.png", 16.0, 16.0, bundle);
+NUSkinImageFullscreenEnter            = CPImageInBundle(@"fullscreen-enter.png", 16.0, 16.0, bundle);
+NUSkinImageFullscreenEnterExit        = CPImageInBundle(@"fullscreen-exit.png", 16.0, 16.0, bundle);
+NUSkinImageFullscreenEnterExitPressed = CPImageInBundle(@"fullscreen-exit-pressed.png", 16.0, 16.0, bundle);
+NUSkinImageFullscreenEnterPressed     = CPImageInBundle(@"fullscreen-enter-pressed.png", 16.0, 16.0, bundle);
 
 NUSkinColorBlack                      = [CPColor colorWithHexString:@"6B6B6B"];
 NUSkinColorBlackDark                  = [CPColor colorWithHexString:@"5E5959"];

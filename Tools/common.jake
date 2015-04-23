@@ -150,7 +150,7 @@ update_app_size = function()
 {
     print("Calculating application file sizes...");
 
-    var contents = FILE.read(FILE.join("Build", ENV["CONFIGURATION"], BUILD_INFO["PROJECT_NAME"], "Info.plist"), { charset:"UTF-8" }),
+    var contents = FILE.read(FILE.join("Build", CONFIGURATION, BUILD_INFO["PROJECT_NAME"], "Info.plist"), { charset:"UTF-8" }),
         format = CFPropertyList.sniffedFormatOfString(contents),
         plist = CFPropertyList.propertyListFromString(contents),
         totalBytes = {executable:0, data:0, mhtml:0};
@@ -158,7 +158,7 @@ update_app_size = function()
     // Get the size of all framework executables and sprite data
     var frameworksDir = "Frameworks";
 
-    if (ENV["CONFIGURATION"] === "Debug")
+    if (CONFIGURATION === "Debug")
         frameworksDir = FILE.join(frameworksDir, "Debug");
 
     var frameworks = FILE.list(frameworksDir);
@@ -182,7 +182,7 @@ update_app_size = function()
         add_bundle_files_size(themePath, totalBytes);
 
     // Add sizes for the app
-    add_bundle_files_size(FILE.join("Build", ENV["CONFIGURATION"], BUILD_INFO["PROJECT_NAME"]), totalBytes);
+    add_bundle_files_size(FILE.join("Build", CONFIGURATION, BUILD_INFO["PROJECT_NAME"]), totalBytes);
 
     print("Executables: " + totalBytes.executable + ", sprite data: " + totalBytes.data + ", total: " + (totalBytes.executable + totalBytes.data));
 
@@ -194,7 +194,7 @@ update_app_size = function()
 
     plist.setValueForKey("CPApplicationSize", dict);
 
-    FILE.write(FILE.join("Build", ENV["CONFIGURATION"], BUILD_INFO["PROJECT_NAME"], "Info.plist"), CFPropertyList.stringFromPropertyList(plist, format), { charset:"UTF-8" });
+    FILE.write(FILE.join("Build", CONFIGURATION, BUILD_INFO["PROJECT_NAME"], "Info.plist"), CFPropertyList.stringFromPropertyList(plist, format), { charset:"UTF-8" });
 }
 
 add_bundle_files_size = function(bundlePath, totalBytes)
@@ -255,12 +255,12 @@ BUILDER ("BUILDER", function(task)
     task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], CONFIGURATION));
     task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O");
     task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
-    task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"] || false);
+    task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"]);
     task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
     task.setInfoPlistPath("Info.plist");
     task.setPreventsNib2Cib(true);
     task.setProductName(BUILD_INFO["PROJECT_NAME"]);
-    task.setResources(new FILELIST("Resources/**/**"));
+    task.setResources(new FILELIST("Resources/**"));
     task.setSources(BUILD_INFO["PROJECT_SOURCES"]);
     task.setSummary(BUILD_INFO["PROJECT_NAME"]);
     task.setVersion(BUILD_INFO["PROJECT_VERSION"]);
@@ -275,13 +275,13 @@ TASK ("build", ["BUILDER"], function()
 
 TASK ("debug", function()
 {
-    ENV["CONFIGURATION"] = "Debug";
+    CONFIGURATION = "Debug";
     JAKE.subjake(["."], "build", ENV);
 });
 
 TASK ("release", function()
 {
-    ENV["CONFIGURATION"] = "Release";
+    CONFIGURATION = "Release";
     JAKE.subjake(["."], "build", ENV);
 });
 
