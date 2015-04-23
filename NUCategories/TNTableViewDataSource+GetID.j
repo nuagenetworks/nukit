@@ -16,7 +16,7 @@
 */
 
 @import <TNKit/TNTableViewDataSource.j>
-@import <NUKit/NUOutlineViewDataSource.j>
+@import "NUOutlineViewDataSource.j"
 
 
 @implementation TNTableViewDataSource (GetID)
