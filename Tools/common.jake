@@ -275,13 +275,13 @@ TASK ("build", ["BUILDER"], function()
 
 TASK ("debug", function()
 {
-    CONFIGURATION = "Debug";
+    ENV["CONFIGURATION"] = "Debug";
     JAKE.subjake(["."], "build", ENV);
 });
 
 TASK ("release", function()
 {
-    CONFIGURATION = "Release";
+    ENV["CONFIGURATION"] = "Release";
     JAKE.subjake(["."], "build", ENV);
 });
 

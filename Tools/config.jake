@@ -27,6 +27,6 @@ STREAM        = require("narwhal/term").stream;
 CLEAN         = require("jake/clean").CLEAN;
 TASK          = JAKE.task;
 FILELIST      = JAKE.FileList;
-CONFIGURATION = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug";
+CONFIGURATION = ENV["CONFIGURATION"] || "Debug";
 
 BUILD_INFO    = {};
