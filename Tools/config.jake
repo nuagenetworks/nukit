@@ -19,11 +19,14 @@
 APP           = require("cappuccino/jake").app;
 ENV           = require("system").env;
 ENVIRONMENT   = require("objective-j/jake/environment");
+FRAMEWORK     = require("cappuccino/jake").framework;
 FILE          = require("file");
 JAKE          = require("jake");
 OS            = require("os");
-STREAM        = require("narwhal/term").stream
+STREAM        = require("narwhal/term").stream;
+CLEAN         = require("jake/clean").CLEAN;
 TASK          = JAKE.task;
 FILELIST      = JAKE.FileList;
 CONFIGURATION = ENV["CONFIG"] || ENV["CONFIGURATION"] || ENV["c"] || "Debug";
-BUILD_INFO    = {}
+
+BUILD_INFO    = {};

@@ -233,37 +233,44 @@ add_bundle_files_size = function(bundlePath, totalBytes)
     Tasks
 */
 
-APP (BUILD_INFO["PROJECT_NAME"], function(task)
+BUILDER = BUILD_INFO["PROJECT_TYPE"] == "APPLICATION" ? APP : FRAMEWORK;
+
+BUILDER ("BUILDER", function(task)
 {
-    ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
+    color_print("* Using builder: " + BUILD_INFO["PROJECT_TYPE"], "green");
 
-    if (CONFIGURATION === "Debug")
-        ENV["OBJJ_INCLUDE_PATHS"] = FILE.join(ENV["OBJJ_INCLUDE_PATHS"], CONFIGURATION);
+    if (BUILD_INFO["PROJECT_TYPE"] == "APPLICATION")
+    {
+        task.setIndexFilePath("index.html");
 
-    task.setBuildIntermediatesPath(FILE.join("Build", BUILD_INFO["PROJECT_NAME"] + ".build", CONFIGURATION));
-    task.setBuildPath(FILE.join("Build", CONFIGURATION));
+        ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
+        ENV["CAPP_BUILD"] = "./Build"
+        if (CONFIGURATION === "Debug")
+            ENV["OBJJ_INCLUDE_PATHS"] = FILE.join(ENV["OBJJ_INCLUDE_PATHS"], CONFIGURATION);
+    }
+
+    task.setAuthor(BUILD_INFO["PROJECT_AUTHOR"]);
+    task.setBuildIntermediatesPath(FILE.join(ENV["CAPP_BUILD"], BUILD_INFO["PROJECT_NAME"] + ".build", CONFIGURATION));
+    task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], CONFIGURATION));
+    task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O");
+    task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
+    task.setEnvironments([ENVIRONMENT.Browser]);
+    task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"] || false);
+    task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
+    task.setInfoPlistPath("Info.plist");
     task.setPreventsNib2Cib(true);
     task.setProductName(BUILD_INFO["PROJECT_NAME"]);
-    task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
-    task.setVersion(BUILD_INFO["PROJECT_VERSION"]);
-    task.setAuthor(BUILD_INFO["PROJECT_AUTHOR"]);
-    task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
-    task.setSummary(BUILD_INFO["PROJECT_NAME"]);
+    task.setResources(new FILELIST("Resources/**/**"));
     task.setSources(BUILD_INFO["PROJECT_SOURCES"]);
-    task.setResources(new FILELIST("Resources/**"));
-    task.setIndexFilePath("index.html");
-    task.setInfoPlistPath("Info.plist");
-    task.setEnvironments([ENVIRONMENT.Browser]);
-
-    if (CONFIGURATION === "Debug")
-        task.setCompilerFlags("-DDEBUG -g");
-    else
-        task.setCompilerFlags("-O");
+    task.setSummary(BUILD_INFO["PROJECT_NAME"]);
+    task.setVersion(BUILD_INFO["PROJECT_VERSION"]);
 });
 
-TASK ("build", [BUILD_INFO["PROJECT_NAME"]], function()
+
+TASK ("build", ["BUILDER"], function()
 {
-    update_app_size();
+    if (BUILD_INFO["PROJECT_TYPE"] == "APPLICATION")
+        update_app_size();
 });
 
 TASK ("debug", function()
