@@ -231,7 +231,7 @@ NURESTUserRoleOrgUser       = @"ORGUSER";
     }
 }
 
-- (NUVSDEnterprise)currentEnterprise
+- (id)currentEnterprise
 {
     throw "Implement me";
 }
