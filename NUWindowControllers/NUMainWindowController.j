@@ -286,7 +286,7 @@ var NUMainWindowControllerDefault,
         [_coreModule willShow];
 
         [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"displayDescription" options:nil];
-        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"avatarImage" options:nil];
+        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"icon" options:nil];
 
         [[self window] setDelegate:self];
         [[NUKitToolBar defaultToolBar] setNeedsLayout];
