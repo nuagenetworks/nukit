@@ -832,10 +832,10 @@ NUModuleTabViewModeIcon = 2;
     _isVisible           = YES;
 
     [self cleanOutdatedArchivedSelection];
-    [self updatePermittedActions];
     [self adjustSplitViewSize];
     [self registerForPushNotification];
     [self displayCurrentMaskingView];
+    [self updatePermittedActions];
 
     if (splitViewEditor)
         setTimeout(function(){[splitViewEditor setPosition:([splitViewEditor frameSize].width - NUModuleSplitViewEditorMaxSize) ofDividerAtIndex:0];}, 0);
@@ -2859,7 +2859,6 @@ NUModuleTabViewModeIcon = 2;
     {
         [self _synchronizePagination];
         [self _addScrollViewObservers];
-
         [self _restorePreviousSelection];
     }
 
