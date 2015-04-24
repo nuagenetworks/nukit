@@ -3,4 +3,3 @@
 @import "NUJobImport.j"
 @import "NUValidation.j"
 @import "NUKitObject.j"
-@import "NUVSDRESTUser.j"
