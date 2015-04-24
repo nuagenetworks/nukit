@@ -180,7 +180,7 @@ var NUMainWindowControllerDefault,
     }
 }
 
-- (void)_showPrincipalModule:(NUModule)aModule withCurrentParent:(NUVSDObject)aParent
+- (void)_showPrincipalModule:(NUModule)aModule withCurrentParent:(NURESTObject)aParent
 {
     if (_visiblePrincipalModule)
         [self _hideCurrentPrincipalModule];

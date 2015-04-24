@@ -19,12 +19,12 @@
 @import <AppKit/CPArrayController.j>
 @import <RESTCappuccino/RESTCappuccino.j>
 
-@class NUVSDObject
+@class NURESTObject
 
 @implementation NUAbstractHierarchyController : CPObject
 {
     BOOL            _ready                  @accessors(getter=isReady);
-    NUVSDObject     _observedObject         @accessors(property=observedObject);
+    NURESTObject    _observedObject         @accessors(property=observedObject);
 
     BOOL            _isListeningForPush;
     CPArray         _activeTransactionsIDs;
@@ -55,7 +55,7 @@
 #pragma mark -
 #pragma mark Utilities
 
-- (void)setObservedObject:(NUVSDObject)anObject
+- (void)setObservedObject:(NURESTObject)anObject
 {
     [self flushRegisteredTransactionIDs];
 

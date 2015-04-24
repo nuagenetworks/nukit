@@ -68,7 +68,7 @@ var NUHierarchyControllersCenterDefaultCenter;
 #pragma mark -
 #pragma mark Controllers registration
 
-- (void)registerController:(id)aController forObject:(NUVSDObject)anObject
+- (void)registerController:(id)aController forObject:(NURESTObject)anObject
 {
     var ID = [anObject ID];
 
@@ -87,7 +87,7 @@ var NUHierarchyControllersCenterDefaultCenter;
     CPLog.debug("NUHierarchyControllersCenter: Added a controller %@:%@ for object %@:%@. retain count is now 1", [aController className], aController, anObject, ID);
 }
 
-- (void)unregisterControllerForObject:(NUVSDObject)anObject
+- (void)unregisterControllerForObject:(NURESTObject)anObject
 {
     var ID = [anObject ID];
 
@@ -107,7 +107,7 @@ var NUHierarchyControllersCenterDefaultCenter;
 #pragma mark -
 #pragma mark Retain and Release
 
-- (void)retainControllerForObject:(NUVSDObject)anObject
+- (void)retainControllerForObject:(NURESTObject)anObject
 {
     var ID = [anObject ID];
 
@@ -124,7 +124,7 @@ var NUHierarchyControllersCenterDefaultCenter;
     CPLog.debug("NUHierarchyControllersCenter: Retained controller %@:%@ for object %@:%@. retain count is now %@", [controller className], controller, anObject, ID, retain);
 }
 
-- (void)releaseControllerForObject:(NUVSDObject)anObject
+- (void)releaseControllerForObject:(NURESTObject)anObject
 {
     var ID = [anObject ID];
 
@@ -151,7 +151,7 @@ var NUHierarchyControllersCenterDefaultCenter;
 #pragma mark -
 #pragma mark Controller accessor
 
-- (id)controllerForObject:(NUVSDObject)anObject
+- (id)controllerForObject:(NURESTObject)anObject
 {
     return [_controllers objectForKey:[anObject ID]];
 }
