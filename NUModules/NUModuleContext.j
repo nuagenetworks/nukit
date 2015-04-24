@@ -45,33 +45,39 @@ var NUValidationActive = nil,
 // reversed for optim
 NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"virtualIP", @"minAddress", @"MAC", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"];
 
-var NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
-    NUModuleContextDelegate_moduleContext_didManageObject_                          = 1 << 2,
+var NUModuleContextDelegate_moduleContext_willManageObject_                        = 1 << 1,
+    NUModuleContextDelegate_moduleContext_didManageObject_                         = 1 << 2,
 
-    NUModuleContextDelegate_moduleContext_willSaveObject_                           = 1 << 3,
-    NUModuleContextDelegate_moduleContext_didSaveObject_connection_                 = 1 << 4,
-    NUModuleContextDelegate_moduleContext_didFailToSaveObject_connection_           = 1 << 5,
+    NUModuleContextDelegate_moduleContext_willSaveObject_                          = 1 << 3,
+    NUModuleContextDelegate_moduleContext_didSaveObject_connection_                = 1 << 4,
+    NUModuleContextDelegate_moduleContext_didFailToSaveObject_connection_          = 1 << 5,
 
-    NUModuleContextDelegate_moduleContext_willCreateObject_                         = 1 << 6,
-    NUModuleContextDelegate_moduleContext_didCreateObject_connection_               = 1 << 7,
-    NUModuleContextDelegate_moduleContext_didFailToCreateObject_connection_         = 1 << 8,
+    NUModuleContextDelegate_moduleContext_willCreateObject_                        = 1 << 6,
+    NUModuleContextDelegate_moduleContext_didCreateObject_connection_              = 1 << 7,
+    NUModuleContextDelegate_moduleContext_didFailToCreateObject_connection_        = 1 << 8,
 
-    NUModuleContextDelegate_moduleContext_willUpdateObject_                         = 1 << 9,
-    NUModuleContextDelegate_moduleContext_didUpdateObject_connection_               = 1 << 10,
-    NUModuleContextDelegate_moduleContext_didFailToUpdateObject_connection_         = 1 << 11,
+    NUModuleContextDelegate_moduleContext_willUpdateObject_                        = 1 << 9,
+    NUModuleContextDelegate_moduleContext_didUpdateObject_connection_              = 1 << 10,
+    NUModuleContextDelegate_moduleContext_didFailToUpdateObject_connection_        = 1 << 11,
 
-    NUModuleContextDelegate_moduleContext_willDeleteObject_                         = 1 << 12,
-    NUModuleContextDelegate_moduleContext_didDeleteObject_connection_               = 1 << 13,
-    NUModuleContextDelegate_moduleContext_didFailToDeleteObject_connection_         = 1 << 14,
+    NUModuleContextDelegate_moduleContext_willDeleteObject_                        = 1 << 12,
+    NUModuleContextDelegate_moduleContext_didDeleteObject_connection_              = 1 << 13,
+    NUModuleContextDelegate_moduleContext_didFailToDeleteObject_connection_        = 1 << 14,
 
-    NUModuleContextDelegate_moduleContextShouldEnableSaving_                        = 1 << 15,
+    NUModuleContextDelegate_moduleContextShouldEnableSaving_                       = 1 << 15,
 
-    NUModuleContextDelegate_moduleContext_validateObject_attribute_validation_      = 1 << 16,
-    NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_         = 1 << 17,
+    NUModuleContextDelegate_moduleContext_validateObject_attribute_validation_     = 1 << 16,
+    NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_        = 1 << 17,
 
-    NUModuleContextDelegate_moduleContext_didUpdateEditedObject_                    = 1 << 18,
+    NUModuleContextDelegate_moduleContext_didUpdateEditedObject_                   = 1 << 18,
 
-    NUModuleContextDelegate_moduleContext_templateForInstantiationOfObject_         = 1 << 19;
+    NUModuleContextDelegate_moduleContext_templateForInstantiationOfObject_        = 1 << 19,
+
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_      = 1 << 20,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_        = 1 << 21,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_      = 1 << 22,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_ = 1 << 23;
+
 
 
 computeRelativeRectOfSelectedRow = function(tableView)
@@ -110,7 +116,9 @@ computeRelativeRectOfSelectedRow = function(tableView)
     NURESTObject    _parentObject                   @accessors(property=parentObject);
     NUValidation    _currentValidation              @accessors(getter=currentValidation);
     SEL             _createAction                   @accessors(property=createAction);
+    SEL             _deleteAction                   @accessors(property=deleteAction);
     SEL             _instantiateAction              @accessors(property=instantiateAction);
+    SEL             _updateAction                   @accessors(property=updateAction);
 
     BOOL            _bindingsDirty;
     CGSize          _basePopoverSize;
@@ -153,6 +161,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
         _additionalEditionViews         = [];
         _createAction                   = @selector(createChildObject:andCallSelector:ofObject:);
         _instantiateAction              = @selector(instantiateChildObject:fromTemplate:andCallSelector:ofObject:);
+        _updateAction                   = @selector(saveAndCallSelector:ofObject:);
+        _deleteAction                   = @selector(deleteAndCallSelector:ofObject:);
         _viewSpinner                    = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
 
         [_viewSpinner setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
@@ -536,6 +546,18 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     if ([_delegate respondsToSelector:@selector(moduleContext:didFailValidateObject:validation:)])
         _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:additionalArgumentsForObjectCreate:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:additionalArgumentsForObjectSave:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:additionalArgumentsForObjectDelete:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:additionalArgumentsForObjectInstantiate:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_;
 }
 
 - (void)_sendDelegateWillSaveObject
@@ -655,6 +677,31 @@ computeRelativeRectOfSelectedRow = function(tableView)
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_)
         [_delegate moduleContext:self didFailValidateObject:_editedObject validation:_currentValidation];
 }
+
+- (void)_sendDelegateAdditionalArgumentsForObjectCreate
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_)
+        return [_delegate moduleContext:self additionalArgumentsForObjectCreate:_editedObject];
+}
+
+- (void)_sendDelegateAdditionalArgumentsForObjectSave
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_)
+        return [_delegate moduleContext:self additionalArgumentsForObjectSave:_editedObject];
+}
+
+- (void)_sendDelegateAdditionalArgumentsForObjectDelete
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_)
+        return [_delegate moduleContext:self additionalArgumentsForObjectDelete:_editedObject];
+}
+
+- (void)_sendDelegateAdditionalArgumentsForObjectInstantiate
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_)
+        return [_delegate moduleContext:self additionalArgumentsForObjectInstantiate:_editedObject];
+}
+
 
 
 #pragma mark -
@@ -929,6 +976,15 @@ computeRelativeRectOfSelectedRow = function(tableView)
 #pragma mark -
 #pragma mark REST Management
 
+- (void)_invokeRESTActionWithArguments:(CPArray)someArguments additionalArguments:(CPArray)someAdditionalArguments
+{
+    someArguments = someAdditionalArguments ? [someArguments arrayByAddingObjectsFromArray:someAdditionalArguments] : someArguments;
+
+    var invocation = [CPInvocation invocationWithMethodSignature:@"RESTInvocation"];
+    [invocation setArguments:someArguments];
+    [invocation invoke];
+}
+
 - (void)createRESTObject:(NURESTObject)anObject
 {
     [self _sendDelegateWillSaveObject];
@@ -937,7 +993,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [self setSavingEnabled:NO];
     [self showLoading:YES];
 
-    [_parentObject performSelector:_createAction withObjects:anObject, @selector(_didParent:createChildObject:connection:), self];
+    [self _invokeRESTActionWithArguments:[_parentObject, _createAction, anObject, @selector(_didParent:createChildObject:connection:), self]
+                     additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectCreate]];
 }
 
 - (void)_didParent:(NURESTObject)aParentObject createChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
@@ -968,7 +1025,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [self setSavingEnabled:NO];
     [self showLoading:YES];
 
-    [anObject saveAndCallSelector:@selector(_didParent:updateChildObject:connection:) ofObject:self];
+    [self _invokeRESTActionWithArguments:[anObject, _updateAction, @selector(_didParent:updateChildObject:connection:), self]
+                     additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectSave]];
 }
 
 - (void)_didParent:(NURESTObject)aParentObject updateChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
@@ -996,7 +1054,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [self setSavingEnabled:NO];
     [self showLoading:NO];
 
-    [anObject deleteAndCallSelector:@selector(_didParent:deleteChildObject:connection:) ofObject:self];
+    [self _invokeRESTActionWithArguments:[anObject, _deleteAction, @selector(_didParent:instantiateChildObject:connection:), self]
+                     additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectDelete]];
 }
 
 - (void)_didParent:(NURESTObject)aParentObject deleteChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
@@ -1024,7 +1083,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     [self setSavingEnabled:NO];
 
-    [_parentObject performSelector:_instantiateAction withObjects:anObject, template, @selector(_didParent:instantiateChildObject:connection:), self];
+    [self _invokeRESTActionWithArguments:[_parentObject, _instantiateAction, anObject, template, @selector(_didParent:instantiateChildObject:connection:), self]
+                     additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectInstantiate]];
 }
 
 - (void)_didParent:(NURESTObject)aParentObject instantiateChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
