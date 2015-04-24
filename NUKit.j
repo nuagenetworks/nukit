@@ -246,8 +246,8 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 - (CPString)valueForApplicationArgument:(CPString)aString
 {
-   if (window.location.search && window.location.search.indexOf(aString) == -1)
-       return NO;
+   if (window.location.search.indexOf(aString) == -1)
+       return nil;
 
    return _get_query_parameter_with_name(aString) || YES;
 }
@@ -386,7 +386,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
         APIVersion      = @"v" + [[CPBundle mainBundle] objectForInfoDictionaryKey:@"NUAPIVersion"].replace(".", "_"),
         finalRESTURL;
 
-    var customAPIVersion = _get_query_parameter_with_name("apiversion");
+    var customAPIVersion = [self valueForApplicationArgument:@"apiversion"];
     if (customAPIVersion)
         APIVersion = customAPIVersion;
 
