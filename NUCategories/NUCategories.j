@@ -3,6 +3,7 @@
 @import "CPComboBox+CaseInsensiteComplete.j"
 @import "CPDate+format.j"
 @import "CPImage+Cat.j"
+@import "CPInvocation+setArguments.j"
 @import "CPMenuItem+Better.j"
 @import "CPObject+Duplication.j"
 @import "CPOutlineView+Expand.j"
@@ -14,4 +15,3 @@
 @import "CPTheme+Setters.j"
 @import "CPView+Border.j"
 @import "TNTableViewDataSource+GetID.j"
-

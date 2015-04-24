@@ -16,6 +16,7 @@
 */
 
 @import <AppKit/CPButton.j>
+@import "NUSkin.j"
 
 
 @implementation CPButton (color)
