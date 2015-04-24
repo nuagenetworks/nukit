@@ -285,7 +285,7 @@ var NUMainWindowControllerDefault,
         [_coreModule setCurrentParent:[[NUKit kit] RESTUser]];
         [_coreModule willShow];
 
-        [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"information" options:nil];
+        [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"displayDescription" options:nil];
         [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"avatarImage" options:nil];
 
         [[self window] setDelegate:self];
