@@ -19,7 +19,6 @@
 
 // @import "../Resources/FileSaver.js"
 
-@global NUKitParameterCuccapSupported
 
 function _configure_nuage_tabview(tabView)
 {
@@ -73,8 +72,7 @@ function _l(dict)
 
 function _cucappID(object, cucappID)
 {
-    if (NUKitParameterCuccapSupported)
-        [object setCucappIdentifier:cucappID];
+    [object setCucappIdentifier:cucappID];
 }
 
 function _generateRandomMAC()

@@ -42,7 +42,6 @@ NUKitParameterShowDebugToolTips    = NO;
 NUKitParameterCat                  = NO;
 NUKitParameterExperimentalMode     = NO;
 NUKitParameterVeryExperimentalMode = NO;
-NUKitParameterCuccapSupported      = NO;
 
 var NUKitDelegate_didLogin_     = 1 << 1,
     NUKitDelegate_willLogout_   = 1 << 2;
@@ -248,9 +247,9 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 - (CPString)valueForApplicationArgument:(CPString)aString
 {
    if (window.location.search && window.location.search.indexOf(aString) == -1)
-       return nil;
+       return NO;
 
-    return _get_query_parameter_with_name(aString)
+   return _get_query_parameter_with_name(aString) || YES;
 }
 
 - (void)parseStandardApplicationArguments
@@ -287,9 +286,6 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
     if ([self valueForApplicationArgument:@"veryexperimental"])
         NUKitParameterVeryExperimentalMode = YES;
-
-    if ([_lockedPopoverView respondsToSelector:@selector(setCucappIdentifier:)])
-        NUKitParameterCuccapSupported = YES;
 }
 
 
