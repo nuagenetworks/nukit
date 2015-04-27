@@ -1054,7 +1054,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [self setSavingEnabled:NO];
     [self showLoading:NO];
 
-    [self _invokeRESTActionWithArguments:[anObject, _deleteAction, @selector(_didParent:instantiateChildObject:connection:), self]
+    [self _invokeRESTActionWithArguments:[anObject, _deleteAction, @selector(_didParent:deleteChildObject:connection:), self]
                      additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectDelete]];
 }
 
