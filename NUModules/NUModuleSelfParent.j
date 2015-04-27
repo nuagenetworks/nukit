@@ -35,7 +35,6 @@
     @outlet CPView          viewEditionMain;
 
     BOOL                    _readOnly;
-    BOOL                    _refilterActions;
     NUStackView             _stackViewMain;
     NUOverlayTextField      _overlayFieldError;
 }
@@ -213,27 +212,23 @@
 
 - (BOOL)shouldProcessJSONObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
-    var shouldManage = aJSONObject.ID == [_currentParent ID];
+    if (aJSONObject.ID == [_currentParent ID])
+    {
+        var obj = [self createObjectWithRESTName:nil];
+        [obj objectFromJSON:aJSONObject];
+        [self _updateCurrentEditedObjectWithObjectIfNeeded:obj];
 
-    if (shouldManage)
-        _refilterActions = YES;
+        [self updatePermittedActions];
+        [self moduleUpdateEditorInterface];
+        [self performPostPushOperation];
+    }
 
-    return shouldManage;
+    return NO;
 }
 
 - (id)createObjectWithRESTName:(CPString)anIdenfier
 {
     return [[_currentParent class] new];
-}
-
-- (void)performPostPushOperation
-{
-    if (_refilterActions)
-    {
-        _refilterActions = NO;
-        [self updatePermittedActions];
-        [self moduleUpdateEditorInterface];
-    }
 }
 
 
