@@ -228,6 +228,7 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 {
     [self performLogout];
     [[self loginWindowController] setMessage:[[aNotification userInfo] hasTimeouted] ? @"Request timeout" : @"Unknown connection error"];
+    [[self loginWindowController] setButtonLoginEnabled:YES];
 }
 
 - (void)_didReceiveRESTErrorNotification:(CPNotification)aNotification
