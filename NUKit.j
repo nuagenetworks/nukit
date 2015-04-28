@@ -515,7 +515,6 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 - (void)_didFetchUser:(id)anUser connection:(NURESTConnection)aConnection
 {
     [[NURESTLoginController defaultController] setPassword:nil];
-    [[self loginWindowController] setButtonLoginEnabled:YES];
 
     switch ([aConnection responseCode])
     {
@@ -543,6 +542,8 @@ var NUKitDelegate_didLogin_     = 1 << 1,
             [[self loginWindowController] shakeWindow];
             [[self loginWindowController] setMessage:@"Unable to connect to the endpoint"];
     }
+
+    [[self loginWindowController] setButtonLoginEnabled:YES];
 }
 
 - (void)performLogout
