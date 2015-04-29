@@ -723,7 +723,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
         case NUModuleActionInstantiate:
             [_fieldTitle setStringValue:@"Instantiate " + _name];
-            [_buttonSave setTitle:@"Instantiante"];
+            [_buttonSave setTitle:@"Instantiate"];
             [_buttonSave setTarget:self];
             [_buttonSave setAction:@selector(instantiateEditedObject:)];
             break;
