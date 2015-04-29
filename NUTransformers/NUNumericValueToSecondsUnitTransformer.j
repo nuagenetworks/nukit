@@ -31,7 +31,7 @@
 
 - (id)transformedValue:(id)value
 {
-    return @"Every " + value + @"s";
+    return value + @"s";
 }
 
 @end
