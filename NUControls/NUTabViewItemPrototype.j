@@ -24,12 +24,6 @@
 
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 
-- (void)setObjectValue:(CPTabViewItem)anItem
-{
-    CPLog.warn("Deprecated method in TNTabViewItemPrototype.j, you should us [self setTabViewItem:] instead of [self setObjectValue:]")
-    [self setTabViewItem:anItem];
-}
-
 - (void)setTabViewItem:(CPTabViewItem)anItem
 {
     if (!anItem)
@@ -41,6 +35,7 @@
 }
 
 @end
+
 
 
 @implementation NUImageTabViewItemPrototype : TNTabItemPrototype
@@ -65,26 +60,18 @@
 
 + (CGSize)size
 {
-    return CGSizeMake(32, 32);
+    return CGSizeMake(16, 16);
 }
 
 + (float)margin
 {
-    return 2.0;
+    return 30.0;
 }
 
 - (void)prepareTheme
 {
     [super prepareTheme];
-    [_button setValue:CGInsetMake(0.0, 0.0, 0.0, 9.0) forThemeAttribute:@"content-inset"];
-
     [_button setButtonType:CPMomentaryChangeButton];
-}
-
-- (void)setObjectValue:(CPTabView)anItem
-{
-    CPLog.warn("Deprecated method in TNTabViewItemPrototype.j, you should us [self setTabViewItem:] instead of [self setObjectValue:]")
-    [self setTabViewItem:anItem];
 }
 
 - (void)setTabViewItem:(CPTabViewItem)anItem

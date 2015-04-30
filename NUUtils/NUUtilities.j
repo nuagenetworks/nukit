@@ -24,7 +24,6 @@ function _configure_nuage_tabview(tabView)
 {
     [tabView setTabItemViewPrototype:[NUTabViewItemPrototype new]];
     [tabView setTabViewBackgroundColor:NUSkinColorGreyLight];
-    [tabView setEnableManualScrolling:NO];
     [tabView setBorderColor:NUSkinColorGrey];
 }
 

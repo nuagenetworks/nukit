@@ -502,7 +502,6 @@ NUModuleTabViewModeIcon = 2;
                 break;
         }
 
-        [tabViewContent setEnableManualScrolling:NO];
         [tabViewContent setDelegate:self];
     }
 
