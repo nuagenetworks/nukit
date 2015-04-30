@@ -24,14 +24,20 @@
 
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 
-- (void)setObjectValue:(CPTabView)anItem
+- (void)setObjectValue:(CPTabViewItem)anItem
+{
+    CPLog.warn("Deprecated method in TNTabViewItemPrototype.j, you should us [self setTabViewItem:] instead of [self setObjectValue:]")
+    [self setTabViewItem:anItem];
+}
+
+- (void)setTabViewItem:(CPTabViewItem)anItem
 {
     if (!anItem)
         return;
 
-    _cucappID(_label, anItem._cucappID);
+    _cucappID(self._button, anItem._cucappID);
 
-    [super setObjectValue:anItem];
+    [super setTabViewItem:anItem];
 }
 
 @end
@@ -43,7 +49,6 @@
     CPImage _imageHighlighted;
     CPImage _imageSelected;
 }
-
 
 #pragma mark -
 #pragma mark Class Methods
@@ -71,12 +76,18 @@
 - (void)prepareTheme
 {
     [super prepareTheme];
-    [_label setValue:CGInsetMake(0.0, 0.0, 0.0, 9.0) forThemeAttribute:@"content-inset"];
+    [_button setValue:CGInsetMake(0.0, 0.0, 0.0, 9.0) forThemeAttribute:@"content-inset"];
 
-    [_label setButtonType:CPMomentaryChangeButton];
+    [_button setButtonType:CPMomentaryChangeButton];
 }
 
 - (void)setObjectValue:(CPTabView)anItem
+{
+    CPLog.warn("Deprecated method in TNTabViewItemPrototype.j, you should us [self setTabViewItem:] instead of [self setObjectValue:]")
+    [self setTabViewItem:anItem];
+}
+
+- (void)setTabViewItem:(CPTabViewItem)anItem
 {
     if (!anItem)
         return;
@@ -85,10 +96,12 @@
     _imageHighlighted = anItem._iconHighlighted;
     _imageSelected = anItem._iconSelected;
 
-    [_label setToolTip:anItem._tooltip]
-    [_label setValue:_image forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [_label setValue:_imageHighlighted forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
-    _cucappID(_label, anItem._cucappID);
+    [_button setToolTip:anItem._tooltip]
+    [_button setValue:_image forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [_button setValue:_imageHighlighted forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    _cucappID(_button, anItem._cucappID);
+
+    _tabViewItem = anItem;
 }
 
 - (BOOL)setThemeState:(ThemeState)aThemeState
@@ -97,9 +110,9 @@
         aThemeState = CPThemeState.apply(null, aThemeState);
 
     if (aThemeState.hasThemeState(TNTabItemPrototypeThemeStateSelected))
-        [_label setValue:_imageSelected forThemeAttribute:@"image" inState:CPThemeStateNormal];
+        [_button setValue:_imageSelected forThemeAttribute:@"image" inState:CPThemeStateNormal];
 
-    [_label setThemeState:aThemeState];
+    [_button setThemeState:aThemeState];
 
     return YES;
 }
@@ -113,9 +126,9 @@
         aThemeState = CPThemeState.apply(null, aThemeState);
 
     if (aThemeState.hasThemeState(TNTabItemPrototypeThemeStateSelected))
-        [_label setValue:_image forThemeAttribute:@"image" inState:CPThemeStateNormal];
+        [_button setValue:_image forThemeAttribute:@"image" inState:CPThemeStateNormal];
 
-    [_label unsetThemeState:aThemeState];
+    [_button unsetThemeState:aThemeState];
 
     return YES;
 }
