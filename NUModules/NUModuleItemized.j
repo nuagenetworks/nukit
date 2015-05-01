@@ -186,6 +186,22 @@
     return tableViewItems;
 }
 
+- (CPArray)currentActiveSubModules
+{
+    var items   = [_dataSourceModules flattenedContent],
+        modules = [];
+
+    for (var i = 0, c = [items count]; i < c; i++)
+    {
+        if ([items[i] isSeparator])
+            continue;
+
+        [modules addObject:[items[i] module]];
+    }
+
+    return modules;
+}
+
 
 #pragma mark -
 #pragma mark NUModuleItemized API
