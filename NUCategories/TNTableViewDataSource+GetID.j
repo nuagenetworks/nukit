@@ -41,8 +41,13 @@
 
 - (id)objectWithID:(id)anID
 {
-    var ret = [self _getChildrenOfObject:nil usingPredicate:[CPPredicate predicateWithFormat:@"ID == %@", anID]];
-    return [ret count] == 1 ? ret[0] : nil;
+    return [self objectMatchingPredicate:anID];
 }
 
+- (id)objectMatchingPredicate:(CPPredicate)aPredicate
+{
+    var ret = [self _getChildrenOfObject:nil usingPredicate:aPredicate];
+    return [ret count] == 1 ? ret[0] : nil;
+
+}
 @end

@@ -47,8 +47,8 @@
 
   while (i != CPNotFound)
   {
-    [items addObject:[self itemAtRow:i]];
-    i = [indexes indexGreaterThanIndex:i];
+      [items addObject:[self itemAtRow:i]];
+      i = [indexes indexGreaterThanIndex:i];
   }
 
   return items;

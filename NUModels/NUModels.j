@@ -3,3 +3,4 @@
 @import "NUJobImport.j"
 @import "NUValidation.j"
 @import "NUKitObject.j"
+@import "NUModuleItem.j"

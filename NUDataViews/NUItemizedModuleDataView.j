@@ -35,16 +35,16 @@
 {
     [super bindDataView];
 
-    [viewIcon setImage:[[_objectValue class] moduleIcon]];
-    [fieldName setStringValue:[[_objectValue class] moduleName]];
+    [viewIcon setImage:[[[_objectValue module] class] moduleIcon]];
+    [fieldName setStringValue:[[[_objectValue module] class] moduleName]];
 
     viewIcon._DOMElement.style.boxShadow = @"0 0 0 1px " + [_iconBorderColor cssString];
     [fieldName setTextColor:_textColor];
 
-    _cucappID(self, [[_objectValue class] moduleIdentifier]);
+    _cucappID(self, [[[_objectValue module] class] moduleIdentifier]);
 
     if (!NUKitParameterShowDebugToolTips)
-        [self setToolTip:[[_objectValue class] moduleName]];
+        [self setToolTip:[[[_objectValue module] class] moduleName]];
 }
 
 
@@ -103,6 +103,29 @@
     [aCoder encodeObject:_iconBorderColor forKey:@"_iconBorderColor"];
     [aCoder encodeObject:_textColor forKey:@"_textColor"];
     [aCoder encodeObject:_selectedTextColor forKey:@"_selectedTextColor"];
+}
+
+@end
+
+
+
+@implementation _NUModuleItemizedSeparatorDataView : CPView
+
++ (id)newWithColor:(CPColor)aColor
+{
+    var sep = [[_NUModuleItemizedSeparatorDataView alloc] initWithFrame:CGRectMake(0, 0, 100, 10)],
+        line = [[CPView alloc] initWithFrame:CGRectMake(5, 5, 90, 1)];
+
+    [line setBackgroundColor:aColor];
+    [line setAutoresizingMask:CPViewWidthSizable];
+    [sep addSubview:line];
+
+    return sep;
+}
+
+- (void)setObjectValue:(id)aValue
+{
+
 }
 
 @end

@@ -3138,7 +3138,7 @@ NUModuleTabViewModeIcon = 2;
     return [[self _dataViewForObject:anItem] frameSize].height;
 }
 
-- (void)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
+- (CPView)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
 {
     var dataView = [self _dataViewForObject:anItem],
         key = _dataViewIdentifierPrefix + @"_" + ([anItem isKindOfClass:NUKitObject] ? [anItem RESTName] : [anItem UID]),
