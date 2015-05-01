@@ -44,10 +44,4 @@
     return [self objectMatchingPredicate:anID];
 }
 
-- (id)objectMatchingPredicate:(CPPredicate)aPredicate
-{
-    var ret = [self _getChildrenOfObject:nil usingPredicate:aPredicate];
-    return [ret count] == 1 ? ret[0] : nil;
-
-}
 @end

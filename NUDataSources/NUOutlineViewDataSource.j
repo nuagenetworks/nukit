@@ -112,6 +112,17 @@
     return [_content containsObject:anObject];
 }
 
+- (CPArray)objectMatchingPredicate:(CPPredicate)aPredicate
+{
+    var ret = [self _getChildrenOfObject:nil usingPredicate:aPredicate];
+    return [ret count] == 1 ? ret[0] : nil;
+}
+
+- (CPArray)flattenedContent
+{
+    return [self _getChildrenOfObject:nil usingPredicate:nil];
+}
+
 
 #pragma mark -
 #pragma mark Filtering
@@ -177,7 +188,7 @@
 - (void)_getChildrenOfObject:(id)anObject usingPredicate:(CPPredicate)aPredicate
 {
     var objects = anObject ? [anObject valueForKeyPath:_childKeyPath] : _content,
-        matchingObjects = [objects filteredArrayUsingPredicate:aPredicate],
+        matchingObjects = aPredicate ? [objects filteredArrayUsingPredicate:aPredicate] : [objects copy],
         ret = [CPArray array];
 
     if ([matchingObjects count])
