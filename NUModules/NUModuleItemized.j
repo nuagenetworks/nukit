@@ -31,8 +31,6 @@
 {
     @outlet CPOutlineView   tableViewItems;
 
-    CPArray                 _separatorIndexes @accessors(property=separatorIndexes);
-
     CPCheckBox              _checkBoxShowName;
     CPString                _itemsVisibilitySaveKey;
     NUOutlineViewDataSource _dataSourceModules;
@@ -65,12 +63,12 @@
 
 + (CPColor)groupingViewBackgroundColor
 {
-    return [NUSkinColorWhite colorWithAlphaComponent:0.1];
+    return [NUSkinColorWhite colorWithAlphaComponent:0.2];
 }
 
 + (CPColor)groupingViewHeaderBackgroundColor
 {
-    return [NUSkinColorWhite colorWithAlphaComponent:0.1];
+    return [NUSkinColorWhite colorWithAlphaComponent:0.2];
 }
 
 + (CPColor)selectionColor
@@ -105,8 +103,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    _separatorIndexes = [];
 
     _dataSourceModules = [[NUOutlineViewDataSource alloc] init];
     [_dataSourceModules setTable:tableViewItems];
@@ -168,8 +164,7 @@
     [_dataSourceModules setContent:content];
     [tableViewItems reloadData];
 
-    var savedDtate = [[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey];
-    [_checkBoxShowName setState:savedDtate];
+    [_checkBoxShowName setState:[[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey]];
     [self _updateItemTableVisibility:self];
 }
 
