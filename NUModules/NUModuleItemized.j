@@ -53,6 +53,31 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     return NO;
 }
 
++ (CPColor)backgroundColor
+{
+    return NUSkinColorBlack;
+}
+
++ (CPColor)selectionColor
+{
+    return NUSkinColorGreyDark;
+}
+
++ (CPColor)itemBorderColor
+{
+    return NUSkinColorWhite;
+}
+
++ (CPColor)itemTextColor
+{
+    return NUSkinColorWhite;
+}
+
++ (CPColor)separatorColor
+{
+    return [CPColor colorWithHexString:@"7C7C7C"];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -61,10 +86,9 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 
     _dataSourceModules = [[TNTableViewDataSource alloc] init];
     [tableViewItems setIntercellSpacing:CGSizeMakeZero()];
-    [tableViewItems setBackgroundColor:NUSkinColorBlack];
-    // tableViewItems._DOMElement.style.boxShadow = "inset -5px 0px 10px rgba(0, 0, 0, 0.3)";
+    [tableViewItems setBackgroundColor:[[self class] backgroundColor]];
     [tableViewItems setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
-    [tableViewItems setValue:NUSkinColorGreyDark forThemeAttribute:@"selection-color"];
+    [tableViewItems setValue:[[self class] selectionColor] forThemeAttribute:@"selection-color"];
 
     [_dataSourceModules setTable:tableViewItems];
     [tableViewItems setDataSource:_dataSourceModules];
@@ -189,9 +213,14 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     if (!view)
     {
         if ([_separatorIndexes containsObject:aRow])
-            view = [_NUModuleItemizedSeparatorDataView new];
+            view = [_NUModuleItemizedSeparatorDataView newWithColor:[[self class] separatorColor]];
         else
-            view = [[[NUKit kit] registeredDataViewWithIdentifier:@"itemizedModuleInformationDataView"] duplicate];
+        {
+            view = [[[NUKit kit] registeredDataViewWithIdentifier:@"itemizedModuleDataView"] duplicate];
+            [view setIconBorderColor:[[self class] itemBorderColor]];
+            [view setTextColor:[[self class] itemTextColor]];
+        }
+
 
         [view setIdentifier:key];
     }
@@ -225,13 +254,15 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 
 
 @implementation _NUModuleItemizedSeparatorDataView : CPView
+{
+}
 
-+ (id)new
++ (id)newWithColor:(CPColor)aColor
 {
     var sep = [[_NUModuleItemizedSeparatorDataView alloc] initWithFrame:CGRectMake(0, 0, 100, 10)],
         line = [[CPView alloc] initWithFrame:CGRectMake(5, 5, 90, 1)];
 
-    [line setBackgroundColor:[CPColor colorWithHexString:@"7C7C7C"]];
+    [line setBackgroundColor:aColor];
     [line setAutoresizingMask:CPViewWidthSizable];
     [sep addSubview:line];
 
@@ -242,5 +273,4 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 {
 
 }
-
 @end
