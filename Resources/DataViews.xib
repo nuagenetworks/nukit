@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14E11f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NUInternalDataViewsLoader">
             <connections>
                 <outlet property="categoryDataView" destination="594" id="650"/>
                 <outlet property="genealogyDataView" destination="HzC-Bl-p8Z" id="ERl-2R-BQZ"/>
+                <outlet property="itemizedModuleDataView" destination="qdV-uP-QyZ" id="Vbb-bb-u4d"/>
                 <outlet property="messageDataView" destination="1955" id="1956"/>
                 <outlet property="popoverConfirmation" destination="667" id="677"/>
                 <outlet property="view" destination="BJR-qr-SUM" id="mrH-NH-QPl"/>
@@ -191,6 +192,31 @@
                 <outlet property="imageViewIcon" destination="uRR-pK-RWi" id="TSH-Sb-0OL"/>
                 <outlet property="viewContainer" destination="34p-a7-qJo" id="lnk-SS-EYv"/>
             </connections>
+        </customView>
+        <customView id="qdV-uP-QyZ" customClass="NUItemizedModuleDataView">
+            <rect key="frame" x="0.0" y="0.0" width="193" height="50"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="taF-iX-z4r">
+                    <rect key="frame" x="13" y="13" width="24" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="7Y3-tA-2Q6"/>
+                </imageView>
+                <textField verticalHuggingPriority="750" id="SIo-9B-7Wg">
+                    <rect key="frame" x="48" y="16" width="136" height="17"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Name" id="jk6-Lm-nKJ">
+                        <font key="font" metaFont="systemBold"/>
+                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <connections>
+                <outlet property="fieldName" destination="SIo-9B-7Wg" id="NQN-gK-PdM"/>
+                <outlet property="viewIcon" destination="taF-iX-z4r" id="NlR-ij-a1H"/>
+            </connections>
+            <point key="canvasLocation" x="-271.5" y="617"/>
         </customView>
     </objects>
     <resources>

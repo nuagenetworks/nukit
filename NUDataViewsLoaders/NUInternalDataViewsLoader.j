@@ -21,17 +21,19 @@
 
 @import "NUAbstractDataViewsLoader.j"
 @import "NUCategoryDataView.j"
-@import "NUMessageDataView.j"
 @import "NUGenealogyDataView.j"
+@import "NUItemizedModuleDataView.j"
+@import "NUMessageDataView.j"
 
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
-    @outlet CPPopover               popoverConfirmation     @accessors(readonly);
-    @outlet CPView                  viewInvalidInput        @accessors(readonly);
-    @outlet NUCategoryDataView      categoryDataView        @accessors(readonly);
-    @outlet NUMessageDataView       messageDataView         @accessors(readonly);
-    @outlet NUGenealogyDataView     genealogyDataView       @accessors(readonly);
+    @outlet CPPopover                   popoverConfirmation     @accessors(readonly);
+    @outlet CPView                      viewInvalidInput        @accessors(readonly);
+    @outlet NUCategoryDataView          categoryDataView        @accessors(readonly);
+    @outlet NUGenealogyDataView         genealogyDataView       @accessors(readonly);
+    @outlet NUItemizedModuleDataView    itemizedModuleDataView  @accessors(readonly);
+    @outlet NUMessageDataView           messageDataView         @accessors(readonly);
 }
 
 - (void)viewDidLoad

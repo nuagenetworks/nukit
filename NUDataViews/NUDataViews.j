@@ -3,5 +3,6 @@
 @import "NUCategoryDataView.j"
 @import "NUGenealogyDataView.j"
 @import "NUInternalDataViewsLoader.j"
+@import "NUItemizedModuleDataView.j"
 @import "NUMessageDataView.j"
 @import "NUTemplatableObjectDataView.j"
