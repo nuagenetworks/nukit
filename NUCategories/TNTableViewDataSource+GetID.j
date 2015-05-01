@@ -41,7 +41,7 @@
 
 - (id)objectWithID:(id)anID
 {
-    return [self objectMatchingPredicate:[CPPredicate predicateWithFormar:@"ID == %@", anID]];
+    return [self objectMatchingPredicate:[CPPredicate predicateWithFormat:@"ID == %@", anID]];
 }
 
 @end
