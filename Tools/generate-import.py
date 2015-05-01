@@ -7,14 +7,19 @@ import re
 import sys
 import datetime
 
-def generate_file(name_file, subfolder):
+def generate_file(output_file, subfolder):
+
+    if not output_file:
+        output_file = os.getcwd().split("/")[-1]
+        if not output_file.startswith("NU"):
+            output_file = "NU%s" % output_file
 
     files = list()
 
     for (dirpath, dirnames, filenames) in os.walk("."):
         for filename in filenames:
             path = dirpath
-            tmp_file_name = filename
+            tmp_output_file = filename
 
             if (path == "."):
                 path = ""
@@ -25,33 +30,33 @@ def generate_file(name_file, subfolder):
                 else:
                     path = path[2:len(path)] + "/"
 
-            name = path + tmp_file_name
+            name = path + tmp_output_file
 
-            objective_j_file = re.search('(\w*.j)', tmp_file_name)
+            objective_j_file = re.search('(\w*.j)', tmp_output_file)
 
-            if objective_j_file and objective_j_file != name_file:
+            if objective_j_file and name != "%s.j" % output_file:
                 files.append(name)
 
     date = datetime.datetime.now()
 
     headers = """/*
-    *   Filename:         %s
-    *   Created:          %s
-    *   Author:           Alexandre Wilhelm <alexandre.wilhelm@alcatel-lucent.com>
-    *   Description:      VSA
-    *   Project:          VSD - Nuage - Data Center Service Delivery - IPD
-    *
-    * Copyright (c) 2011-2012 Alcatel, Alcatel-Lucent, Inc. All Rights Reserved.
-    *
-    * This source code contains confidential information which is proprietary to Alcatel.
-    * No part of its contents may be used, copied, disclosed or conveyed to any party
-    * in any manner whatsoever without prior written permission from Alcatel.
-    *
-    * Alcatel-Lucent is a trademark of Alcatel-Lucent, Inc.
-    *
-    */""" % (name_file, date.strftime('%a %b %d %H:%M:%S %Z %Y'))
+*   Filename:         %s
+*   Created:          %s
+*   Author:           Script
+*   Description:      VSA
+*   Project:          VSD - Nuage - Data Center Service Delivery - IPD
+*
+* Copyright (c) 2011-2012 Alcatel, Alcatel-Lucent, Inc. All Rights Reserved.
+*
+* This source code contains confidential information which is proprietary to Alcatel.
+* No part of its contents may be used, copied, disclosed or conveyed to any party
+* in any manner whatsoever without prior written permission from Alcatel.
+*
+* Alcatel-Lucent is a trademark of Alcatel-Lucent, Inc.
+*
+*/""" % (output_file, date.strftime('%a %b %d %H:%M:%S %Z %Y'))
 
-    destination_file = open(name_file + ".j", 'w')
+    destination_file = open(output_file + ".j", 'w')
     destination_file.write(headers)
     destination_file.write("\n\n")
 
@@ -64,15 +69,11 @@ def generate_file(name_file, subfolder):
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option("-f", "--file", dest="file",
+    parser.add_option("-o", "--output", dest="output",
                         help="Name of the file to generate")
-    parser.add_option("-s", "--subfolder", action="store_true", dest="subfolder",
+    parser.add_option("-r", "--recursice", action="store_true", dest="recursive",
                         help="Import the files find in the subfolder")
 
     options, args = parser.parse_args()
 
-    if options.file is None:
-        print "You need to specify the file where you want to generate your imports with the option -f"
-        sys.exit(1)
-
-    generate_file(options.file, options.subfolder)
+    generate_file(options.output, options.recursive)
