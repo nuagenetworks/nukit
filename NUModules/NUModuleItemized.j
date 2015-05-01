@@ -35,8 +35,8 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     CPArray                 _separatorIndexes @accessors(property=separatorIndexes);
 
     CPCheckBox              _checkBoxShowName;
+    CPString                _itemsVisibilitySaveKey;
     TNTableViewDataSource   _dataSourceModules;
-
 }
 
 
@@ -73,6 +73,11 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     return NUSkinColorWhite;
 }
 
++ (CPColor)itemSelectedTextColor
+{
+    return NUSkinColorBlackDarker;
+}
+
 + (CPColor)separatorColor
 {
     return [CPColor colorWithHexString:@"7C7C7C"];
@@ -100,7 +105,7 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     [_checkBoxShowName setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
     [tableViewItems addSubview:_checkBoxShowName];
     [_checkBoxShowName setTarget:self];
-    [_checkBoxShowName setAction:@selector(changeShowNames:)];
+    [_checkBoxShowName setAction:@selector(updateItemsVisibility:)];
     [_checkBoxShowName setToolTip:@"Show meaning of icons"];
 
     [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
@@ -109,6 +114,9 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-left.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateSelected, CPThemeStateHighlighted];
 
     [tableView setAllowsEmptySelection:NO];
+
+    _itemsVisibilitySaveKey = "NUKitItemizedModuleExpandState_" + [[self class] moduleIdentifier] + @"_" + [[[self parentModule] class] moduleIdentifier];
+    [[CPUserDefaults standardUserDefaults] registerDefaults:@{_itemsVisibilitySaveKey: CPOnState}];
 }
 
 - (CPSet)permittedActionsForObject:(id)anObject
@@ -119,6 +127,15 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 
 #pragma mark -
 #pragma mark NUModule API
+
+- (void)moduleDidShow
+{
+    [super moduleDidShow];
+
+    var savedDtate = [[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey];
+    [_checkBoxShowName setState:savedDtate];
+    [self updateItemsVisibility:self];
+}
 
 - (void)moduleDidReload
 {
@@ -136,8 +153,7 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
     [_dataSourceModules setContent:content];
     [tableViewItems reloadData];
 
-    [_checkBoxShowName setState:CPOffState];
-    [self setItemTableWidth:([content count] > 1 ? 50 : 0)];
+    [self showItems:([content count] > 0)];
 
     var selectedModule = [[tabViewContent selectedTabViewItem] representedObject];
     [self selectItemizedModule:selectedModule];
@@ -152,7 +168,28 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
 #pragma mark -
 #pragma mark Utilities
 
-- (void)setItemTableWidth:(int)aWidth
+- (void)showItems:(BOOL)shouldShow
+{
+    if (shouldShow)
+    {
+        [self updateItemsVisibility:self];
+    }
+    else
+    {
+        [_checkBoxShowName setState:CPOffState];
+        [self _setItemTableWidth:0];
+    }
+}
+
+- (void)expandItems:(BOOL)shouldExpand
+{
+    if (shouldExpand)
+        [self _setItemTableWidth:250];
+    else
+        [self _setItemTableWidth:50];
+}
+
+- (void)_setItemTableWidth:(int)aWidth
 {
     var scrollView   = [tableViewItems enclosingScrollView],
         mainFrame    = [[self view] bounds],
@@ -187,12 +224,10 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
         [tabViewContent selectTabViewItem:tabViewItem];
 }
 
-- (IBAction)changeShowNames:(id)aSender
+- (IBAction)updateItemsVisibility:(id)aSender
 {
-    if ([_checkBoxShowName state] == CPOnState)
-        [self setItemTableWidth:250];
-    else
-        [self setItemTableWidth:50];
+    [[CPUserDefaults standardUserDefaults] setObject:[_checkBoxShowName state] forKey:_itemsVisibilitySaveKey];
+    [self expandItems:([_checkBoxShowName state] == CPOnState)]
 }
 
 
@@ -219,8 +254,8 @@ NUModuleItemizedSeparator = @"NUModuleItemizedSeparator";
             view = [[[NUKit kit] registeredDataViewWithIdentifier:@"itemizedModuleDataView"] duplicate];
             [view setIconBorderColor:[[self class] itemBorderColor]];
             [view setTextColor:[[self class] itemTextColor]];
+            [view setSelectedTextColor:[[self class] itemSelectedTextColor]];
         }
-
 
         [view setIdentifier:key];
     }

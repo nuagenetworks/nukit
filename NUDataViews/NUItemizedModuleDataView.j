@@ -26,8 +26,9 @@
     @outlet CPImageView viewIcon;
     @outlet CPTextField fieldName;
 
-    CPColor             _iconBorderColor @accessors(property=iconBorderColor);
-    CPColor             _textColor       @accessors(property=textColor);
+    CPColor             _iconBorderColor    @accessors(property=iconBorderColor);
+    CPColor             _textColor          @accessors(property=textColor);
+    CPColor             _selectedTextColor  @accessors(property=selectedTextColor);
 }
 
 - (void)bindDataView
@@ -46,14 +47,45 @@
         [self setToolTip:[[_objectValue class] moduleName]];
 }
 
+
+#pragma mark -
+#pragma mark Theming
+
+- (BOOL)setThemeState:(ThemeState)aThemeState
+{
+    aThemeState = _massageThemeState(aThemeState);
+
+    if ([self hasThemeState:aThemeState])
+        return;
+
+    [super setThemeState:aThemeState];
+
+    if ([self hasThemeState:CPThemeStateSelectedDataView])
+        [fieldName setTextColor:_selectedTextColor];
+}
+
+- (BOOL)unsetThemeState:(ThemeState)aThemeState
+{
+    aThemeState = _massageThemeState(aThemeState);
+
+    if (![self hasThemeState:aThemeState])
+        return;
+
+    [super unsetThemeState:aThemeState];
+
+    if (![self hasThemeState:CPThemeStateSelectedDataView])
+        [fieldName setTextColor:_textColor];
+}
+
 - (id)initWithCoder:(CPCoder)aCoder
 {
     if (self = [super initWithCoder:aCoder])
     {
-        fieldName        = [aCoder decodeObjectForKey:@"fieldName"];
-        viewIcon         = [aCoder decodeObjectForKey:@"viewIcon"];
-        _iconBorderColor = [aCoder decodeObjectForKey:@"_iconBorderColor"];
-        _textColor       = [aCoder decodeObjectForKey:@"textColor"];
+        fieldName          = [aCoder decodeObjectForKey:@"fieldName"];
+        viewIcon           = [aCoder decodeObjectForKey:@"viewIcon"];
+        _iconBorderColor   = [aCoder decodeObjectForKey:@"_iconBorderColor"];
+        _textColor         = [aCoder decodeObjectForKey:@"textColor"];
+        _selectedTextColor = [aCoder decodeObjectForKey:@"_selectedTextColor"];
 
         viewIcon._DOMElement.style.borderRadius = @"2px";
         viewIcon._DOMImageElement.style.borderRadius = @"2px";
@@ -70,6 +102,7 @@
     [aCoder encodeObject:viewIcon forKey:@"viewIcon"];
     [aCoder encodeObject:_iconBorderColor forKey:@"_iconBorderColor"];
     [aCoder encodeObject:_textColor forKey:@"_textColor"];
+    [aCoder encodeObject:_selectedTextColor forKey:@"_selectedTextColor"];
 }
 
 @end
