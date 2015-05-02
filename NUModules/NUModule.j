@@ -1745,6 +1745,8 @@ NUModuleTabViewModeIcon = 2;
 
     for (var i = 0, c = [someModules count]; i < c; i++)
         [self addSubModule:someModules[i]];
+
+    [self moduleDidSetSubModules:someModules];
 }
 
 - (void)addSubModule:(NUModule)aSubModule
@@ -1759,15 +1761,16 @@ NUModuleTabViewModeIcon = 2;
     [_activeSubModules addObject:aSubModule];
 
     [aSubModule setParentModule:self];
+
+    [self moduleDidAddSubModule:aSubModule];
 }
 
 - (void)removeSubModule:(NUModule)aSubModule
 {
-    if (!aSubModule)
+    if (!aSubModule || ![_subModules containsObject:aSubModule])
         return;
 
-    if (![_subModules containsObject:aSubModule])
-        return;
+    [self moduleWillRemoveSubModule:aSubModule];
 
     [_subModules removeObject:aSubModule];
     [_activeSubModules removeObject:aSubModule];
@@ -1844,6 +1847,18 @@ NUModuleTabViewModeIcon = 2;
 }
 
 #pragma mark  Sub Modules Internal API
+
+- (void)moduleDidSetSubModules:(CPArray)someModules
+{
+}
+
+- (void)moduleDidAddSubModule:(NUModule)aSubModule
+{
+}
+
+- (void)moduleWillRemoveSubModule:(NUModule)aSubModule
+{
+}
 
 - (CPArray)currentActiveSubModules
 {
@@ -3024,6 +3039,7 @@ NUModuleTabViewModeIcon = 2;
 - (CPResponder)initialFirstResponder
 {
     var module = [self visibleSubModule];
+
     if (module)
         return [module initialFirstResponder];
 
