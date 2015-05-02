@@ -30,11 +30,14 @@
 @implementation NUModuleItemized : NUModule
 {
     @outlet CPOutlineView   tableViewItems;
+    @outlet CPView          viewControlsContainer;
 
     CPCheckBox              _checkBoxShowName;
     CPString                _itemsVisibilitySaveKey;
-    NUOutlineViewDataSource _dataSourceModules;
     CPView                  _viewItemGroup;
+    NUOutlineViewDataSource _dataSourceModules;
+    NUModule                _lastExpandedRootModule;
+    CPDictionary            _moduleItemsCache;
 }
 
 
@@ -63,17 +66,17 @@
 
 + (CPColor)groupingViewBackgroundColor
 {
-    return [NUSkinColorWhite colorWithAlphaComponent:0.2];
+    return [NUSkinColorWhite colorWithAlphaComponent:0.15];
 }
 
 + (CPColor)groupingViewHeaderBackgroundColor
 {
-    return [NUSkinColorWhite colorWithAlphaComponent:0.2];
+    return [NUSkinColorWhite colorWithAlphaComponent:0.05];
 }
 
 + (CPColor)selectionColor
 {
-    return NUSkinColorGreyDark;
+    return [CPColor colorWithHexString:@"A6A6A6"];
 }
 
 + (CPColor)itemBorderColor
@@ -88,7 +91,7 @@
 
 + (CPColor)itemSelectedTextColor
 {
-    return NUSkinColorBlackDarker;
+    return NUSkinColorWhite;
 }
 
 + (CPColor)separatorColor
@@ -104,6 +107,8 @@
 {
     [super viewDidLoad];
 
+    _moduleItemsCache = @{};
+
     _dataSourceModules = [[NUOutlineViewDataSource alloc] init];
     [_dataSourceModules setTable:tableViewItems];
 
@@ -117,6 +122,7 @@
     [tableViewItems setAction:@selector(_changeSelection:)];
     [tableViewItems setAllowsEmptySelection:NO];
     [tableViewItems setIndentationPerLevel:0];
+    [tableViewItems setAutoresizingMask:CPViewHeightSizable];
 
     var button = [CPButton buttonWithTitle:nil];
     [button setEnabled:NO];
@@ -132,13 +138,16 @@
     [headerView setBackgroundColor:[[self class] groupingViewHeaderBackgroundColor]];
     [_viewItemGroup addSubview:headerView];
 
+    [viewControlsContainer setBackgroundColor:[[self class] backgroundColor]];
 
-    _checkBoxShowName = [[CPCheckBox alloc] initWithFrame:CGRectMake(25, [tableViewItems frameSize].height - 20, 20, 15)]
+    _checkBoxShowName = [[CPCheckBox alloc] initWithFrame:CGRectMake(25, 4, 20, 15)]
     [_checkBoxShowName setAutoresizingMask:CPViewMinXMargin | CPViewMinYMargin];
-    [tableViewItems addSubview:_checkBoxShowName];
+    [viewControlsContainer addSubview:_checkBoxShowName];
     [_checkBoxShowName setTarget:self];
     [_checkBoxShowName setAction:@selector(_updateItemTableVisibility:)];
     [_checkBoxShowName setToolTip:@"Show meaning of icons"];
+
+    [[self view] addSubview:viewControlsContainer];
 
     [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal];
     [_checkBoxShowName setValue:CPImageInBundle(@"arrow-thin-right.png", 25, 25, [[NUKit kit]  bundle]) forThemeAttribute:@"image" inState:CPThemeStateNormal, CPThemeStateHighlighted];
@@ -154,25 +163,39 @@
 #pragma mark -
 #pragma mark NUModule API
 
+- (void)moduleDidSetSubModules:(CPArray)someModules
+{
+    for (var i = 0, c = [someModules count]; i < c; i++)
+    {
+        var module     = someModules[i],
+            moduleItem = [NUModuleItem moduleItemWithModule:module];
+
+        [_moduleItemsCache setObject:moduleItem forKey:[module UID]];
+    }
+}
+
 - (void)moduleDidShow
 {
     [super moduleDidShow];
 
     var tabViewItems = [tabViewContent tabViewItems],
-        content      = [self _generateModuleItemFromInfo:[self moduleItemizedCurrentItems]];
+        content      = [self _generateCurrentModuleItemsFromInfo:[self moduleItemizedCurrentItems]];
 
     [_dataSourceModules setContent:content];
     [tableViewItems reloadData];
 
     [_checkBoxShowName setState:[[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey]];
     [self _updateItemTableVisibility:self];
+    [self _showItemTable:([_dataSourceModules count] > 0)];
+
+    if (_lastExpandedRootModule)
+        [tableViewItems expandItem:[self _moduleItemForModule:_lastExpandedRootModule]];
 }
 
 - (void)moduleDidReload
 {
     [super moduleDidReload];
 
-    [self _showItemTable:([_dataSourceModules count] > 0)];
     [self _selectItemizedModule:[[tabViewContent selectedTabViewItem] representedObject]];
 }
 
@@ -218,22 +241,15 @@
 - (void)_showItemTable:(BOOL)shouldShow
 {
     if (shouldShow)
-    {
         [self _updateItemTableVisibility:self];
-    }
     else
-    {
-        [_checkBoxShowName setState:CPOffState];
         [self _setItemTableWidth:0];
-    }
 }
 
 - (void)_expandItemTable:(BOOL)shouldExpand
 {
-    if (shouldExpand)
-        [self _setItemTableWidth:250];
-    else
-        [self _setItemTableWidth:50];
+    [self _setItemTableWidth:shouldExpand ? 250 : 50];
+    [tableViewItems setIndentationPerLevel:shouldExpand ? 10 : 0];
 }
 
 - (void)_setItemTableWidth:(int)aWidth
@@ -241,13 +257,17 @@
     var scrollView   = [tableViewItems enclosingScrollView],
         mainFrame    = [[self view] bounds],
         tabViewFrame = [tabViewContent frame],
-        tableFrame   = CGRectMake(0, 0, aWidth, mainFrame.size.height);
+        tableFrame   = CGRectMake(0, 0, aWidth, mainFrame.size.height - [viewControlsContainer frameSize].height);
 
     tabViewFrame.size.width = mainFrame.size.width - aWidth;
     tabViewFrame.origin.x = aWidth;
 
     [scrollView setFrame:tableFrame];
     [tabViewContent setFrame:tabViewFrame];
+
+    var frame = [viewControlsContainer frame];
+    frame.size.width = aWidth;
+    [viewControlsContainer setFrame:frame];
 }
 
 - (void)_selectItemizedModule:(NUModule)aModule
@@ -260,13 +280,12 @@
 
 - (NUModuleItem)_moduleItemForModule:(NUModule)aModule
 {
-    return [_dataSourceModules objectMatchingPredicate:[CPPredicate predicateWithFormat:@"module.UID == %@", [aModule UID]]];
+    return [_moduleItemsCache objectForKey:[aModule UID]];
 }
 
-- (CPArray)_generateModuleItemFromInfo:(id)someInfos
+- (CPArray)_generateCurrentModuleItemsFromInfo:(id)someInfos
 {
-    var module = someInfos["module"],
-        ret = [];
+    var ret = [];
 
     for (var i = 0, c = [someInfos count]; i < c; i++)
     {
@@ -274,13 +293,13 @@
 
         if (module)
         {
-            var moduleItem   = [NUModuleItem moduleItemWithModule:module],
+            var moduleItem   = [self _moduleItemForModule:module],
                 childrenInfo = someInfos[i]["children"];
 
             [ret addObject:moduleItem];
 
             if (childrenInfo)
-                [moduleItem setChildren:[self _generateModuleItemFromInfo:childrenInfo]];
+                [moduleItem setChildren:[self _generateCurrentModuleItemsFromInfo:childrenInfo]];
         }
         else
         {
@@ -334,6 +353,7 @@
 
     if (conditionRootLevel && [[moduleItem children] count])
     {
+        _lastExpandedRootModule = [moduleItem module];
         [tableViewItems expandItem:moduleItem];
         [self _showGroupingView:YES forItem:moduleItem];
     }
@@ -393,6 +413,7 @@
     {
         setTimeout(function(){
             [self _changeSelection:[aNotification object]];
+            [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
         }, 0);
     }
 }

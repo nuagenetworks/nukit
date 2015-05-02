@@ -54,4 +54,15 @@
   return items;
 }
 
+- (CGRect)_frameOfOutlineDataViewAtRow:(CPInteger)aRow
+ {
+     var columnIndex = [[self tableColumns] indexOfObject:_outlineTableColumn],
+         frame = [super frameOfDataViewAtColumn:columnIndex row:aRow],
+         indentationWidth = [self levelForRow:aRow] * [self indentationPerLevel];
+
+     frame.origin.x += indentationWidth;
+     frame.size.width -= indentationWidth;
+
+     return frame;
+ }
 @end
