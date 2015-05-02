@@ -185,12 +185,12 @@ var NUMainWindowControllerDefault,
     if (_visiblePrincipalModule)
         [self _hideCurrentPrincipalModule];
 
-    [aModule setCurrentParent:aParent];
-    [aModule willShow];
-
     [[aModule view] setFrame:[viewMainContainer bounds]];
     [viewMainContainer addSubview:[aModule view]];
     _visiblePrincipalModule = aModule;
+
+    [aModule setCurrentParent:aParent];
+    [aModule willShow];
 
     [[NUKitToolBar defaultToolBar] setTemporaryApplicationName:[[aModule class] moduleName]];
     [[NUKitToolBar defaultToolBar] setTemporaryApplicationIcon:[[aModule class] moduleIcon]];
