@@ -24,6 +24,11 @@
 
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 
++ (float)margin
+{
+    return 40.0;
+}
+
 - (void)setTabViewItem:(CPTabViewItem)anItem
 {
     if (!anItem)
@@ -65,7 +70,7 @@
 
 + (float)margin
 {
-    return 30.0;
+    return 20.0;
 }
 
 - (void)prepareTheme
