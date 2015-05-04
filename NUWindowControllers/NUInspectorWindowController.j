@@ -142,8 +142,8 @@ var NUInspectorWindowsRegistry = @{},
 
     [buttonOpenDoc setBordered:NO];
     [buttonOpenDoc setButtonType:CPMomentaryChangeButton];
-    [buttonOpenDoc setValue:NUImageInKit("button-help.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonOpenDoc setValue:NUImageInKit("button-help-pressed.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonOpenDoc setValue:NUImageInKit(@"button-help.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonOpenDoc setValue:NUImageInKit(@"button-help-pressed.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
 
     [tabViewMain setDelegate:self];
     _configure_nuage_tabview(tabViewMain, NO);
