@@ -34,6 +34,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     @outlet CPTextField     labelTitle;
     @outlet CPView          viewMultipleSelection;
     @outlet CPView          viewNoSelection;
+    @outlet CPView          viewLabel;
 
     id                      _delegate                       @accessors(getter=delegate);
     NUModule                _currentController              @accessors(getter=currentController);
@@ -55,6 +56,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
     [viewNoSelection setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [viewNoSelection setBackgroundColor:NUSkinColorWhite];
+
+    [viewLabel setAutoresizingMask:CPViewWidthSizable];
 
     [self _showController:nil forEditedObject:nil];
 }
@@ -140,6 +143,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     {
         [self setTitle:@""];
         [self setImage:nil];
+
         [self showNoSelectionView:YES];
         return;
     }
@@ -163,6 +167,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
         if ([viewNoSelection superview])
             return;
 
+        [viewLabel setBackgroundColor:NUSkinColorWhite];
         [viewNoSelection setFrame:[[self view] bounds]];
         [[self view] addSubview:viewNoSelection];
     }
@@ -171,6 +176,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
         if (![viewNoSelection superview])
             return;
 
+        [viewLabel setBackgroundColor:NUSkinColorGreyLight];
         [viewNoSelection removeFromSuperview];
     }
 }
