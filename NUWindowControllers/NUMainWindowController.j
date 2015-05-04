@@ -165,7 +165,7 @@ var NUMainWindowControllerDefault,
         width = windowFrame.size.width,
         height = windowFrame.size.height;
 
-    if (width <= 1024 || height <= 300)
+    if (width <= 1023 || height <= 300)
     {
         [toolBar setHidden:YES];
         [viewTooSmallWindowSize setFrame:[[self window] frame]];
