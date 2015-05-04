@@ -524,7 +524,7 @@ NUModuleTabViewModeIcon = 2;
                 [splitViewEditor setDelegate:self];
 
             if (viewEditorContainer)
-                viewEditorContainer._DOMElement.style.boxShadow = "0 0 20px #5E5F61";
+                viewEditorContainer._DOMElement.style.boxShadow = "0 0 10px " + [NUSkinColorGrey cssString];
         }
     }
 
