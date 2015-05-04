@@ -844,7 +844,7 @@ NUModuleTabViewModeIcon = 2;
     CPLog.debug("MODULE VISIBILIY: %@ is now visible", [self className]);
 
     if (![self isTableBasedModule])
-        [self showCurrentSubModules];
+        [self refreshActiveSubModules];
 
     [self reload];
 }
@@ -1727,7 +1727,10 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)_updateActiveSubModules
 {
-    _activeSubModules = [self currentActiveSubModules] || _subModules;
+    _activeSubModules = [self currentActiveSubModules];
+
+    if (![self _tabViewItemsNeedsUpdate])
+        return;
 
     var currentTabItems = [tabViewContent tabViewItems];
 
@@ -1736,7 +1739,24 @@ NUModuleTabViewModeIcon = 2;
 
     for (var i = 0, c = [_activeSubModules count]; i < c; i++)
         [tabViewContent addTabViewItem:[_activeSubModules[i] tabViewItem]];
+
+    [self _setCurrentParentForSubModules];
 }
+
+- (BOOL)_tabViewItemsNeedsUpdate
+{
+    var currentTabItems = [tabViewContent tabViewItems];
+
+    if ([_activeSubModules count] != [currentTabItems count])
+        return YES;
+
+    for (var i = [currentTabItems count] - 1; i >= 0; i--)
+        if ([currentTabItems[i] representedObject] != _activeSubModules[i])
+            return YES;
+
+    return NO;
+}
+
 
 - (void)setSubModules:(CPArray)someModules
 {
@@ -1791,15 +1811,14 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
-- (void)showCurrentSubModules
+- (void)refreshActiveSubModules
 {
     var previousSelectedIdentifier;
 
     if (tabViewContent)
         previousSelectedIdentifier = [[tabViewContent selectedTabViewItem] identifier];
 
-    [self _updateActiveSubModules];
-    [self _setCurrentParentForSubModules];
+    [self _updateActiveSubModules]
 
     if (tabViewContent)
     {
@@ -2665,7 +2684,7 @@ NUModuleTabViewModeIcon = 2;
     {
         [self hideCurrentMaskingView];
         [self moduleDidSelectObjects:_currentSelectedObjects];
-        [self showCurrentSubModules];
+        [self refreshActiveSubModules];
         [self updateModuleSubtitle];
     }
     else
