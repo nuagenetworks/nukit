@@ -35,8 +35,11 @@
 @global NUMainWindowController
 
 
-var NUMessagesWindowControllerDefault;
-
+var NUMessagesWindowControllerDefault,
+    NUMessagesWindowControllerButtonOKOffImage,
+    NUMessagesWindowControllerButtonOKOffPressedImage,
+    NUMessagesWindowControllerButtonCancelOffImage,
+    NUMessagesWindowControllerButtonCancelOffPressedImage;
 
 @implementation NUMessagesWindowController : CPWindowController
 {
@@ -56,11 +59,18 @@ var NUMessagesWindowControllerDefault;
 #pragma mark -
 #pragma mark Class Methods
 
++ (void)initialize
+{
+    NUMessagesWindowControllerButtonOKOffImage            = NUImageInKit(@"button-message-checkbox-ok-off.png", 16.0, 16.0);
+    NUMessagesWindowControllerButtonOKOffPressedImage     = NUImageInKit(@"button-message-checkbox-ok-off-pressed.png", 16.0, 16.0);
+    NUMessagesWindowControllerButtonCancelOffImage        = NUImageInKit(@"button-message-checkbox-cancel-off.png", 16.0, 16.0);
+    NUMessagesWindowControllerButtonCancelOffPressedImage = NUImageInKit(@"button-message-checkbox-cancel-off-pressed.png", 16.0, 16.0);
+}
+
 + (id)defaultController
 {
     return NUMessagesWindowControllerDefault;
 }
-
 
 #pragma mark -
 #pragma mark Initialization
@@ -99,13 +109,13 @@ var NUMessagesWindowControllerDefault;
     // buttons
     [buttonValidateAll setBordered:NO];
     [buttonValidateAll setButtonType:CPMomentaryChangeButton];
-    [buttonValidateAll setValue:CPImageInBundle(@"button-message-checkbox-ok-off.png", CGSizeMake(16.0, 16.0)) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonValidateAll setValue:CPImageInBundle(@"button-message-checkbox-ok-off-pressed.png", CGSizeMake(16.0, 16.0)) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonValidateAll setValue:NUMessagesWindowControllerButtonOKOffImage forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonValidateAll setValue:NUMessagesWindowControllerButtonOKOffPressedImage forThemeAttribute:@"image"inState:CPThemeStateHighlighted];
 
     [buttonCancelAll setBordered:NO];
     [buttonCancelAll setButtonType:CPMomentaryChangeButton];
-    [buttonCancelAll setValue:CPImageInBundle(@"button-message-checkbox-cancel-off.png", CGSizeMake(16.0, 16.0)) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonCancelAll setValue:CPImageInBundle(@"button-message-checkbox-cancel-off-pressed.png", CGSizeMake(16.0, 16.0)) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
+    [buttonCancelAll setValue:NUMessagesWindowControllerButtonCancelOffImage forThemeAttribute:@"image" inState:CPThemeStateNormal];
+    [buttonCancelAll setValue:NUMessagesWindowControllerButtonCancelOffPressedImage forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
 
     _viewBlur = [[CPView alloc] initWithFrame:CGRectMakeZero()];
     [_viewBlur setBackgroundColor:[CPColor whiteColor]];

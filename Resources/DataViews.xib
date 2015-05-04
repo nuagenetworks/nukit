@@ -61,7 +61,7 @@
                 <imageView id="1963">
                     <rect key="frame" x="10" y="27" width="23" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="1964"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="sad" id="1964"/>
                 </imageView>
                 <button id="1965" customClass="CPCheckBox">
                     <rect key="frame" x="13" y="31" width="16" height="16"/>
@@ -221,5 +221,6 @@
     </objects>
     <resources>
         <image name="icon-validation" width="64" height="64"/>
+        <image name="sad" width="64" height="64"/>
     </resources>
 </document>

@@ -45,10 +45,10 @@ var NUMessageDataViewImageCheckBoxOkStateOn,
 
 + (void)initialize
 {
-   NUMessageDataViewImageCheckBoxOkStateOn             = CPImageInBundle(@"button-message-checkbox-ok-on.png", CGSizeMake(16.0, 16.0));
-   NUMessageDataViewImageCheckBoxOkStateOff            = CPImageInBundle(@"button-message-checkbox-cancel-on.png", CGSizeMake(16.0, 16.0));
-   NUMessageDataViewImageCheckBoxOkStateOnPressed      = CPImageInBundle(@"button-message-checkbox-ok-on-pressed.png", CGSizeMake(16.0, 16.0));
-   NUMessageDataViewImageCheckBoxOkStateOffPressed     = CPImageInBundle(@"button-message-checkbox-cancel-on-pressed.png", CGSizeMake(16.0, 16.0));
+   NUMessageDataViewImageCheckBoxOkStateOn         = NUImageInKit(@"button-message-checkbox-ok-on.png", 16.0, 16.0);
+   NUMessageDataViewImageCheckBoxOkStateOff        = NUImageInKit(@"button-message-checkbox-cancel-on.png", 16.0, 16.0);
+   NUMessageDataViewImageCheckBoxOkStateOnPressed  = NUImageInKit(@"button-message-checkbox-ok-on-pressed.png", 16.0, 16.0);
+   NUMessageDataViewImageCheckBoxOkStateOffPressed = NUImageInKit(@"button-message-checkbox-cancel-on-pressed.png", 16.0, 16.0);
 }
 
 
