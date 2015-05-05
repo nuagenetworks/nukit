@@ -21,6 +21,8 @@
 @import <AppKit/CPImageView.j>
 @import <AppKit/CPViewAnimation.j>
 
+@import "NUSkin.j"
+
 @global CPApp
 
 
@@ -254,7 +256,7 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 
     var point = [self convertPointFromBase:[anEvent locationInWindow]];
 
-    if (!CGRectContainsPoint(CGRectInsetByInset([self frame], CGInsetMake(-100, 0, -100, 0)), point))
+    if (!CGRectContainsPoint(CGRectInsetByInset([self frame], CGInsetMake(-10, 0, -10, 0)), point))
     {
         [_timerShow invalidate];
         [self hideWithAnimation:_animates];
