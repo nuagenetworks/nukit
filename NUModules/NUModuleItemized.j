@@ -345,6 +345,7 @@
 
     if (conditionRootLevel)
     {
+        _lastExpandedRootModule = nil;
         [tableViewItems collapseAll];
         [self _showGroupingView:NO forItem:nil];
     }
