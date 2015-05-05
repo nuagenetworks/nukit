@@ -211,16 +211,23 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="jeJ-M2-YtU">
+                    <rect key="frame" x="8" y="14" width="28" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="marker-children" id="ZXn-4K-JoD"/>
+                </imageView>
             </subviews>
             <connections>
                 <outlet property="fieldName" destination="SIo-9B-7Wg" id="NQN-gK-PdM"/>
+                <outlet property="imageViewChildren" destination="jeJ-M2-YtU" id="Fi1-Fw-syn"/>
                 <outlet property="viewIcon" destination="taF-iX-z4r" id="NlR-ij-a1H"/>
             </connections>
-            <point key="canvasLocation" x="-271.5" y="617"/>
+            <point key="canvasLocation" x="-263.5" y="621"/>
         </customView>
     </objects>
     <resources>
         <image name="icon-validation" width="64" height="64"/>
+        <image name="marker-children" width="13.439999580383301" height="13.439999580383301"/>
         <image name="sad" width="64" height="64"/>
     </resources>
 </document>

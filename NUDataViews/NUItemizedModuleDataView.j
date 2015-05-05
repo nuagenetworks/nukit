@@ -23,12 +23,13 @@
 
 @implementation NUItemizedModuleDataView : NUAbstractDataView
 {
+    @outlet CPImageView imageViewChildren;
     @outlet CPImageView viewIcon;
     @outlet CPTextField fieldName;
 
-    CPColor             _iconBorderColor    @accessors(property=iconBorderColor);
-    CPColor             _textColor          @accessors(property=textColor);
-    CPColor             _selectedTextColor  @accessors(property=selectedTextColor);
+    CPColor             _iconBorderColor                @accessors(property=iconBorderColor);
+    CPColor             _textColor                      @accessors(property=textColor);
+    CPColor             _selectedTextColor              @accessors(property=selectedTextColor);
 }
 
 - (void)bindDataView
@@ -45,6 +46,8 @@
 
     if (!NUKitParameterShowDebugToolTips)
         [self setToolTip:[[[_objectValue module] class] moduleName]];
+
+    [imageViewChildren setHidden:![[_objectValue children] count]]
 }
 
 
@@ -81,11 +84,12 @@
 {
     if (self = [super initWithCoder:aCoder])
     {
-        fieldName          = [aCoder decodeObjectForKey:@"fieldName"];
-        viewIcon           = [aCoder decodeObjectForKey:@"viewIcon"];
-        _iconBorderColor   = [aCoder decodeObjectForKey:@"_iconBorderColor"];
-        _textColor         = [aCoder decodeObjectForKey:@"textColor"];
-        _selectedTextColor = [aCoder decodeObjectForKey:@"_selectedTextColor"];
+        fieldName                  = [aCoder decodeObjectForKey:@"fieldName"];
+        imageViewChildren          = [aCoder decodeObjectForKey:@"imageViewChildren"];
+        viewIcon                   = [aCoder decodeObjectForKey:@"viewIcon"];
+        _iconBorderColor           = [aCoder decodeObjectForKey:@"_iconBorderColor"];
+        _selectedTextColor         = [aCoder decodeObjectForKey:@"_selectedTextColor"];
+        _textColor                 = [aCoder decodeObjectForKey:@"textColor"];
 
         viewIcon._DOMElement.style.borderRadius = @"2px";
         viewIcon._DOMImageElement.style.borderRadius = @"2px";
@@ -99,10 +103,11 @@
     [super encodeWithCoder:aCoder];
 
     [aCoder encodeObject:fieldName forKey:@"fieldName"];
+    [aCoder encodeObject:imageViewChildren forKey:@"imageViewChildren"];
     [aCoder encodeObject:viewIcon forKey:@"viewIcon"];
     [aCoder encodeObject:_iconBorderColor forKey:@"_iconBorderColor"];
-    [aCoder encodeObject:_textColor forKey:@"_textColor"];
     [aCoder encodeObject:_selectedTextColor forKey:@"_selectedTextColor"];
+    [aCoder encodeObject:_textColor forKey:@"_textColor"];
 }
 
 @end
