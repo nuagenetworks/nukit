@@ -1,5 +1,5 @@
 /*
-*   Filename:         NUNullToNoInformationTransormer.j
+*   Filename:         NUNullToNoInformationTransformer.j
 *   Created:          Thu Feb 27 12:11:36 PST 2014
 *   Author:           Antoine Mercadal <antoine.mercadal@alcatel-lucent.com>
 *   Description:      VSA
