@@ -43,8 +43,13 @@ NUKitParameterCat                  = NO;
 NUKitParameterExperimentalMode     = NO;
 NUKitParameterVeryExperimentalMode = NO;
 
-var NUKitDelegate_didLogin_     = 1 << 1,
-    NUKitDelegate_willLogout_   = 1 << 2;
+var NUKitDelegate_didLogin_             = 1 << 1,
+    NUKitDelegate_willLogout_           = 1 << 2,
+    NUKitDelegate_shouldLogin_          = 1 << 3,
+    NUKitDelegate_improperLoginReason_  = 1 << 4,
+    NUKitDelegate_shouldLogout_         = 1 << 5,
+    NUKitDelegate_improperLogoutReason_ = 1 << 6;
+
 
 
 @implementation NUKit : CPObject
@@ -362,6 +367,21 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
     if ([_delegate respondsToSelector:@selector(applicationWillLogout:)])
         _implementedDelegateMethods |= NUKitDelegate_willLogout_;
+
+    if ([_delegate respondsToSelector:@selector(applicationShouldLogin:)])
+        _implementedDelegateMethods |= NUKitDelegate_shouldLogin_;
+
+    if ([_delegate respondsToSelector:@selector(applicationShouldLogin:)])
+        _implementedDelegateMethods |= NUKitDelegate_shouldLogin_;
+
+    if ([_delegate respondsToSelector:@selector(applicationImproperLoginReason:)])
+        _implementedDelegateMethods |= NUKitDelegate_improperLoginReason_;
+
+    if ([_delegate respondsToSelector:@selector(applicationShouldLogout:)])
+        _implementedDelegateMethods |= NUKitDelegate_shouldLogout_;
+
+    if ([_delegate respondsToSelector:@selector(applicationImproperLogoutReason:)])
+        _implementedDelegateMethods |= NUKitDelegate_improperLogoutReason_;
 }
 
 - (void)_sendDelegateDidLogin
@@ -374,6 +394,34 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 {
     if (_implementedDelegateMethods & NUKitDelegate_willLogout_)
         [_delegate applicationWillLogout:self];
+}
+
+- (BOOL)_sendDelegateShouldLogin
+{
+    if (_implementedDelegateMethods & NUKitDelegate_shouldLogin_)
+        return [_delegate applicationShouldLogin:self];
+
+    return YES;
+}
+
+- (CPString)_sendDelegateImproperLoginReason
+{
+    if (_implementedDelegateMethods & NUKitDelegate_improperLoginReason_)
+        return [_delegate applicationImproperLoginReason:self];
+}
+
+- (BOOL)_sendDelegateShouldLogout
+{
+    if (_implementedDelegateMethods & NUKitDelegate_shouldLogout_)
+        return [_delegate applicationShouldLogout:self];
+
+    return YES;
+}
+
+- (CPString)_sendDelegateImproperLogoutReason
+{
+    if (_implementedDelegateMethods & NUKitDelegate_improperLogoutReason_)
+        return [_delegate applicationImproperLogoutReason:self];
 }
 
 
@@ -510,7 +558,8 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     [[NURESTLoginController defaultController] setURL:URL];
     [[NURESTLoginController defaultController] setAPIKey:[[self RESTUser] APIKey]];
 
-    [self _continueLogin];
+    if ([self _sendDelegateShouldLogin])
+        [self _continueLogin];
 }
 
 - (void)_didFetchUser:(id)anUser connection:(NURESTConnection)aConnection
@@ -520,7 +569,13 @@ var NUKitDelegate_didLogin_     = 1 << 1,
     switch ([aConnection responseCode])
     {
         case NURESTConnectionResponseCodeSuccess:
-            [self _continueLogin];
+            if ([self _sendDelegateShouldLogin])
+                [self _continueLogin];
+            else
+            {
+                [[self loginWindowController] shakeWindow];
+                [[self loginWindowController] setMessage:[self _sendDelegateImproperLoginReason]];
+            }
             break;
 
         case NURESTConnectionResponseCodeNotFound:
@@ -549,7 +604,10 @@ var NUKitDelegate_didLogin_     = 1 << 1,
 
 - (void)performLogout
 {
-    [self performLogoutWithAlert:nil];
+    if ([self _sendDelegateShouldLogout])
+        [self performLogoutWithAlert:nil];
+    else
+        alert([self _sendDelegateImproperLogoutReason])
 }
 
 - (void)performLogoutWithAlert:(CPAlert)anAlert
