@@ -642,12 +642,9 @@ NUModuleTabViewModeIcon = 2;
     return _currentContext;
 }
 
-- (CPArray)currentAvailableContexts
+- (CPArray)moduleCurrentActiveContexts
 {
-    if (!_currentContext)
-        return [];
-
-    return [_currentContext];
+    return _currentContext ? [_currentContext]: [];
 }
 
 
@@ -969,7 +966,7 @@ NUModuleTabViewModeIcon = 2;
 
     if ([[self class] automaticContextManagement])
     {
-        var contexts = [self currentAvailableContexts];
+        var contexts = [self moduleCurrentActiveContexts];
 
         for (var i = [contexts count] - 1; i >= 0; i--)
             [self _reloadUsingContext:contexts[i]];
@@ -1170,7 +1167,7 @@ NUModuleTabViewModeIcon = 2;
 - (void)_updateGrandTotal
 {
     var grandTotal  = 0,
-        contexts    = [self currentAvailableContexts];
+        contexts    = [self moduleCurrentActiveContexts];
 
     for (var i = [contexts count] - 1; i >= 0; i--)
         grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] totalCount];
