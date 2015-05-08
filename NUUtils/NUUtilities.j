@@ -272,12 +272,12 @@ function _stringLenBetween(string, min, max)
         return;
 
     if (!string)
-        return  "Lenght must be longer than 0";
+        return  "Length must be longer than 0";
 
     var l = string.length,
         success = l >= min && l <= max;
 
-    return success ? null : "Lenght must be between " + min + " and " + max + " characters";
+    return success ? null : "Length must be between " + min + " and " + max + " characters";
 }
 
 function _maxLength(string, size)

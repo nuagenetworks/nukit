@@ -262,7 +262,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 {
     var value = [self valueForApplicationArgument:aString];
 
-    return [value isKindOfClass:CPString] && [value lenght] ? value : nil;
+    return [value isKindOfClass:CPString] && [value length] ? value : nil;
 }
 
 - (void)parseStandardApplicationArguments
@@ -438,7 +438,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 - (CPURL)RESTBaseURL
 {
     var baseURLString   = [[CPUserDefaults standardUserDefaults] objectForKey:@"NUAPIURL"],
-        baseURL         = [CPURL URLWithString:baseURLString[baseURLString.lenght - 1] != @"/" ? baseURLString + @"/" : baseURLString],
+        baseURL         = [CPURL URLWithString:baseURLString[baseURLString.length - 1] != @"/" ? baseURLString + @"/" : baseURLString],
         APIVersion      = @"v" + [[CPBundle mainBundle] objectForInfoDictionaryKey:@"NUAPIVersion"].replace(".", "_"),
         finalRESTURL;
 
