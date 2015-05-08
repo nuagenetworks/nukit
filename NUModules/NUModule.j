@@ -111,7 +111,6 @@ NUModuleTabViewModeIcon = 2;
     BOOL                            _enableAdvancedSearch                   @accessors(property=enableAdvancedSearch);
     BOOL                            _isListeningForPush                     @accessors(getter=isListeningForPush);
     BOOL                            _isVisible                              @accessors(getter=isVisible);
-    BOOL                            _loadUsingAllRegisteredContexts         @accessors(property=loadUsingAllRegisteredContexts);
     BOOL                            _showsInExternalWindow                  @accessors(property=showsInExternalWindow);
     BOOL                            _showsInPopover                         @accessors(property=showsInPopover);
     BOOL                            _stickyEditor                           @accessors(property=stickyEditor);
@@ -271,7 +270,6 @@ NUModuleTabViewModeIcon = 2;
     _isListeningForEditorSelectionChangeNotification    = NO;
     _isObservingScrollViewBounds                        = NO;
     _latestPageLoaded                                   = -1;
-    _loadUsingAllRegisteredContexts                     = NO;
     _masterGrouping                                     = nil;
     _masterOrdering                                     = nil;
     _modulePopoverBaseSize                              = [[self view] frameSize];
@@ -644,6 +642,14 @@ NUModuleTabViewModeIcon = 2;
     return _currentContext;
 }
 
+- (CPArray)currentAvailableContexts
+{
+    if (!_currentContext)
+        return [];
+
+    return [_currentContext];
+}
+
 
 #pragma mark -
 #pragma mark Module Popover Embededed Management
@@ -963,14 +969,10 @@ NUModuleTabViewModeIcon = 2;
 
     if ([[self class] automaticContextManagement])
     {
-        if (_loadUsingAllRegisteredContexts && !_usesPagination)
-        {
-            var contexts = [_contextRegistry allValues];
-            for (var i = [contexts count] - 1; i >= 0; i--)
-                [self _reloadUsingContext:contexts[i]];
-        }
-        else if (_currentContext)
-            [self _reloadUsingContext:_currentContext];
+        var contexts = [self currentAvailableContexts];
+
+        for (var i = [contexts count] - 1; i >= 0; i--)
+            [self _reloadUsingContext:contexts[i]];
     }
 
     [self moduleDidReload];
@@ -1167,18 +1169,11 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)_updateGrandTotal
 {
-    var grandTotal = 0;
+    var grandTotal  = 0,
+        contexts    = [self currentAvailableContexts];
 
-    if (_loadUsingAllRegisteredContexts)
-    {
-        var contexts = [_contextRegistry allValues];
-        for (var i = [contexts count] - 1; i >= 0; i--)
-            grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] totalCount];
-    }
-    else
-    {
-        grandTotal = [[_currentParent valueForKeyPath:[_currentContext fetcherKeyPath]] totalCount];
-    }
+    for (var i = [contexts count] - 1; i >= 0; i--)
+        grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] totalCount];
 
     [self setTotalNumberOfEntities:grandTotal];
 }
