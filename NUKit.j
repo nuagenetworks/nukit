@@ -250,12 +250,19 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 #pragma mark -
 #pragma mark Arguments Parsing
 
-- (CPString)valueForApplicationArgument:(CPString)aString
+- (id)valueForApplicationArgument:(CPString)aString
 {
    if (window.location.search.indexOf(aString) == -1)
        return nil;
 
    return _get_query_parameter_with_name(aString) || YES;
+}
+
+- (CPString)stringValueForApplicationArgument:(CPString)aString
+{
+    var value = [self valueForApplicationArgument:aString];
+
+    return [value isKindOfClass:CPString] && [value lenght] ? value : nil;
 }
 
 - (void)parseStandardApplicationArguments
@@ -487,11 +494,11 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
 - (void)manageLoginWindow
 {
-    var userInfo = [self valueForApplicationArgument:@"userinfo"],
-        user     = [self valueForApplicationArgument:@"user"],
-        org      = [self valueForApplicationArgument:@"org"],
-        pass     = [self valueForApplicationArgument:@"pass"],
-        api      = [self valueForApplicationArgument:@"api"] || @"auto";
+    var userInfo = [self stringValueForApplicationArgument:@"userinfo"],
+        user     = [self stringValueForApplicationArgument:@"user"],
+        org      = [self stringValueForApplicationArgument:@"org"],
+        pass     = [self stringValueForApplicationArgument:@"pass"],
+        api      = [self stringValueForApplicationArgument:@"api"] || @"auto";
 
     if (userInfo && api && org)
         [self performAutoLoginWithUserInfo:userInfo organization:org url:api];
