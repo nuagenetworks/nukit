@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14E17e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NUMainWindowController">
@@ -32,7 +32,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" id="67">
-                                <rect key="frame" x="23" y="7" width="656" height="14"/>
+                                <rect key="frame" x="23" y="9" width="656" height="14"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="copyright goes here" id="70">
                                     <font key="font" metaFont="smallSystem"/>
@@ -41,7 +41,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField toolTip="This is you!" verticalHuggingPriority="750" id="341">
-                                <rect key="frame" x="23" y="7" width="120" height="14"/>
+                                <rect key="frame" x="23" y="9" width="120" height="14"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Loading..." id="342">
                                     <font key="font" metaFont="smallSystem"/>
@@ -50,7 +50,7 @@
                                 </textFieldCell>
                             </textField>
                             <imageView id="520">
-                                <rect key="frame" x="6" y="6" width="16" height="16"/>
+                                <rect key="frame" x="6" y="8" width="16" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="521"/>
                             </imageView>
