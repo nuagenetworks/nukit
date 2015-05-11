@@ -824,10 +824,10 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
             for (var i = [serverErrors count] - 1; i >= 0; i--)
             {
-                var error = serverErrors[i],
-                    propertyName = error.property,
+                var error            = serverErrors[i],
+                    propertyName     = [_editedObject localKeyPathForRESTKeyPath:error.property],
                     errorDescription = error.descriptions[0].description,
-                    errorTitle = error.descriptions[0].title;
+                    errorTitle       = error.descriptions[0].title;
 
                 if (propertyName == @"" || !propertyName)
                     propertyName = @"serverError";
