@@ -333,7 +333,12 @@ computeRelativeRectOfSelectedRow = function(tableView)
                     break;
 
         if (control)
+        {
             [_bindedControlsCache setObject:control forKey:aName];
+
+            if ([control isKindOfClass:CPTextField] && ![control isEditable])
+                [control setLineBreakMode:CPLineBreakByTruncatingTail];
+        }
     }
 
     return [_bindedControlsCache objectForKey:aName];
@@ -896,8 +901,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
         if (labelView)
         {
-            [labelView setStringValue:title];
-            [labelView setToolTip:description];
+            [labelView setStringValue:description];
+            [labelView setToolTip:title];
         }
 
         // if we don't have a field view and we are checking for "address" or "netmask" then
