@@ -327,6 +327,13 @@
     [tableViewItems addSubview:_viewItemGroup positioned:CPWindowBelow relativeTo:nil];
 }
 
+- (void)_continueTableViewItemsSelectionChange:(CPIndexSet)selectionIndexes
+{
+    _overrideShouldHide = YES;
+    [tableViewItems selectRowIndexes:selectionIndexes byExtendingSelection:NO];
+    [self _changeSelection:self];
+}
+
 
 #pragma mark -
 #pragma mark Actions
@@ -402,6 +409,12 @@
 {
     if ([[tableViewItems itemAtRow:[proposedIndexes firstIndex]] isSeparator])
         return [CPIndexSet new];
+
+    if (![[self visibleSubModule] shouldHide] && !_overrideShouldHide)
+    {
+        [self _showPendingChangeWithDiscardSelector:@selector(_continueTableViewItemsSelectionChange:) nextSelection:proposedIndexes];
+        return [CPIndexSet new];
+    }
 
     return proposedIndexes;
 }
