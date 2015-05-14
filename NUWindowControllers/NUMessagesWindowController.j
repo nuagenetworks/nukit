@@ -271,6 +271,12 @@ var NUMessagesWindowControllerDefault,
     [[NUKit kit] unlockCurrentPopover];
 }
 
+- (IBAction)cancel:(id)aSender
+{
+    [self setCancelAllNotification:aSender];
+    [self sendReply:self];
+}
+
 - (IBAction)sendReply:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
@@ -289,7 +295,7 @@ var NUMessagesWindowControllerDefault,
     [self close:nil];
 }
 
-- (IBAction)sendValidateAllNotification:(id)aSender
+- (IBAction)setValidateAllNotification:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
     {
@@ -299,7 +305,7 @@ var NUMessagesWindowControllerDefault,
     }
 }
 
-- (IBAction)sendCancelAllNotification:(id)aSender
+- (IBAction)setCancelAllNotification:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
     {

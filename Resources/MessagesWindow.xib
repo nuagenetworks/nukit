@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14E7f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14E17e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
     </dependencies>
@@ -103,7 +103,7 @@ Gw
 </string>
                         </buttonCell>
                         <connections>
-                            <action selector="close:" target="-2" id="24"/>
+                            <action selector="cancel:" target="-2" id="urg-26-6aN"/>
                         </connections>
                     </button>
                     <button toolTip="Cancel all confirmations" id="81">
@@ -114,7 +114,7 @@ Gw
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="sendCancelAllNotification:" target="-2" id="86"/>
+                            <action selector="setCancelAllNotification:" target="-2" id="86"/>
                         </connections>
                     </button>
                     <button toolTip="Validate all confirmations" id="83">
@@ -125,7 +125,7 @@ Gw
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="sendValidateAllNotification:" target="-2" id="85"/>
+                            <action selector="setValidateAllNotification:" target="-2" id="85"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="neD-0j-kXT">
