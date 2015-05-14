@@ -123,6 +123,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     BOOL            _bindingsDirty;
     CGSize          _basePopoverSize;
     CPDictionary    _bindedControlsCache;
+    CPString        _currentTransactionID;
     CPTextField     _fieldTitle;
     CPView          _viewSpinner;
     id              _initialFirstResponder;
@@ -739,8 +740,6 @@ computeRelativeRectOfSelectedRow = function(tableView)
             [_buttonSave setTarget:self];
             [_buttonSave setAction:@selector(createEditedObject:)];
             break;
-
-
     }
 
     var relativeRect;
@@ -949,6 +948,11 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     for (var i = [properties count] - 1; i >= 0; i--)
         [_editedObject addObserver:self forKeyPath:properties[i] options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+
+    [[CPNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_didReceiveRESTConfirmationCancelNotification:)
+                                                 name:NURESTConfirmationCancelNotification
+                                               object:nil];
 }
 
 - (void)_removeObservers
@@ -960,6 +964,11 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     for (var i = [properties count] - 1; i >= 0; i--)
         [_editedObject removeObserver:self forKeyPath:properties[i]];
+
+    [[CPNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NURESTConfirmationCancelNotification
+                                                  object:nil];
+
 }
 
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)context
@@ -977,6 +986,15 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [self setSavingEnabled:_modified && [_currentValidation success]];
 }
 
+- (void)_didReceiveRESTConfirmationCancelNotification:(CPNotification)aNotification
+{
+    if ([[[aNotification object] connection] transactionID] == _currentTransactionID)
+    {
+        [self setModified:YES];
+        [self setSavingEnabled:YES];
+        [self showLoading:NO];
+    }
+}
 
 #pragma mark -
 #pragma mark REST Management
@@ -988,6 +1006,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
     var invocation = [CPInvocation invocationWithMethodSignature:@"RESTInvocation"];
     [invocation setArguments:someArguments];
     [invocation invoke];
+
+    _currentTransactionID = [invocation returnValue];
 }
 
 - (void)createRESTObject:(NURESTObject)anObject
