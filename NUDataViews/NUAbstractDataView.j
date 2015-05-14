@@ -80,6 +80,11 @@
     if (_objectValue === anObject)
         return;
 
+    if (anObject === nil)
+    {
+        [self unbindDataView];
+    }
+
     _objectValue = anObject;
 
     if (_objectValue)
@@ -88,10 +93,6 @@
         [self _defineDebugToolTips];
         [self _showExternalObjectMarker];
         [self bindDataView];
-    }
-    else
-    {
-        [self unbindDataView];
     }
 }
 
