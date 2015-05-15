@@ -1,11 +1,3 @@
-@font-face
-{
-    font-family: 'nes';
-    font-style: normal;
-    font-weight: 700;
-    src: local('PressStart2P'), local('PressStart2P'), url(Fonts/PressStart2P.woff) format('woff');
-}
-
 html
 {
     margin:0;

@@ -17,8 +17,6 @@
 
 @import "NUIPUtils.j"
 
-// @import "../Resources/FileSaver.js"
-
 
 function _configure_nuage_tabview(tabView)
 {
