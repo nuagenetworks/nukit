@@ -17,6 +17,7 @@
 @import "NUNullToBoolTransformer.j"
 @import "NUNullToGreyColorTransformer.j"
 @import "NUNullToNoInformationTransformer.j"
+@import "NUNullToNotApplicableStringTransformer.j"
 @import "NUNumberToPercentageTransformer.j"
 @import "NUNumericValueToBytesTransformer.j"
 @import "NUNumericValueToKbTransformer.j"
