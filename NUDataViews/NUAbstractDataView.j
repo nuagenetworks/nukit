@@ -221,10 +221,10 @@
     else
         _cucappID(self, [_objectValue description] || [_objectValue UID]);
 
-    [self defineAdditionCucappIdentifier];
+    [self defineAdditionalCucappIdentifier];
 }
 
-- (void)defineAdditionCucappIdentifier
+- (void)defineAdditionalCucappIdentifier
 {
 
 }
