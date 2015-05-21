@@ -293,7 +293,7 @@ function _emailAddress(email)
         return "is not a valid email";
 
     email = email.replace( /\s/g, "");
-    var re = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"),
+    var re = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,4}$"),
         success = re.test(email);
     return success ? null : "Not a valid email";
 }
