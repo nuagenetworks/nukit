@@ -1170,7 +1170,7 @@ NUModuleTabViewModeIcon = 2;
         contexts    = [self moduleCurrentActiveContexts];
 
     for (var i = [contexts count] - 1; i >= 0; i--)
-        grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] totalCount];
+        grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] currentTotalCount];
 
     [self setTotalNumberOfEntities:grandTotal];
 }
@@ -2849,7 +2849,7 @@ NUModuleTabViewModeIcon = 2;
     [self _saveCurrentSelection];
     [self _updateGrandTotal];
 
-    _latestSortDescriptors = [aFetcher latestSortDescriptors];
+    _latestSortDescriptors = [aFetcher currentSortDescriptors];
     _numberOfRemainingContextsToLoad--;
 
     if ([_categories count] > 0)
