@@ -61,7 +61,7 @@
 - (void)setErrorTitle:(CPString)aTitle description:(CPString)aDescription forProperty:(CPString)aPropertyName
 {
     [_errors setObject:aTitle forKey:aPropertyName];
-    [_descriptions setObject:aDescription || @"" forKey:aPropertyName];
+    [_descriptions setObject:aDescription || aTitle forKey:aPropertyName];
 }
 
 - (void)setErrorTitle:(CPString)aTitle forProperty:(CPString)aPropertyName
