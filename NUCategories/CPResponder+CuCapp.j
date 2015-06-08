@@ -17,6 +17,7 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPResponder.j>
+@import <AppKit/CPMenuItem.j>
 
 @global NUKitParameterShowDebugToolTips
 

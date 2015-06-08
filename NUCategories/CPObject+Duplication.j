@@ -15,7 +15,7 @@
 *
 */
 
-@import <Foundation/CPObject.j>
+@import <Foundation/Foundation.j>
 
 
 @implementation CPObject (duplicate)
