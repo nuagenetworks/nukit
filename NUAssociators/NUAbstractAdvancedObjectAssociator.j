@@ -122,24 +122,16 @@
         }
         else
             [self setModified:NO];
-
-        // and we do nothing.
-        return;
     }
-
-    // we call this to let the subclasses a chance to update the association object
-    [self updateAssociationObject:_currentAssociationObject withAssociatedObject:_currentAssociatedObject];
-
-    [_currentContext setEditedObject:_currentAssociationObject];
-
-    // otherwise, by default we don't mark the stuff for creation
-    var needsCreation = ![_currentAssociationObject ID];
-
-    // we create or update the association object
-    if (needsCreation)
-        [_currentContext createEditedObject:self];
     else
-        [_currentContext updateEditedObject:self];
+    {
+        [self updateAssociationObject:[_currentContext editedObject] withAssociatedObject:_currentAssociatedObject];
+
+        if (![_currentAssociationObject ID])
+            [_currentContext createEditedObject:self];
+        else
+            [_currentContext updateEditedObject:self];
+    }
 }
 
 
@@ -149,6 +141,8 @@
 - (void)fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
     _currentAssociationObject = [someContents firstObject];
+    [_currentContext setEditedObject:_currentAssociationObject]
+
     [self didUpdateAssociatedObject:_currentAssociationObject];
 
     if (_currentAssociationObject)
@@ -208,7 +202,10 @@
         [self _updateDataViewWithAssociatedObject:_currentAssociatedObject];
 
         if (!_currentAssociationObject)
+        {
             _currentAssociationObject = [[self classForAssociationObject] new];
+            [_currentContext setEditedObject:_currentAssociationObject]
+        }
 
         [self didUpdateAssociatedObject:_currentAssociationObject];
         [self _sendDelegateDidAssociatorChangeAssociation];
