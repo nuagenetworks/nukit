@@ -60,6 +60,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
     [viewLabel setAutoresizingMask:CPViewWidthSizable];
 
+    [labelTitle setObjectValue:@""];
     [self _showController:nil forEditedObject:nil];
 }
 
