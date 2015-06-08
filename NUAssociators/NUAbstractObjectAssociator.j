@@ -225,10 +225,6 @@ var BUTTONS_SIZE = 12;
 #pragma mark -
 #pragma mark Internal Subclass Delegates
 
-- (void)didUpdateAssociatedObject:(id)anObject
-{
-}
-
 - (void)didFetchAssociatedObject:(id)anObject
 {
 }

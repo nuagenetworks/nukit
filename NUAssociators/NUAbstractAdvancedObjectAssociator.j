@@ -100,6 +100,8 @@
 - (IBAction)removeCurrentAssociatedObject:(id)aSender
 {
     [self _updateDataViewWithAssociatedObject:nil];
+    [self _sendDelegateDidAssociatorChangeAssociation];
+    [self _sendDelegateDidAssociatorRemoveAssociation];
     [self didUpdateAssociatedObject:nil];
     [self setModified:YES];
 }
@@ -209,6 +211,8 @@
             _currentAssociationObject = [[self classForAssociationObject] new];
 
         [self didUpdateAssociatedObject:_currentAssociationObject];
+        [self _sendDelegateDidAssociatorChangeAssociation];
+        [self _sendDelegateDidAssociatorAddAssociation];
         [self setModified:YES];
     }
 
@@ -217,15 +221,11 @@
 
 - (void)moduleContext:(NUModuleContext)aContext didSaveObject:(id)anObject connection:(NURESTConnection)aConnection
 {
-    [self _sendDelegateDidAssociatorChangeAssociation];
-    [self _sendDelegateDidAssociatorAddAssociation];
     [self setModified:NO];
 }
 
 - (void)moduleContext:(NUModuleContext)aContext didDeleteObject:(id)anObject connection:(NURESTConnection)aConnection
 {
-    [self _sendDelegateDidAssociatorChangeAssociation];
-    [self _sendDelegateDidAssociatorRemoveAssociation];
     [self setModified:NO];
 }
 
