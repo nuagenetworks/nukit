@@ -3394,10 +3394,10 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)splitView:(CPSplitView)aSplitView resizeSubviewsWithOldSize:(CGSize)oldSize
 {
+    [aSplitView adjustSubviews];
+
     if (aSplitView != splitViewMain)
         return;
-    debugger;
-    [aSplitView adjustSubviews];
 
     [aSplitView setPosition:[[[aSplitView subviews] firstObject] frameSize].width ofDividerAtIndex:0];
 }
