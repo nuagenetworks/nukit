@@ -3392,6 +3392,16 @@ NUModuleTabViewModeIcon = 2;
     return (proposedMax <= _autoResizeSplitViewSize) ? _autoResizeSplitViewSize : proposedMax;
 }
 
+- (void)splitView:(CPSplitView)aSplitView resizeSubviewsWithOldSize:(CGSize)oldSize
+{
+    if (aSplitView != splitViewMain)
+        return;
+    debugger;
+    [aSplitView adjustSubviews];
+
+    [aSplitView setPosition:[[[aSplitView subviews] firstObject] frameSize].width ofDividerAtIndex:0];
+}
+
 
 #pragma mark -
 #pragma mark KVO Observers
