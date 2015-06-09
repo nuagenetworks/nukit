@@ -3098,14 +3098,15 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)updateEditorControllerWithObjects:(CPArray)someObjects
 {
-    var singleSelection     = [someObjects count] == 1,
-        multipleSelection   = [someObjects count] > 1,
-        firstObject         = singleSelection ? [someObjects firstObject] : nil,
-        editorTitle         = singleSelection ? [self moduleEditorTitleForObject:firstObject] : @"",
-        editorImage         = singleSelection ? [self moduleEditorImageTitleForObject:firstObject] : nil;
+    var singleSelection         = [someObjects count] == 1,
+        multipleSelection       = [someObjects count] > 1,
+        firstObject             = singleSelection ? [someObjects firstObject] : nil,
+        editorTitleKeyPath      = singleSelection ? [self moduleEditorTitleKeyPathForObject:firstObject] : @"",
+        editorTitleTransformer  = [self moduleEditorTitleTransformer],
+        editorImage             = singleSelection ? [self moduleEditorImageTitleForObject:firstObject] : nil;
 
     [editorController setCurrentParent:firstObject];
-    [editorController setTitle:editorTitle];
+    [editorController setTitleFromKeyPath:editorTitleKeyPath ofObject:firstObject transformer:editorTitleTransformer];
     [editorController setImage:editorImage];
 
     if (multipleSelection)
@@ -3137,9 +3138,14 @@ NUModuleTabViewModeIcon = 2;
 {
 }
 
-- (CPString)moduleEditorTitleForObject:(id)anObject
+- (id)moduleEditorTitleTransformer
 {
-    return [anObject name];
+    return nil;
+}
+
+- (CPString)moduleEditorTitleKeyPathForObject:(id)anObject
+{
+    return @"name"
 }
 
 - (CPImage)moduleEditorImageTitleForObject:(id)anObject

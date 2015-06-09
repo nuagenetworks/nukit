@@ -24,6 +24,7 @@
 
 @class NUModule
 
+@global NUNullDescriptionTransformerName
 
 var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 1;
 
@@ -31,7 +32,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 @implementation NUEditorsViewController : CPViewController
 {
     @outlet CPImageView     imageTitle;
-    @outlet CPTextField     labelTitle;
+    @outlet CPTextField     labelTitle                      @accessors(property=labelTitle);
     @outlet CPView          viewMultipleSelection;
     @outlet CPView          viewNoSelection;
     @outlet CPView          viewLabel;
@@ -59,6 +60,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
     [viewLabel setAutoresizingMask:CPViewWidthSizable];
 
+    [labelTitle setObjectValue:@""];
     [self _showController:nil forEditedObject:nil];
 }
 
@@ -73,17 +75,28 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [imageTitle setImage:anImage];
 }
 
-- (void)setTitle:(CPString)aTitle
+- (void)setTitleFromKeyPath:(CPString)aKeyPath ofObject:(id)anObject transformer:(id)aTransformer
 {
-    if (!labelTitle)
+    [self resetLabelTitle];
+
+    if (!aKeyPath)
         return;
 
-    [labelTitle setStringValue:aTitle];
+    if (!anObject)
+        return;
+
+    [labelTitle bind:CPValueBinding toObject:anObject withKeyPath:aKeyPath options:aTransformer];
 }
 
 
 #pragma mark -
 #pragma mark Utilities
+
+- (void)resetLabelTitle
+{
+    [labelTitle unbind:CPValueBinding];
+    [labelTitle setObjectValue:@""];
+}
 
 - (void)registerEditor:(NUModule)anEditor forObjectsWithRESTName:(CPString)aRESTName
 {
@@ -96,14 +109,15 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 - (void)setCurrentParent:(NURESTObject)anObject
 {
+    if (anObject == [self currentParent])
+        return;
+
     if (!anObject)
     {
+        [self resetLabelTitle];
         [self _showController:nil forEditedObject:nil];
         return;
     }
-
-    if (anObject == [self currentParent])
-        return;
 
     var controller = [_editorsRegistry objectForKey:[anObject RESTName]];
 
