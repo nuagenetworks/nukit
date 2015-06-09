@@ -781,30 +781,16 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
 - (void)_makeRelatedFieldFirstResponderAccordingToCurrentValidation
 {
-    var property           = [[[_currentValidation errors] allKeys] firstObject],
-        relatedField       = [_editionView subviewWithTag:property recursive:_searchForTagsRecursively],
-        relatedEditionView = _editionView;
+    var property    = [[[_currentValidation errors] allKeys] firstObject],
+        control     = [self _controlForProperty:property];
 
-    if (!relatedField)
-    {
-        for (var i = [_additionalEditionViews count] - 1; i >= 0; i--)
-        {
-            var editionView = _additionalEditionViews[i],
-                field       = [editionView subviewWithTag:property recursive:_searchForTagsRecursively];
-
-            if (field)
-            {
-                relatedField = field;
-                relatedEditionView = editionView;
-                break;
-            }
-        }
-    }
+    if (!control && (property == @"address" || property == @"netmask"))
+        control = [self _controlForProperty:@"CIDR"];
 
     if (_popover)
-        [_popover makeFirstResponder:relatedField];
+        [_popover makeFirstResponder:control];
     else
-        [[relatedEditionView window] makeFirstResponder:relatedField];
+        [[control window] makeFirstResponder:control];
 }
 
 - (BOOL)_performServerValidation:(NURESTConnection)aConnection
