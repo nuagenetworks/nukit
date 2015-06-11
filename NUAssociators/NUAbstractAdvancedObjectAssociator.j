@@ -155,8 +155,8 @@
 
 - (BOOL)shouldManagePushForEntityType:(CPString)entityType
 {
-    var identifiers = [self currentContextIdentifiers];
-    return ([identifiers containsObject:entityType]
+    var entityTypes = [[self associatorSettings] allKeys];
+    return ([entityTypes containsObject:entityType]
             || entityType == [[self classForAssociationObject] RESTName]
             || entityType == [_currentParent RESTName]);
 }

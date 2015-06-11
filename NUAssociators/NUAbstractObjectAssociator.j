@@ -61,6 +61,7 @@ var SETTINGS_CATEGORY           = @"category",
 
     BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
+    CPDictionary                _categoryRegistry;
     CPButton                    _buttonChooseAssociatedObject;
     CPButton                    _buttonCleanAssociatedObject;
     CPTextField                 _fieldAssociatedObjectText;
@@ -83,6 +84,7 @@ var SETTINGS_CATEGORY           = @"category",
     [super viewDidLoad];
 
     _hidesDataViewsControls = YES;
+    _categoryRegistry       = @{};
 
     var view = [self view],
         frameSize = [view frameSize];
@@ -412,8 +414,7 @@ var SETTINGS_CATEGORY           = @"category",
 - (void)_configureAssociatedObject:(id)anAssociatedObject
 {
     var settings    = [self associatorSettings],
-        RESTNames   = [settings allKeys],
-        categories  = [];
+        RESTNames   = [settings allKeys];
 
     for (var i = [RESTNames count] - 1; i >= 0; i--)
     {
@@ -422,7 +423,7 @@ var SETTINGS_CATEGORY           = @"category",
             objectClass         = [defaultController modelClassForRESTName:RESTName],
             setting,
             dataView,
-            category,
+            categoryName,
             fetcherKeyPath;
 
         if (![settings containsKey:RESTName])
@@ -438,16 +439,36 @@ var SETTINGS_CATEGORY           = @"category",
 
         dataView        = [setting objectForKey:SETTINGS_DATAVIEW];
         fetcherKeyPath  = [setting objectForKey:SETTINGS_FETCHER_KEY_PATH];
-        category        = [setting containsKey:SETTINGS_CATEGORY] ? [setting objectForKey:SETTINGS_CATEGORY] : nil;
+        categoryName    = [setting containsKey:SETTINGS_CATEGORY] ? [setting objectForKey:SETTINGS_CATEGORY] : nil;
 
         [anAssociatedObject registerDataViewWithName:dataView forClass:objectClass];
         [anAssociatedObject configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
 
-        if (category)
-            [categories addObject:[NUCategory categoryWithName:category]];
+        if (categoryName)
+            [_categoryRegistry setObject:[NUCategory categoryWithName:categoryName] forKey:RESTName];
+    }
+}
+
+- (CPArray)_currentCategories
+{
+    if (![_categoryRegistry count])
+        return;
+
+    var identifiers = [self currentContextIdentifiers],
+        categories  = [CPArray new];
+
+    if (![identifiers count])
+        return;
+
+    for (var i = [identifiers count] - 1; i >= 0; i--)
+    {
+        var identifier  = identifiers[i],
+            category    = [_categoryRegistry objectForKey:identifier];
+
+        [categories addObject:category];
     }
 
-    [anAssociatedObject setCategories:categories];
+    return categories
 }
 
 - (void)showLoading:(BOOL)shouldShow
@@ -592,11 +613,11 @@ var SETTINGS_CATEGORY           = @"category",
     else
         [_associatedObjectChooser setIgnoredObjects:[]];
 
+    [_associatedObjectChooser setCategories:[self _currentCategories]];
     [_associatedObjectChooser setModuleTitle:[self titleForObjectChooser]];
     [_associatedObjectChooser setMasterFilter:[self filterObjectPredicate]];
     [_associatedObjectChooser setDisplayFilter:[self displayObjectPredicate]];
     [_associatedObjectChooser setTitle:[self titleForObjectChooser]];
-    [_associatedObjectChooser setActiveContextIdentifiers:[self currentContextIdentifiers]];
 
     var parentObject = [self parentOfAssociatedObjects];
     [_associatedObjectChooser showOnView:aSender forParentObject:parentObject];
@@ -709,6 +730,35 @@ var SETTINGS_CATEGORY           = @"category",
 - (void)didObjectChooserCancelSelection:(NUObjectsChooser)anObjectChooser
 {
     [self closePopover];
+}
+
+- (NUCategory)categoryForObject:(id)anObject
+{
+    if (![_categoryRegistry count])
+        return;
+
+    return [_categoryRegistry objectForKey:[anObject RESTName]];
+}
+
+- (CPArray)currentActiveContextsForChooser:(NUObjectChooser)anObjectChooser
+{
+    var identifiers = [self currentContextIdentifiers],
+        contexts    = [CPArray new],
+        index;
+
+    if (!identifiers)
+        return [];
+
+    for (index = [identifiers count] - 1; index >= 0; index--)
+    {
+        var identifier  = identifiers[index],
+            context     = [anObjectChooser contextWithIdentifier:identifier];
+
+        if (![contexts containsObject:context])
+            [contexts addObject:context];
+    }
+
+    return contexts;
 }
 
 

@@ -20,18 +20,25 @@
 
 @import "NUModule.j"
 
+var NUObjectsChooser_categoryForObject_                 = 1 << 1,
+    NUObjectsChooser_currentActiveContextsForChooser_   = 1 << 2,
+    NUObjectsChooser_didObjectChooserCancelSelection_   = 1 << 3,
+    NUObjectsChooser_didObjectChooser_selectObjects_    = 1 << 4;
+
 
 @implementation NUObjectsChooser : NUModule
 {
     @outlet CPButton        buttonSelect;
     @outlet CPPopUpButton   buttonAdditionalInfo;
 
-    BOOL                    _hidesDataViewsControls     @accessors(property=hidesDataViewsControls);
-    CPArray                 _ignoredObjects             @accessors(property=ignoredObjects);
-    CPArray                 _searchableKeyPaths         @accessors(property=searchableKeyPaths);
-    CPPredicate             _displayFilter              @accessors(property=displayFilter);
-    id                      _userInfo                   @accessors(property=userInfo);
-    CPArray                 _activeContextIdentifiers   @accessors(property=activeContextIdentifiers);
+    BOOL                    _hidesDataViewsControls             @accessors(property=hidesDataViewsControls);
+    CPArray                 _currentActiveContextIdentifiers    @accessors(property=currentActiveContextIdentifiers);
+    CPArray                 _ignoredObjects                     @accessors(property=ignoredObjects);
+    CPArray                 _searchableKeyPaths                 @accessors(property=searchableKeyPaths);
+    CPPredicate             _displayFilter                      @accessors(property=displayFilter);
+    id                      _userInfo                           @accessors(property=userInfo);
+
+    int                     _implementedDelegateMethods;
 }
 
 
@@ -56,7 +63,8 @@
 {
     [super viewDidLoad];
 
-    _hidesDataViewsControls = YES;
+    _currentActiveContextIdentifiers   = []
+    _hidesDataViewsControls     = YES;
 
     [fieldModuleTitle setTextColor:NUSkinColorWhite];
     [[fieldModuleTitle superview] setBackgroundColor:NUSkinColorBlack];
@@ -146,9 +154,7 @@
         return;
 
     var selectedObjects = [self currentSelectedObjects];
-
-    if (_delegate && [_delegate respondsToSelector:@selector(didObjectChooser:selectObjects:)])
-        [_delegate didObjectChooser:self selectObjects:selectedObjects];
+    [self _sendDelegateDidObjectChooserSelectedObjects:selectedObjects];
 
     if (filterField)
         [filterField setStringValue:@""];
@@ -156,7 +162,7 @@
 
 
 #pragma mark -
-#pragma mark Delegates
+#pragma mark NUModule Delegates
 
 - (void)moduleDidSelectObjects:(CPArray)someObject
 {
@@ -167,6 +173,16 @@
 - (void)didShowGettingStartedView:(BOOL)didShow
 {
     [buttonSelect setHidden:didShow];
+}
+
+- (NUCategory)categoryForObject:(NUVSDObject)anObject
+{
+    return [self _sendDelegateCategoryForObject:anObject];
+}
+
+- (CPArray)moduleCurrentActiveContexts
+{
+    return [self _sendDelegateCurrentActiveContextsForChooser];
 }
 
 
@@ -192,25 +208,60 @@
     if ([[self currentSelectedObjects] count])
         return;
 
-    if (_delegate && [_delegate respondsToSelector:@selector(didObjectChooserCancelSelection:)])
+    [self _sendDelegateDidObjectChooserCancelSelection];
+}
+
+
+#pragma mark -
+#pragma mark Delegate
+
+- (void)setDelegate:(id)aDelegate
+{
+    if (_delegate === aDelegate)
+        return;
+
+    _delegate = aDelegate;
+    _implementedDelegateMethods = 0;
+
+    if ([_delegate respondsToSelector:@selector(categoryForObject:)])
+        _implementedDelegateMethods |= NUObjectsChooser_categoryForObject_;
+
+    if ([_delegate respondsToSelector:@selector(currentActiveContextsForChooser:)])
+        _implementedDelegateMethods |= NUObjectsChooser_currentActiveContextsForChooser_;
+
+    if ([_delegate respondsToSelector:@selector(didObjectChooserCancelSelection:)])
+        _implementedDelegateMethods |= NUObjectsChooser_didObjectChooserCancelSelection_;
+
+    if ([_delegate respondsToSelector:@selector(didObjectChooser:selectObjects:)])
+        _implementedDelegateMethods |= NUObjectsChooser_didObjectChooser_selectObjects_;
+}
+
+- (CPArray)_sendDelegateCategoryForObject:(NURESTObject)anObject
+{
+    if (_implementedDelegateMethods & NUObjectsChooser_categoryForObject_)
+        return [_delegate categoryForObject:anObject];
+
+    return [super categoryForObject:anObject];
+}
+
+- (CPArray)_sendDelegateCurrentActiveContextsForChooser
+{
+    if (_implementedDelegateMethods & NUObjectsChooser_currentActiveContextsForChooser_)
+        return [_delegate currentActiveContextsForChooser:self];
+
+    return [super moduleCurrentActiveContexts];
+}
+
+- (void)_sendDelegateDidObjectChooserCancelSelection
+{
+    if (_implementedDelegateMethods & NUObjectsChooser_didObjectChooserCancelSelection_)
         [_delegate didObjectChooserCancelSelection:self];
 }
 
-- (CPArray)moduleCurrentActiveContexts
+- (void)_sendDelegateDidObjectChooserSelectedObjects:(CPArray)selectedObjects
 {
-    var contexts = [CPArray new],
-        index    = [_activeContextIdentifiers count] - 1;
-
-    for (index; index >= 0; index--)
-    {
-        var identifier  = _activeContextIdentifiers[index],
-            context     = [self contextWithIdentifier:identifier];
-
-        if (![contexts containsObject:context])
-            [contexts addObject:context];
-    }
-
-    return contexts;
+    if (_implementedDelegateMethods & NUObjectsChooser_didObjectChooser_selectObjects_)
+        [_delegate didObjectChooser:self selectObjects:selectedObjects];
 }
 
 
