@@ -54,7 +54,8 @@
 
 - (BOOL)shouldManagePushForEntityType:(CPString)entityType
 {
-    return entityType == [[self classForAssociatedObject] RESTName] || entityType == [_currentParent RESTName];
+    var identifiers = [self currentContextIdentifiers];
+    return [identifiers containsObject:entityType] || entityType == [_currentParent RESTName];
 }
 
 - (void)managePushedObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType

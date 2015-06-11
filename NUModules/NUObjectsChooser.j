@@ -31,6 +31,7 @@
     CPArray                 _searchableKeyPaths         @accessors(property=searchableKeyPaths);
     CPPredicate             _displayFilter              @accessors(property=displayFilter);
     id                      _userInfo                   @accessors(property=userInfo);
+    CPArray                 _activeContextIdentifiers   @accessors(property=activeContextIdentifiers);
 }
 
 
@@ -193,6 +194,23 @@
 
     if (_delegate && [_delegate respondsToSelector:@selector(didObjectChooserCancelSelection:)])
         [_delegate didObjectChooserCancelSelection:self];
+}
+
+- (CPArray)moduleCurrentActiveContexts
+{
+    var contexts = [CPArray new],
+        index    = [_activeContextIdentifiers count] - 1;
+
+    for (index; index >= 0; index--)
+    {
+        var identifier  = _activeContextIdentifiers[index],
+            context     = [self contextWithIdentifier:identifier];
+
+        if (![contexts containsObject:context])
+            [contexts addObject:context];
+    }
+
+    return contexts;
 }
 
 
