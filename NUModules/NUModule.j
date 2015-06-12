@@ -3158,6 +3158,31 @@ NUModuleTabViewModeIcon = 2;
 
 
 #pragma mark -
+#pragma mark KVO Observers
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
+{
+    if (_latestPageLoaded >= _maxPossiblePage)
+        return;
+
+    var scrollPosition = CGRectGetMaxY([object bounds]);
+
+    if (scrollPosition + NUModuleRESTPageLoadingTrigger >= [tableView frame].size.height)
+    {
+        CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
+
+        // close any deletion in process if we are loading something to avoid incoherency
+        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
+
+        // do not observe bounds change until we receive the next page
+        [self _removeScrollViewObservers];
+
+        [self loadNextPage];
+    }
+}
+
+
+#pragma mark -
 #pragma mark Outline View Delegates
 
 - (void)outlineViewSelectionDidChange:(CPNotification)aNotification
@@ -3403,31 +3428,6 @@ NUModuleTabViewModeIcon = 2;
         return;
 
     [aSplitView setPosition:[[[aSplitView subviews] firstObject] frameSize].width ofDividerAtIndex:0];
-}
-
-
-#pragma mark -
-#pragma mark KVO Observers
-
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
-{
-    if (_latestPageLoaded >= _maxPossiblePage)
-        return;
-
-    var scrollPosition = CGRectGetMaxY([object bounds]);
-
-    if (scrollPosition + NUModuleRESTPageLoadingTrigger >= [tableView frame].size.height)
-    {
-        CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
-
-        // close any deletion in process if we are loading something to avoid incoherency
-        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
-
-        // do not observe bounds change until we receive the next page
-        [self _removeScrollViewObservers];
-
-        [self loadNextPage];
-    }
 }
 
 
