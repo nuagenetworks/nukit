@@ -120,7 +120,7 @@ var BUTTONS_SIZE = 12;
     [_buttonChooseAssociatedObject setToolTip:@"Associate an object"];
     [_buttonChooseAssociatedObject bind:CPHiddenBinding toObject:self withKeyPath:@"associationButtonHidden" options:nil];
     [_innerButtonContainer addSubview:_buttonChooseAssociatedObject];
-    _cucappID(_buttonChooseAssociatedObject, @"button-set-associatedobject");
+    _cucappID(_buttonChooseAssociatedObject, [self className] + @"-button-set-associatedobject");
 
     // Button remove association
     _buttonCleanAssociatedObject = [[CPButton alloc] initWithFrame:CGRectMake(0, 14, BUTTONS_SIZE, BUTTONS_SIZE)];
@@ -133,12 +133,13 @@ var BUTTONS_SIZE = 12;
     [_buttonCleanAssociatedObject setToolTip:@"Disassociate the object"];
     [_buttonCleanAssociatedObject bind:CPHiddenBinding toObject:self withKeyPath:@"disassociationButtonHidden" options:nil];
     [_innerButtonContainer addSubview:_buttonCleanAssociatedObject];
-    _cucappID(_buttonCleanAssociatedObject, @"button-unset-associatedobject");
+    _cucappID(_buttonCleanAssociatedObject, [self className] + @"-button-clean-associatedobject");
 
     // Data View Container
     _viewDataViewContainer = [[CPView alloc] initWithFrame:CGRectMakeZero()];
     [_viewDataViewContainer setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [_viewAssociatorContainer addSubview:_viewDataViewContainer];
+    _cucappID(_buttonCleanAssociatedObject, [self className] + @"-dataview-container");
 
     // Field shown when no association is present
     _fieldEmptyAssociatorTitle = [CPTextField labelWithTitle:[self emptyAssociatorTitle]];
