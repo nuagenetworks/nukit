@@ -3182,6 +3182,10 @@ NUModuleTabViewModeIcon = 2;
     {
         [self openEditObjectPopover:self];
     }
+    else
+    {
+        [super keyUp:anEvent];
+    }
 }
 
 
