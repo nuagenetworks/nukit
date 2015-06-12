@@ -61,7 +61,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 
     BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
-    CPDictionary                _categoryRegistry;
+    CPDictionary                _categoriesRegistry;
     CPButton                    _buttonChooseAssociatedObject;
     CPButton                    _buttonCleanAssociatedObject;
     CPTextField                 _fieldAssociatedObjectText;
@@ -84,7 +84,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [super viewDidLoad];
 
     _hidesDataViewsControls = YES;
-    _categoryRegistry       = @{};
+    _categoriesRegistry       = @{};
 
     var view = [self view],
         frameSize = [view frameSize];
@@ -215,7 +215,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return @"name";
 }
 
-- (CPArray)currentContextIdentifiers
+- (CPArray)currentActiveContextIdentifiers
 {
     throw ("implement me");
 }
@@ -406,16 +406,12 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     {
         var RESTName            = RESTNames[i],
             defaultController   = [NURESTModelController defaultController],
-            objectClass         = [defaultController modelClassForRESTName:RESTName],
-            setting,
-            dataView,
-            categoryName,
-            fetcherKeyPath;
+            objectClass         = [defaultController modelClassForRESTName:RESTName];
 
         if (![settings containsKey:RESTName])
             [CPException raise:CPInternalInconsistencyException reason:"No setting defined for entity " + RESTName];
 
-        setting = [settings objectForKey:RESTName]
+        var setting = [settings objectForKey:RESTName];
 
         if (![setting containsKey:NUObjectAssociatorSettingsDataViewNameKey])
             [CPException raise:CPInternalInconsistencyException reason:"No dataView defined for " + RESTName];
@@ -423,24 +419,24 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         if (![setting containsKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey])
             [CPException raise:CPInternalInconsistencyException reason:"No fetcherKeyPath defined for " + RESTName];
 
-        dataView        = [setting objectForKey:NUObjectAssociatorSettingsDataViewNameKey];
-        fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey];
-        categoryName    = [setting containsKey:NUObjectAssociatorSettingsCategoryNameKey] ? [setting objectForKey:NUObjectAssociatorSettingsCategoryNameKey] : nil;
+        var dataView        = [setting objectForKey:NUObjectAssociatorSettingsDataViewNameKey],
+            fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
+            categoryName    = [setting containsKey:NUObjectAssociatorSettingsCategoryNameKey] ? [setting objectForKey:NUObjectAssociatorSettingsCategoryNameKey] : nil;
 
         [_associatedObjectChooser registerDataViewWithName:dataView forClass:objectClass];
         [_associatedObjectChooser configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
 
         if (categoryName)
-            [_categoryRegistry setObject:[NUCategory categoryWithName:categoryName] forKey:RESTName];
+            [_categoriesRegistry setObject:[NUCategory categoryWithName:categoryName] forKey:RESTName];
     }
 }
 
 - (CPArray)_currentCategories
 {
-    if (![_categoryRegistry count])
+    if (![_categoriesRegistry count])
         return;
 
-    var identifiers = [self currentContextIdentifiers],
+    var identifiers = [self currentActiveContextIdentifiers],
         categories  = [CPArray new];
 
     if (![identifiers count])
@@ -449,7 +445,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     for (var i = [identifiers count] - 1; i >= 0; i--)
     {
         var identifier  = identifiers[i],
-            category    = [_categoryRegistry objectForKey:identifier];
+            category    = [_categoriesRegistry objectForKey:identifier];
 
         [categories addObject:category];
     }
@@ -476,7 +472,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         return;
     }
 
-    var identifiers = [self currentContextIdentifiers],
+    var identifiers = [self currentActiveContextIdentifiers],
         settings    = [self associatorSettings],
         parentObject = [self parentOfAssociatedObjects];
 
@@ -720,15 +716,15 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 
 - (NUCategory)categoryForObject:(id)anObject
 {
-    if (![_categoryRegistry count])
+    if (![_categoriesRegistry count])
         return;
 
-    return [_categoryRegistry objectForKey:[anObject RESTName]];
+    return [_categoriesRegistry objectForKey:[anObject RESTName]];
 }
 
 - (CPArray)currentActiveContextsForChooser:(NUObjectChooser)anObjectChooser
 {
-    var identifiers = [self currentContextIdentifiers],
+    var identifiers = [self currentActiveContextIdentifiers],
         contexts    = [CPArray new],
         index;
 

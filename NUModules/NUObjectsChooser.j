@@ -241,7 +241,7 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     if (_implementedDelegateMethods & NUObjectsChooser_categoryForObject_)
         return [_delegate categoryForObject:anObject];
 
-    return [super categoryForObject:anObject];
+    return [self categoryForObject:anObject];
 }
 
 - (CPArray)_sendDelegateCurrentActiveContextsForChooser
@@ -249,7 +249,7 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     if (_implementedDelegateMethods & NUObjectsChooser_currentActiveContextsForChooser_)
         return [_delegate currentActiveContextsForChooser:self];
 
-    return [super moduleCurrentActiveContexts];
+    return [self moduleCurrentActiveContexts];
 }
 
 - (void)_sendDelegateDidObjectChooserCancelSelection
