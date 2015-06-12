@@ -60,10 +60,10 @@
 
 - (BOOL)becomeFirstResponder
 {
-    if ([self isExpanded])
-        return [super becomeFirstResponder];
+    if (![self isExpanded])
+        [self _expandWithAnimation:YES];
 
-    return NO;
+    return [super becomeFirstResponder];
 }
 
 - (CPView)hitTest:(CGPoint)aPoint
