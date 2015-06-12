@@ -1813,7 +1813,7 @@ NUModuleTabViewModeIcon = 2;
     if (tabViewContent)
         previousSelectedIdentifier = [[tabViewContent selectedTabViewItem] identifier];
 
-    [self _updateActiveSubModules]
+    [self _updateActiveSubModules];
 
     if (tabViewContent)
     {
