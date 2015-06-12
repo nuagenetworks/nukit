@@ -1326,6 +1326,9 @@ NUModuleTabViewModeIcon = 2;
 {
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
 
+    if (![self isActionPermitted:action])
+        return;
+
     [self setCurrentContext:[self defaultContextForAction:action]];
 
     var currentEditedObject = [self createObjectWithRESTName:[_currentContext identifier]];
@@ -1353,10 +1356,10 @@ NUModuleTabViewModeIcon = 2;
         selectedRow  = [tableView selectedRow],
         ignoreAction = aSender == tableView && !CGRectContainsPoint([tableView convertRectToBase:[tableView rectOfRow:selectedRow]], clickPoint);
 
-    var currentEditedObject = [tableView className] == @"CPTableView" ? [_dataSource objectAtIndex:selectedRow] : [tableView itemAtRow:selectedRow];
-
     if (![self isActionPermitted:NUModuleActionEdit] || ignoreAction)
         return;
+
+    var currentEditedObject = [tableView className] == @"CPTableView" ? [_dataSource objectAtIndex:selectedRow] : [tableView itemAtRow:selectedRow];
 
     [self closeAllPopovers];
 
@@ -1375,6 +1378,9 @@ NUModuleTabViewModeIcon = 2;
 
 - (IBAction)openDeleteObjectPopover:(id)aSender
 {
+    if (![self isActionPermitted:NUModuleActionDelete])
+        return;
+
     if (NUModuleAutoValidation || [[CPApp currentEvent] modifierFlags] & CPShiftKeyMask)
     {
         [self _performDeleteObjects:nil];
@@ -1746,7 +1752,6 @@ NUModuleTabViewModeIcon = 2;
 
     return NO;
 }
-
 
 - (void)setSubModules:(CPArray)someModules
 {
