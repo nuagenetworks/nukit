@@ -1819,7 +1819,8 @@ NUModuleTabViewModeIcon = 2;
     {
         var newIndex = [tabViewContent indexOfTabViewItemWithIdentifier:previousSelectedIdentifier];
         [tabViewContent selectTabViewItemAtIndex:(newIndex != CPNotFound) ? newIndex : 0];
-        [[self _subModuleWithIdentifier:[[tabViewContent selectedTabViewItem] identifier]] willShow];
+        // not sure this is necessary selectTabViewItemAtIndex should call the delegate
+        // [[self _subModuleWithIdentifier:[[tabViewContent selectedTabViewItem] identifier]] willShow];
     }
     else
     {
