@@ -3126,7 +3126,6 @@ NUModuleTabViewModeIcon = 2;
 }
 
 
-
 #pragma mark Editor Management Internal API
 
 - (BOOL)moduleEditorShouldShow
