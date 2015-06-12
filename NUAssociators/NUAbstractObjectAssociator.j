@@ -42,9 +42,9 @@ NUObjectAssociatorDisplayModeText = 2;
 
 var BUTTONS_SIZE = 12;
 
-var SETTINGS_CATEGORY           = @"category",
-    SETTINGS_DATAVIEW           = @"dataView",
-    SETTINGS_FETCHER_KEY_PATH   = @"fetcherKeyPath";
+NUObjectAssociatorSettingsCategoryNameKey                   = @"NUObjectAssociatorSettingsCategoryNameKey";
+NUObjectAssociatorSettingsDataViewNameKey                   = @"NUObjectAssociatorSettingsDataViewNameKey";
+NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey";
 
 
 @implementation NUAbstractObjectAssociator : CPViewController
@@ -97,7 +97,7 @@ var SETTINGS_CATEGORY           = @"category",
     [_associatedObjectChooser setDelegate:self];
     [_associatedObjectChooser setAllowsMultipleSelection:NO];
 
-    [self _configureAssociatedObject:_associatedObjectChooser];
+    [self _configureObjectsChooser];
 
     // VIEW INITIALIZATION
 
@@ -175,16 +175,6 @@ var SETTINGS_CATEGORY           = @"category",
     return NUObjectAssociatorDisplayModeDataView;
 }
 
-// - (void)configureDataViewsForObjectChooser:(NUObjectsChooser)anObjectChooser
-// {
-//     throw ("implement me");
-// }
-
-// - (Class)classForAssociatedObject
-// {
-//     throw ("implement me")
-// }
-
 - (CPString)emptyAssociatorTitle
 {
     throw ("implement me");
@@ -199,11 +189,6 @@ var SETTINGS_CATEGORY           = @"category",
 {
     throw ("implement me");
 }
-
-// - (CPString)fetcherKeyPathOfAssociatedObjects
-// {
-//     throw ("implement me");
-// }
 
 - (id)parentOfAssociatedObjects
 {
@@ -412,7 +397,7 @@ var SETTINGS_CATEGORY           = @"category",
 #pragma mark -
 #pragma mark Utilities
 
-- (void)_configureAssociatedObject:(id)anAssociatedObject
+- (void)_configureObjectsChooser
 {
     var settings    = [self associatorSettings],
         RESTNames   = [settings allKeys];
@@ -432,18 +417,18 @@ var SETTINGS_CATEGORY           = @"category",
 
         setting = [settings objectForKey:RESTName]
 
-        if (![setting containsKey:SETTINGS_DATAVIEW])
+        if (![setting containsKey:NUObjectAssociatorSettingsDataViewNameKey])
             [CPException raise:CPInternalInconsistencyException reason:"No dataView defined for " + RESTName];
 
-        if (![setting containsKey:SETTINGS_FETCHER_KEY_PATH])
+        if (![setting containsKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey])
             [CPException raise:CPInternalInconsistencyException reason:"No fetcherKeyPath defined for " + RESTName];
 
-        dataView        = [setting objectForKey:SETTINGS_DATAVIEW];
-        fetcherKeyPath  = [setting objectForKey:SETTINGS_FETCHER_KEY_PATH];
-        categoryName    = [setting containsKey:SETTINGS_CATEGORY] ? [setting objectForKey:SETTINGS_CATEGORY] : nil;
+        dataView        = [setting objectForKey:NUObjectAssociatorSettingsDataViewNameKey];
+        fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey];
+        categoryName    = [setting containsKey:NUObjectAssociatorSettingsCategoryNameKey] ? [setting objectForKey:NUObjectAssociatorSettingsCategoryNameKey] : nil;
 
-        [anAssociatedObject registerDataViewWithName:dataView forClass:objectClass];
-        [anAssociatedObject configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
+        [_associatedObjectChooser registerDataViewWithName:dataView forClass:objectClass];
+        [_associatedObjectChooser configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
 
         if (categoryName)
             [_categoryRegistry setObject:[NUCategory categoryWithName:categoryName] forKey:RESTName];
@@ -502,7 +487,7 @@ var SETTINGS_CATEGORY           = @"category",
     {
         var identifier      = identifiers[i],
             setting         = [settings objectForKey:identifier],
-            fetcherKeyPath  = [setting objectForKey:SETTINGS_FETCHER_KEY_PATH],
+            fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
             fetcher         = [parentObject valueForKeyPath:fetcherKeyPath],
             predicateFilter = [CPPredicate predicateWithFormat:@"ID == %@", anID];
 
