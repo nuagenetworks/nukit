@@ -225,6 +225,11 @@
     return modules;
 }
 
+- (void)moduleDidChangeVisibleSubmodule
+{
+    [tableViewItems setNextKeyView:[[self visibleSubModule] initialFirstResponder]];
+}
+
 
 #pragma mark -
 #pragma mark NUModuleItemized API

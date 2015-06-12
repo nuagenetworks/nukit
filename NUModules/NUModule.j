@@ -38,14 +38,15 @@
 @import "NUCategory.j"
 @import "NUDataTransferController.j"
 @import "NUEditorsViewController.j"
+@import "NUExpandableSearchField.j"
 @import "NUJobExport.j"
 @import "NUJobImport.j"
+@import "NUKitObject.j"
 @import "NUModuleContext.j"
 @import "NUOutlineViewDataSource.j"
 @import "NUSkin.j"
 @import "NUTabViewItemPrototype.j"
 @import "NUTotalNumberValueTransformer.j"
-@import "NUKitObject.j"
 
 @class NUKit
 
@@ -323,7 +324,8 @@ NUModuleTabViewModeIcon = 2;
         [tableView setDelegate:self];
         [tableView setTarget:self];
 
-        // [tableView setNextResponder:self];
+        [tableView setNextResponder:self];
+        [tableView setNextKeyView:tabViewContent];
         [tableView setDoubleAction:@selector(openEditObjectPopover:)];
 
         // set ourself as the scroll view delegate
@@ -334,6 +336,7 @@ NUModuleTabViewModeIcon = 2;
     {
         [filterField setTarget:self];
         [filterField setAction:@selector(filterObjects:)];
+        [filterField setNextKeyView:tableView];
 
         var searchButton = [filterField searchButton];
         [searchButton setTarget:self];
@@ -410,6 +413,7 @@ NUModuleTabViewModeIcon = 2;
         }
 
         [viewGettingStarted setBackgroundColor:[CPColor whiteColor]];
+        [viewGettingStarted setNextResponder:self];
     }
 
     if (buttonHelp)
@@ -1370,7 +1374,7 @@ NUModuleTabViewModeIcon = 2;
     var editionPopoverView = [[[_currentContext popover] contentViewController] view];
     _cucappID(editionPopoverView, @"popover_" + [currentEditedObject RESTName]);
 
-    if ([aSender isKindOfClass:CPMenuItem])
+    if ([aSender isKindOfClass:CPMenuItem] || aSender == self)
         aSender = [self defaultPopoverTargetForMenuItem];
 
     [_currentContext openPopoverForAction:NUModuleActionEdit sender:aSender];
@@ -3058,7 +3062,12 @@ NUModuleTabViewModeIcon = 2;
     if (module)
         return [module initialFirstResponder];
 
-    return tableView;
+    return tableView || tabViewContent;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
 }
 
 
@@ -3154,6 +3163,25 @@ NUModuleTabViewModeIcon = 2;
 - (CPImage)moduleEditorImageTitleForObject:(id)anObject
 {
     return [anObject icon];
+}
+
+
+- (void)keyUp:(CPEvent)anEvent
+{
+    var modifier = [anEvent modifierFlags] & CPControlKeyMask;
+
+    if (modifier && [anEvent characters] == 'F')
+    {
+        [[[self view] window] makeFirstResponder:filterField];
+    }
+    else if (modifier && [anEvent characters] == 'N')
+    {
+        [self openNewObjectPopover:[_buttonAddObject isHidden] ? _buttonFirstCreate : _buttonAddObject];
+    }
+    else if ([anEvent keyCode] == CPReturnKeyCode)
+    {
+        [self openEditObjectPopover:self];
+    }
 }
 
 
@@ -3377,7 +3405,11 @@ NUModuleTabViewModeIcon = 2;
 - (void)tabView:(TNTabView)aTabView didSelectTabViewItem:(CPTabViewItem)anItem
 {
     [self _setCurrentParentForSubModules];
-    [[self _subModuleWithIdentifier:[anItem identifier]] willShow];
+
+    var module = [self _subModuleWithIdentifier:[anItem identifier]];
+
+    [module willShow];
+    [tabViewContent setNextKeyView:[module initialFirstResponder]];
 
     [self moduleDidChangeVisibleSubmodule];
 }
