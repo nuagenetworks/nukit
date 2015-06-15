@@ -876,6 +876,7 @@ NUModuleTabViewModeIcon = 2;
     if (!_isVisible)
         return;
 
+    [self hideLoading];
     [self archiveCurrentSelection];
     [self hideAllSubModules];
 
@@ -2245,6 +2246,12 @@ NUModuleTabViewModeIcon = 2;
         [[NUDataTransferController defaultDataTransferController] showFetchingViewOnView:tableView];
 }
 
+- (void)hideLoading
+{
+    if (tableView)
+        [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:tableView];
+}
+
 - (void)closeAllPopovers
 {
     var contexts = [_contextRegistry allValues];
@@ -2925,7 +2932,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)setDataSourceContent:(CPArray)contents
 {
-    [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:tableView];
+    [self hideLoading];
 
     [_dataSource setContent:contents];
     [self sortDataSourceContent];
