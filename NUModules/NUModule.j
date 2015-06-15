@@ -1168,13 +1168,15 @@ NUModuleTabViewModeIcon = 2;
     [self didChangeValueForKey:@"formatedTotalNumberOfEntities"];
 }
 
-- (void)_updateGrandTotalFromFetcher:(NURESTfetcher)aFetcher
+- (void)_updateGrandTotal
 {
-    var total = _totalNumberOfEntities == -1 ? 0 : _totalNumberOfEntities;
+    var grandTotal  = 0,
+        contexts    = [self moduleCurrentActiveContexts];
 
-    total += [aFetcher currentTotalCount];
+    for (var i = [contexts count] - 1; i >= 0; i--)
+        grandTotal += [[_currentParent valueForKeyPath:[contexts[i] fetcherKeyPath]] currentTotalCount];
 
-    [self setTotalNumberOfEntities:total];
+    [self setTotalNumberOfEntities:grandTotal];
 }
 
 
@@ -2855,7 +2857,7 @@ NUModuleTabViewModeIcon = 2;
 
     [self performPreFetchOperation:someContents];
     [self _saveCurrentSelection];
-    [self _updateGrandTotalFromFetcher:aFetcher];
+    [self _updateGrandTotal];
 
     _latestSortDescriptors = [aFetcher currentSortDescriptors];
     _numberOfRemainingContextsToLoad--;
