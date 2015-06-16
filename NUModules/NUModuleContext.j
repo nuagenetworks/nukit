@@ -16,11 +16,12 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <AppKit/CPPopover.j>
-@import <AppKit/CPOutlineView.j>
+@import <AppKit/CPArrayController.j>
 @import <AppKit/CPCheckBox.j>
-@import <AppKit/CPTableView.j>
+@import <AppKit/CPOutlineView.j>
+@import <AppKit/CPPopover.j>
 @import <AppKit/CPProgressIndicator.j>
+@import <AppKit/CPTableView.j>
 @import <RESTCappuccino/NURESTObject.j>
 @import <RESTCappuccino/NURESTConnection.j>
 @import <RESTCappuccino/NURESTFetcher.j>
@@ -45,39 +46,41 @@ var NUValidationActive = nil,
 // reversed for optim
 NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"virtualIP", @"minAddress", @"MAC", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"];
 
-var NUModuleContextDelegate_moduleContext_willManageObject_                        = 1 << 1,
-    NUModuleContextDelegate_moduleContext_didManageObject_                         = 1 << 2,
+var NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
+    NUModuleContextDelegate_moduleContext_didManageObject_                          = 1 << 2,
 
-    NUModuleContextDelegate_moduleContext_willSaveObject_                          = 1 << 3,
-    NUModuleContextDelegate_moduleContext_didSaveObject_connection_                = 1 << 4,
-    NUModuleContextDelegate_moduleContext_didFailToSaveObject_connection_          = 1 << 5,
+    NUModuleContextDelegate_moduleContext_willSaveObject_                           = 1 << 3,
+    NUModuleContextDelegate_moduleContext_didSaveObject_connection_                 = 1 << 4,
+    NUModuleContextDelegate_moduleContext_didFailToSaveObject_connection_           = 1 << 5,
 
-    NUModuleContextDelegate_moduleContext_willCreateObject_                        = 1 << 6,
-    NUModuleContextDelegate_moduleContext_didCreateObject_connection_              = 1 << 7,
-    NUModuleContextDelegate_moduleContext_didFailToCreateObject_connection_        = 1 << 8,
+    NUModuleContextDelegate_moduleContext_willCreateObject_                         = 1 << 6,
+    NUModuleContextDelegate_moduleContext_didCreateObject_connection_               = 1 << 7,
+    NUModuleContextDelegate_moduleContext_didFailToCreateObject_connection_         = 1 << 8,
 
-    NUModuleContextDelegate_moduleContext_willUpdateObject_                        = 1 << 9,
-    NUModuleContextDelegate_moduleContext_didUpdateObject_connection_              = 1 << 10,
-    NUModuleContextDelegate_moduleContext_didFailToUpdateObject_connection_        = 1 << 11,
+    NUModuleContextDelegate_moduleContext_willUpdateObject_                         = 1 << 9,
+    NUModuleContextDelegate_moduleContext_didUpdateObject_connection_               = 1 << 10,
+    NUModuleContextDelegate_moduleContext_didFailToUpdateObject_connection_         = 1 << 11,
 
-    NUModuleContextDelegate_moduleContext_willDeleteObject_                        = 1 << 12,
-    NUModuleContextDelegate_moduleContext_didDeleteObject_connection_              = 1 << 13,
-    NUModuleContextDelegate_moduleContext_didFailToDeleteObject_connection_        = 1 << 14,
+    NUModuleContextDelegate_moduleContext_willDeleteObject_                         = 1 << 12,
+    NUModuleContextDelegate_moduleContext_didDeleteObject_connection_               = 1 << 13,
+    NUModuleContextDelegate_moduleContext_didFailToDeleteObject_connection_         = 1 << 14,
 
-    NUModuleContextDelegate_moduleContextShouldEnableSaving_                       = 1 << 15,
+    NUModuleContextDelegate_moduleContextShouldEnableSaving_                        = 1 << 15,
 
-    NUModuleContextDelegate_moduleContext_validateObject_attribute_validation_     = 1 << 16,
-    NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_        = 1 << 17,
+    NUModuleContextDelegate_moduleContext_validateObject_attribute_validation_      = 1 << 16,
+    NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_         = 1 << 17,
 
-    NUModuleContextDelegate_moduleContext_didUpdateEditedObject_                   = 1 << 18,
+    NUModuleContextDelegate_moduleContext_didUpdateEditedObject_                    = 1 << 18,
 
-    NUModuleContextDelegate_moduleContext_templateForInstantiationOfObject_        = 1 << 19,
+    NUModuleContextDelegate_moduleContext_templateForInstantiationOfObject_         = 1 << 19,
 
-    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_      = 1 << 20,
-    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_        = 1 << 21,
-    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_      = 1 << 22,
-    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_ = 1 << 23;
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_       = 1 << 20,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_         = 1 << 21,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_       = 1 << 22,
+    NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_  = 1 << 23,
 
+    NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_       = 1 << 24,
+    NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_     = 1 << 25;
 
 
 computeRelativeRectOfSelectedRow = function(tableView)
@@ -359,40 +362,58 @@ computeRelativeRectOfSelectedRow = function(tableView)
     for (var i = [attributes count] - 1; i >= 0; i--)
     {
         var keyPath = attributes[i],
-            relatedField = [self _controlForProperty:keyPath],
-            value = [_editedObject valueForKeyPath:keyPath];
+            control = [self _controlForProperty:keyPath],
+            value   = [_editedObject valueForKeyPath:keyPath];
 
-        if (relatedField)
+        if (control)
         {
-            _cucappID(relatedField, keyPath);
+            _cucappID(control, keyPath);
 
-            if ([relatedField isKindOfClass:CPPopUpButton])
+            if ([control isKindOfClass:CPPopUpButton])
             {
-                [relatedField bind:CPSelectedTagBinding toObject:_editedObject withKeyPath:keyPath options:nil];
+                [control bind:CPSelectedTagBinding toObject:_editedObject withKeyPath:keyPath options:nil];
             }
-            else if ([relatedField isKindOfClass:CPCheckBox])
+            else if ([control isKindOfClass:CPCheckBox])
             {
                 var opts = @{CPValueTransformerNameBindingOption: NUCheckboxStateToBooleanValueTransformerName};
-                [relatedField bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
+                [control bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
             }
-            else if ([relatedField isKindOfClass:CPProgressIndicator])
+            else if ([control isKindOfClass:CPProgressIndicator])
             {
-                [relatedField bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:nil];
+                [control bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:nil];
             }
-            else if ([relatedField isKindOfClass:CPImageView])
+            else if ([control isKindOfClass:CPTableView])
+            {
+                [self _sendDelegateBindTableView:control forProperty:keyPath];
+
+                var addButton = [self _controlForProperty:keyPath + @"_add:"];
+                if (addButton)
+                {
+                    [addButton setTarget:value];
+                    [addButton setAction:@selector(add:)];
+                }
+
+                var deleteButton = [self _controlForProperty:keyPath + @"_remove:"];
+                if (deleteButton)
+                {
+                    [deleteButton setTarget:value];
+                    [deleteButton setAction:@selector(remove:)];
+                }
+            }
+            else if ([control isKindOfClass:CPImageView])
             {
                 var opts = @{},
-                    declaredTransformerName = [relatedField valueTransformerName];
+                    declaredTransformerName = [control valueTransformerName];
 
                 if (declaredTransformerName)
                     [opts setObject:declaredTransformerName forKey:CPValueTransformerNameBindingOption];
 
-                [relatedField bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
+                [control bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
             }
-            else if ([relatedField isKindOfClass:CPTextField])
+            else if ([control isKindOfClass:CPTextField])
             {
                 var opts = @{CPContinuouslyUpdatesValueBindingOption: YES},
-                    declaredTransformerName = [relatedField valueTransformerName];
+                    declaredTransformerName = [control valueTransformerName];
 
                 if (declaredTransformerName)
                 {
@@ -415,21 +436,21 @@ computeRelativeRectOfSelectedRow = function(tableView)
                     [opts setObject:declaredTransformerName forKey:CPValueTransformerNameBindingOption];
                 }
 
-                if ([relatedField placeholderString])
-                    [opts setObject:[relatedField placeholderString] forKey:CPNullPlaceholderBindingOption];
+                if ([control placeholderString])
+                    [opts setObject:[control placeholderString] forKey:CPNullPlaceholderBindingOption];
 
-                if (![relatedField isEditable])
-                    [relatedField setLineBreakMode:CPLineBreakByTruncatingTail];
+                if (![control isEditable])
+                    [control setLineBreakMode:CPLineBreakByTruncatingTail];
 
-                [relatedField setSelectable:YES];
+                [control setSelectable:YES];
 
                 if (NUValidationActive)
-                    [relatedField setDelegate:self];
+                    [control setDelegate:self];
 
-                [relatedField bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
+                [control bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
             }
             else
-                [CPException raise:CPInternalInconsistencyException reason:"NUModuleContext doesn't support binding for control class: " + [relatedField class]];
+                [CPException raise:CPInternalInconsistencyException reason:"NUModuleContext doesn't support binding for control class: " + [control class]];
         }
     }
 
@@ -445,17 +466,35 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     for (var i = [attributes count] - 1; i >= 0; i--)
     {
-        var keyPath      = attributes[i],
-            relatedField = [self _controlForProperty:keyPath],
-            value        = [_editedObject valueForKeyPath:keyPath];
+        var keyPath = attributes[i],
+            control = [self _controlForProperty:keyPath],
+            value   = [_editedObject valueForKeyPath:keyPath];
 
-        if ([relatedField isKindOfClass:CPPopUpButton])
-            [relatedField unbind:CPSelectedTagBinding];
+        if ([control isKindOfClass:CPPopUpButton])
+            [control unbind:CPSelectedTagBinding];
+        if ([control isKindOfClass:CPTableView])
+        {
+            [self _sendDelegateUnbindTableView:control forProperty:keyPath];
+
+            var addButton = [self _controlForProperty:keyPath + @"_add:"];
+            if (addButton)
+            {
+                [addButton setTarget:nil];
+                [addButton setAction:nil];
+            }
+
+            var deleteButton = [self _controlForProperty:keyPath + @"_remove:"];
+            if (deleteButton)
+            {
+                [deleteButton setTarget:nil];
+                [deleteButton setAction:nil];
+            }
+        }
         else
-            [relatedField unbind:CPValueBinding];
+            [control unbind:CPValueBinding];
 
-        if (NUValidationActive && [relatedField isKindOfClass:CPTextField])
-            [relatedField setDelegate:nil];
+        if (NUValidationActive && [control isKindOfClass:CPTextField])
+            [control setDelegate:nil];
     }
 
     _bindingsDirty = YES;
@@ -564,6 +603,12 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
     if ([_delegate respondsToSelector:@selector(moduleContext:additionalArgumentsForObjectInstantiate:)])
         _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:bindTableView:forProperty:ofObject:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:unbindTableView:forProperty:ofObject:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_;
 }
 
 - (void)_sendDelegateWillSaveObject
@@ -708,6 +753,21 @@ computeRelativeRectOfSelectedRow = function(tableView)
         return [_delegate moduleContext:self additionalArgumentsForObjectInstantiate:_editedObject];
 }
 
+- (void)_sendDelegateBindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertyName
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_)
+        [_delegate moduleContext:self bindTableView:aTableView forProperty:aPropertyName ofObject:_editedObject];
+    else
+        [[aTableView tableColumns][0] bind:CPValueBinding toObject:_editedObject withKeyPath:aPropertyName + @".arrangedObjects.value" options:nil];
+}
+
+- (void)_sendDelegateUnbindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertyName
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_)
+        [_delegate moduleContext:self unbindTableView:aTableView forProperty:aPropertyName ofObject:_editedObject];
+    else
+        [[aTableView tableColumns][0] unbind:CPValueBinding];
+}
 
 
 #pragma mark -
@@ -933,7 +993,17 @@ computeRelativeRectOfSelectedRow = function(tableView)
     var properties = [_editedObject bindableAttributes];
 
     for (var i = [properties count] - 1; i >= 0; i--)
-        [_editedObject addObserver:self forKeyPath:properties[i] options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+    {
+        var propertyName = properties[i];
+
+        if ([[_editedObject valueForKeyPath:propertyName] isKindOfClass:CPArrayController])
+        {
+            [_editedObject addObserver:self forKeyPath:propertyName + @".arrangedObjects" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+            [_editedObject addObserver:self forKeyPath:propertyName + @".arrangedObjects.value" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+        }
+        else
+            [_editedObject addObserver:self forKeyPath:propertyName options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+    }
 
     [[CPNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_didReceiveRESTConfirmationCancelNotification:)
@@ -949,7 +1019,17 @@ computeRelativeRectOfSelectedRow = function(tableView)
     var properties = [_editedObject bindableAttributes];
 
     for (var i = [properties count] - 1; i >= 0; i--)
-        [_editedObject removeObserver:self forKeyPath:properties[i]];
+    {
+        var propertyName = properties[i];
+
+        if ([[_editedObject valueForKeyPath:propertyName] isKindOfClass:CPArrayController])
+        {
+            [_editedObject removeObserver:self forKeyPath:propertyName + @"arrangedObjects"];
+            [_editedObject removeObserver:self forKeyPath:propertyName + @"arrangedObjects.value"];
+        }
+        else
+            [_editedObject removeObserver:self forKeyPath:propertyName];
+    }
 
     [[CPNotificationCenter defaultCenter] removeObserver:self
                                                     name:NURESTConfirmationCancelNotification
@@ -961,9 +1041,6 @@ computeRelativeRectOfSelectedRow = function(tableView)
 {
     var oldValue = [change objectForKey:CPKeyValueChangeOldKey],
         newValue = [change objectForKey:CPKeyValueChangeNewKey];
-
-    if (oldValue == newValue)
-        return;
 
     [self _sendDelegateValidateObjectWithAttribute:keyPath];
     [self _updateValidationFields];
