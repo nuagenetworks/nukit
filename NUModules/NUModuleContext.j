@@ -471,8 +471,10 @@ computeRelativeRectOfSelectedRow = function(tableView)
             value   = [_editedObject valueForKeyPath:keyPath];
 
         if ([control isKindOfClass:CPPopUpButton])
+        {
             [control unbind:CPSelectedTagBinding];
-        if ([control isKindOfClass:CPTableView])
+        }
+        else if ([control isKindOfClass:CPTableView])
         {
             [self _sendDelegateUnbindTableView:control forProperty:keyPath];
 
@@ -758,7 +760,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_)
         [_delegate moduleContext:self bindTableView:aTableView forProperty:aPropertyName ofObject:_editedObject];
     else
-        [[aTableView tableColumns][0] bind:CPValueBinding toObject:_editedObject withKeyPath:aPropertyName + @".arrangedObjects.value" options:nil];
+        [[[aTableView tableColumns] firstObject] bind:CPValueBinding toObject:_editedObject withKeyPath:aPropertyName + @".arrangedObjects.value" options:nil];
 }
 
 - (void)_sendDelegateUnbindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertyName
@@ -766,7 +768,11 @@ computeRelativeRectOfSelectedRow = function(tableView)
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_)
         [_delegate moduleContext:self unbindTableView:aTableView forProperty:aPropertyName ofObject:_editedObject];
     else
-        [[aTableView tableColumns][0] unbind:CPValueBinding];
+        [[[aTableView tableColumns] firstObject] unbind:CPValueBinding];
+
+    // the 2 following lines is a workaround for a bug in the binding of the CPTableColumn bindings
+    [aTableView unbind:@"content"];
+    [aTableView reloadData];
 }
 
 
@@ -1024,8 +1030,8 @@ computeRelativeRectOfSelectedRow = function(tableView)
 
         if ([[_editedObject valueForKeyPath:propertyName] isKindOfClass:CPArrayController])
         {
-            [_editedObject removeObserver:self forKeyPath:propertyName + @"arrangedObjects"];
-            [_editedObject removeObserver:self forKeyPath:propertyName + @"arrangedObjects.value"];
+            [_editedObject removeObserver:self forKeyPath:propertyName + @".arrangedObjects"];
+            [_editedObject removeObserver:self forKeyPath:propertyName + @".arrangedObjects.value"];
         }
         else
             [_editedObject removeObserver:self forKeyPath:propertyName];
@@ -1285,6 +1291,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     [_popover makeFirstResponder:nil];
     [self setModified:NO];
     [self setSavingEnabled:NO];
+    [self _unbindControls];
 }
 
 @end
