@@ -391,6 +391,9 @@ computeRelativeRectOfSelectedRow = function(tableView)
                 {
                     [addButton setTarget:value];
                     [addButton setAction:@selector(add:)];
+                    [addButton setImage:NUSkinImageButtonPlus];
+                    [addButton setAlternateImage:NUSkinImageButtonPlusAlt];
+                    [addButton setButtonType:CPMomentaryChangeButton];
                 }
 
                 var deleteButton = [self _controlForProperty:keyPath + @"_remove:"];
@@ -398,6 +401,9 @@ computeRelativeRectOfSelectedRow = function(tableView)
                 {
                     [deleteButton setTarget:value];
                     [deleteButton setAction:@selector(remove:)];
+                    [deleteButton setImage:NUSkinImageButtonMinus];
+                    [deleteButton setAlternateImage:NUSkinImageButtonMinusAlt];
+                    [deleteButton setButtonType:CPMomentaryChangeButton];
                 }
             }
             else if ([control isKindOfClass:CPImageView])
@@ -1047,6 +1053,9 @@ computeRelativeRectOfSelectedRow = function(tableView)
 {
     var oldValue = [change objectForKey:CPKeyValueChangeOldKey],
         newValue = [change objectForKey:CPKeyValueChangeNewKey];
+
+    if (newValue == oldValue && ![[object valueForKeyPath:keyPath] isKindOfClass:CPArrayController])
+        return;
 
     [self _sendDelegateValidateObjectWithAttribute:keyPath];
     [self _updateValidationFields];
