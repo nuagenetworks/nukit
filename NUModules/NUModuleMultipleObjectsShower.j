@@ -34,6 +34,11 @@
     return @"No Name";
 }
 
+- (id)initWithCibName:(CPString)aCibNameOrNil bundle:(CPBundle)aCibBundleOrNil externalNameTable:(CPDictionary)anExternalNameTable
+{
+    return [super initWithCibName:@"ObjectsShower" bundle:[CPBundle bundleForClass:self] externalNameTable:anExternalNameTable];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

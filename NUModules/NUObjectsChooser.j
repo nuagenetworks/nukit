@@ -55,10 +55,11 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     return NO;
 }
 
+- (id)initWithCibName:(CPString)aCibNameOrNil bundle:(CPBundle)aCibBundleOrNil externalNameTable:(CPDictionary)anExternalNameTable
+{
+    return [super initWithCibName:@"ObjectSelector" bundle:[CPBundle bundleForClass:self] externalNameTable:anExternalNameTable];
+}
 
-/*! @ignore
-    Initialize the table view
-*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
