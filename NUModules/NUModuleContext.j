@@ -44,7 +44,7 @@ var NUValidationActive = nil,
     NUModuleContextAutoValidation = NO;
 
 // reversed for optim
-NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"virtualIP", @"minAddress", @"MAC", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"];
+NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"minAddress", @"MAC", @"virtualIP", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"];
 
 var NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
     NUModuleContextDelegate_moduleContext_didManageObject_                          = 1 << 2,
