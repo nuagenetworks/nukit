@@ -98,6 +98,14 @@ computeRelativeRectOfSelectedRow = function(tableView)
     return CGRectMake(rect.origin.x, rect.origin.y, 1, 1);
 }
 
+var _isCPArrayControllerKind = function(object, keyPath)
+{
+    var ret = NO;
+    try  { ret = [[object valueForKeyPath:keyPath] isKindOfClass:CPArrayController]; } catch(e) {};
+    return ret;
+}
+
+
 @implementation NUModuleContext : CPObject
 {
     BOOL            _modified                       @accessors(property=modified);
@@ -1008,7 +1016,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     {
         var propertyName = properties[i];
 
-        if ([[_editedObject valueForKeyPath:propertyName] isKindOfClass:CPArrayController])
+        if (_isCPArrayControllerKind(_editedObject, propertyName))
         {
             [_editedObject addObserver:self forKeyPath:propertyName + @".arrangedObjects" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
             [_editedObject addObserver:self forKeyPath:propertyName + @".arrangedObjects.value" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
@@ -1034,7 +1042,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     {
         var propertyName = properties[i];
 
-        if ([[_editedObject valueForKeyPath:propertyName] isKindOfClass:CPArrayController])
+        if (_isCPArrayControllerKind(_editedObject, propertyName))
         {
             [_editedObject removeObserver:self forKeyPath:propertyName + @".arrangedObjects"];
             [_editedObject removeObserver:self forKeyPath:propertyName + @".arrangedObjects.value"];
@@ -1054,7 +1062,7 @@ computeRelativeRectOfSelectedRow = function(tableView)
     var oldValue = [change objectForKey:CPKeyValueChangeOldKey],
         newValue = [change objectForKey:CPKeyValueChangeNewKey];
 
-    if (newValue == oldValue && ![[object valueForKeyPath:keyPath] isKindOfClass:CPArrayController])
+    if (newValue == oldValue && !_isCPArrayControllerKind(object, keyPath))
         return;
 
     [self _sendDelegateValidateObjectWithAttribute:keyPath];
