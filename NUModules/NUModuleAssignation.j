@@ -31,11 +31,10 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 
 @implementation NUModuleAssignation : NUModule
 {
-    @outlet NUObjectsChooser chooser;
-
-    CPButton _buttonFirstAssign;
-    CPButton _buttonUnassignObject;
-    CPButton _buttonAssignObject;
+    NUObjectsChooser    _chooser;
+    CPButton            _buttonFirstAssign;
+    CPButton            _buttonUnassignObject;
+    CPButton            _buttonAssignObject;
 }
 
 
@@ -46,9 +45,9 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 {
     [super viewDidLoad];
 
-    [chooser view];
-    [chooser setDelegate:self];
-    [chooser setModuleTitle:[self objectChooserTitle]];
+    _chooser = [NUObjectsChooser new];
+    [_chooser setDelegate:self];
+    [self configureObjectsChooser:_chooser];
 }
 
 - (void)configureAdditionalControls
@@ -132,7 +131,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark NUModuleAssignation API
 
-- (CPString)objectChooserTitle
+- (void)configureObjectsChooser:(NUObjectChooser)anObjectChooser
 {
     throw "Not implemented";
 }
@@ -251,9 +250,9 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 
     var context = [self currentContext];
 
-    [chooser setIgnoredObjects:[[self flattenedDataSourceContent] copy]];
-    [chooser configureFetcherKeyPath:[context fetcherKeyPath] forClass:[context managedObjectClass]];
-    [chooser showOnView:aSender forParentObject:[self parentOfAssociatedObject]];
+    [_chooser setIgnoredObjects:[[self flattenedDataSourceContent] copy]];
+    [_chooser configureFetcherKeyPath:[context fetcherKeyPath] forClass:[context managedObjectClass]];
+    [_chooser showOnView:aSender forParentObject:[self parentOfAssociatedObject]];
 }
 
 
@@ -265,7 +264,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     var content = [CPArray arrayWithArray:[[self flattenedDataSourceContent] copy]];
     [content addObjectsFromArray:selectedObjects];
     [self assignObjects:content];
-    [chooser closeModulePopover];
+    [_chooser closeModulePopover];
 }
 
 @end
