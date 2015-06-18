@@ -92,7 +92,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [view setBackgroundColor:NUSkinColorWhite];
     [view setBorderColor:NUSkinColorGrey];
 
-    _associatedObjectChooser = [[NUObjectsChooser alloc] initWithCibName:@"ObjectSelector" bundle:[CPBundle mainBundle]];
+    _associatedObjectChooser = [NUObjectsChooser new];
     [_associatedObjectChooser view];
     [_associatedObjectChooser setDelegate:self];
     [_associatedObjectChooser setAllowsMultipleSelection:NO];
