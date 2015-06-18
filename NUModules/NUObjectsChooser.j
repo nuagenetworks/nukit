@@ -45,6 +45,15 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Initialization
 
++ (id)new
+{
+    var obj = [[self alloc] initWithCibName:@"ObjectSelector" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
+
+    [obj view];
+
+    return obj;
+}
+
 + (BOOL)automaticSelectionSaving
 {
     return NO;
@@ -53,11 +62,6 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 + (BOOL)commitFetchedObjects
 {
     return NO;
-}
-
-- (id)initWithCibName:(CPString)aCibNameOrNil bundle:(CPBundle)aCibBundleOrNil externalNameTable:(CPDictionary)anExternalNameTable
-{
-    return [super initWithCibName:@"ObjectSelector" bundle:[CPBundle bundleForClass:self] externalNameTable:anExternalNameTable];
 }
 
 - (void)viewDidLoad

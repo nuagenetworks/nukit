@@ -29,14 +29,18 @@
 #pragma mark -
 #pragma mark Initialization
 
++ (id)new
+{
+    var obj = [[self alloc] initWithCibName:@"ObjectsShower" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
+
+    [obj view];
+
+    return obj;
+}
+
 + (CPString)moduleName
 {
     return @"No Name";
-}
-
-- (id)initWithCibName:(CPString)aCibNameOrNil bundle:(CPBundle)aCibBundleOrNil externalNameTable:(CPDictionary)anExternalNameTable
-{
-    return [super initWithCibName:@"ObjectsShower" bundle:[CPBundle bundleForClass:self] externalNameTable:anExternalNameTable];
 }
 
 - (void)viewDidLoad
