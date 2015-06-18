@@ -39,11 +39,20 @@ function createDownload(content, filename, extension)
 {
     var contentType = 'application/octet-stream',
         a = document.createElement('a'),
-        blob = new Blob([content], {'type':contentType});
+        blob = new Blob([content], {'type':contentType}),
+        url = window.URL.createObjectURL(blob);
 
-    a.href = window.URL.createObjectURL(blob);
+    a.style = "display: none";
+    a.href = url
     a.download = filename + "." + extension;
+    document.body.appendChild(a);
     a.click();
+
+    setTimeout(function(){
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 100);
+
     delete a;
 }
 
