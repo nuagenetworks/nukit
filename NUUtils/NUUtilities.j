@@ -500,3 +500,25 @@ function _phoneNumber(aPhoneNumber, mandatory)
 
     return success ? null : "Not a valid phone number";
 }
+
+function _validateArray(array, validation_function, additional_validation_parameters)
+{
+    var errors = [];
+
+    for (var i = array.length - 1; i >= 0; i--)
+    {
+        var value = array[i],
+            params = additional_validation_parameters.slice();
+
+        params.reverse();
+        params.push(value);
+        params.reverse();
+
+        var result = validation_function.apply(this, params);
+
+        if (result)
+            errors.push("'" + value + "': " + result);
+    }
+
+    return !errors.length ? null : errors.join(", ");
+}
