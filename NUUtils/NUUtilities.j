@@ -503,6 +503,8 @@ function _phoneNumber(aPhoneNumber, mandatory)
 
 function _validateArray(array, validation_function, additional_validation_parameters)
 {
+    array = [array arrangedObjects];
+
     var errors = [];
 
     for (var i = array.length - 1; i >= 0; i--)
