@@ -3131,8 +3131,7 @@ NUModuleTabViewModeIcon = 2;
     [editorController setTitleFromKeyPath:editorTitleKeyPath ofObject:firstObject transformer:editorTitleTransformer];
     [editorController setImage:editorImage];
 
-    if (multipleSelection)
-        [editorController showMultipleSelectionView:YES];
+    [editorController showMultipleSelectionView:multipleSelection];
 
     [self showModuleEditor:_stickyEditor || singleSelection || multipleSelection];
 }
