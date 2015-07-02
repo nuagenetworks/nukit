@@ -332,7 +332,7 @@ var NUInspectorWindowsRegistry = @{},
 
 - (IBAction)openAnotherInspector:(id)aSender
 {
-    [[NUKit kit] openInspector:aSender];
+    [[NUKit kit] openInspectorForSelectedObject];
 }
 
 - (IBAction)openAPIDocInExternalWindow:(id)aSender
