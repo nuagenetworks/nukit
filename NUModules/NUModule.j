@@ -1648,7 +1648,6 @@ NUModuleTabViewModeIcon = 2;
 
     // open the window and register it
     [externalWindow makeKeyAndOrderFront:nil];
-    [[NUKit kit] registerExternalWindow:externalWindow];
 
     // add CSS and theme stuff
     [[NUKit kit] installStyleSheetOnDocument:plaformWindow._DOMWindow.document];
@@ -1675,7 +1674,6 @@ NUModuleTabViewModeIcon = 2;
     [self setCurrentParent:nil];
 
     // close the window
-    [[NUKit kit] unregisterExternalWindow:_externalWindow];
     [_externalWindow orderOut:nil];
 }
 
@@ -3506,7 +3504,6 @@ NUModuleTabViewModeIcon = 2;
         return;
 
     [self didCloseFromExternalWindow];
-    [[NUKit kit] unregisterExternalWindow:[self externalWindow]];
 }
 
 #pragma mark -
