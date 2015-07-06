@@ -62,7 +62,8 @@
         [_fieldTitle setTextColor:NUSkinColorRed];
         [_fieldTitle setAlignment:CPCenterTextAlignment];
         [_fieldTitle setAutoresizingMask:CPViewWidthSizable];
-        [_fieldTitle setFont:[CPFont boldSystemFontOfSize:12]]
+        [_fieldTitle setLineBreakMode:CPLineBreakByTruncatingTail];
+        [_fieldTitle setFont:[CPFont boldSystemFontOfSize:12]];
 
         var frame = [_fieldTitle frame];
         frame.origin.x = 10;
@@ -113,16 +114,14 @@
 
     if (_targetTextField)
     {
-        [_fieldTitle bind:@"objectValue" toObject:_targetTextField withKeyPath:@"objectValue" options:nil];
-        [_fieldDescription bind:@"objectValue" toObject:_targetTextField withKeyPath:@"toolTip" options:nil];
         [_targetTextField addObserver:self forKeyPath:@"objectValue" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
+        [_targetTextField addObserver:self forKeyPath:@"toolTip" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
         [_targetTextField setHidden:YES];
     }
     else
     {
-        [_fieldTitle unbind:CPValueBinding];
-        [_fieldDescription unbind:@"objectValue"];
         [_targetTextField removeObserver:self forKeyPath:@"objectValue"];
+        [_targetTextField removeObserver:self forKeyPath:@"toolTip"];
     }
 }
 
@@ -135,6 +134,11 @@
     {
          if (!_visible)
              [self show:nil];
+
+         console.error(_targetTextField);
+         [_fieldTitle setStringValue:[_targetTextField toolTip]];
+         [_fieldTitle setToolTip:[_targetTextField toolTip]];
+         [_fieldDescription setStringValue:[_targetTextField stringValue]];
     }
     else
         [self hide:nil];
