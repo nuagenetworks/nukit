@@ -135,7 +135,6 @@
          if (!_visible)
              [self show:nil];
 
-         console.error(_targetTextField);
          [_fieldTitle setStringValue:[_targetTextField toolTip]];
          [_fieldTitle setToolTip:[_targetTextField toolTip]];
          [_fieldDescription setStringValue:[_targetTextField stringValue]];
