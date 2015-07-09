@@ -25,6 +25,7 @@
 @import "NUObjectsChooser.j"
 
 @class NUKit
+@class NURESTModelController
 
 
 var NUAbstractObjectAssociatorLinkImage          = CPImageInBundle("button-link.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
@@ -476,31 +477,54 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         settings    = [self associatorSettings],
         parentObject = [self parentOfAssociatedObjects];
 
-    if (!parentObject)
-        return;
+    if ([identifiers count] == 1)
+        {
+            // Use a direct fetch
+            var identifier  = identifiers[0],
+                instance    = [[[NURESTModelController defaultController] modelClassForRESTName:identifier] new];
 
-    for (var i = [identifiers count] - 1; i >= 0; i--)
+            [instance setID:anID];
+            [instance fetchAndCallSelector:@selector(_didFetchObject:connection:) ofObject:self];
+    }
+    else
     {
-        var identifier      = identifiers[i],
-            setting         = [settings objectForKey:identifier],
-            fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
-            fetcher         = [parentObject valueForKeyPath:fetcherKeyPath],
-            predicateFilter = [CPPredicate predicateWithFormat:@"ID == %@", anID];
+        // Make a fetch with filter for each context
+        if (!parentObject)
+            return;
 
-        [fetcher fetchWithMatchingFilter:predicateFilter
-                            masterFilter:nil
-                               orderedBy:nil
-                               groupedBy:nil
-                                    page:0
-                                pageSize:1
-                                  commit:NO
-                         andCallSelector:@selector(_fetcher:ofObject:didFetchContent:)
-                                ofObject:self
-                                   block:nil];
+        for (var i = [identifiers count] - 1; i >= 0; i--)
+        {
+            var identifier      = identifiers[i],
+                setting         = [settings objectForKey:identifier],
+                fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
+                fetcher         = [parentObject valueForKeyPath:fetcherKeyPath],
+                predicateFilter = [CPPredicate predicateWithFormat:@"ID == %@", anID];
 
+            [fetcher fetchWithMatchingFilter:predicateFilter
+                                masterFilter:nil
+                                   orderedBy:nil
+                                   groupedBy:nil
+                                        page:0
+                                    pageSize:1
+                                      commit:NO
+                             andCallSelector:@selector(_fetcher:ofObject:didFetchContent:)
+                                    ofObject:self
+                                       block:nil];
+        }
     }
 
     [self showLoading:YES];
+}
+
+- (void)_didFetchObject:(id)anObject connection:(NURESTConnection)aConnection
+    {
+        if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
+            return;
+
+        [self showLoading:NO];
+        [self _updateDataViewWithAssociatedObject:anObject];
+        [self didFetchAssociatedObject:anObject];
+        [self _sendDelegateDidAssociatorFetchAssociatedObject];
 }
 
 - (void)_fetcher:(id)aFetcher ofObject:(NURESTObject)anObject didFetchContent:(CPArray)someContents
