@@ -23,8 +23,7 @@
 
 - (CPColor)_unfocusedSelectionColorFromColor:(CPColor)aColor saturation:(float)saturation
 {
-    var compos = [aColor components];
-    return [CPColor colorWithCalibratedRed:compos[0] green:compos[1] blue:compos[2] alpha:0.7];
+    return [aColor colorWithAlphaComponent:0.65];
 }
 
 
