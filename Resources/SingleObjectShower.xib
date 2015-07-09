@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C78c" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NUModuleSingleObjectShower">
+            <connections>
+                <outlet property="buttonOpenInspector" destination="b8D-HG-2CP" id="yxV-hF-dVi"/>
+                <outlet property="fieldModuleTitle" destination="NvV-iX-K0i" id="xnU-PG-qpY"/>
+                <outlet property="view" destination="p77-q0-gfZ" id="NrN-Ab-n6u"/>
+                <outlet property="viewContainer" destination="9qG-Fs-Vqj" id="c4B-gm-2sp"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="p77-q0-gfZ" userLabel="Popover Add user">
+            <rect key="frame" x="0.0" y="0.0" width="324" height="114"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView id="9qG-Fs-Vqj">
+                    <rect key="frame" x="0.0" y="0.0" width="324" height="80"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                </customView>
+                <customView id="ZxK-BP-DQ7">
+                    <rect key="frame" x="0.0" y="80" width="324" height="34"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <subviews>
+                        <textField verticalHuggingPriority="750" id="NvV-iX-K0i">
+                            <rect key="frame" x="8" y="9" width="284" height="17"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Title" id="97R-am-eqQ">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" red="0.34509804840000002" green="0.63529413940000001" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <button toolTip="Open Inspector window" id="b8D-HG-2CP">
+                            <rect key="frame" x="298" y="9" width="16" height="16"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="bevel" alternateTitle="VMs using this object" bezelStyle="regularSquare" imagePosition="overlaps" alignment="center" inset="2" id="AEp-0m-N07">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="openInspector:" target="-2" id="SyH-no-eA7"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="tag" value="popovertitlebanner"/>
+                    </userDefinedRuntimeAttributes>
+                </customView>
+            </subviews>
+        </customView>
+    </objects>
+</document>

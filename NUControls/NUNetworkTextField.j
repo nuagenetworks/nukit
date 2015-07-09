@@ -1141,45 +1141,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     if (![self isEnabled])
         return;
 
-    var inputElement = [self _inputElement],
-        value = inputElement.value,
-        lastPosition = value.slice(0, inputElement.selectionStart).length,
-        key = [anEvent charactersIgnoringModifiers],
-        keyCode =  [anEvent keyCode],
-        length = [[self stringValue] length],
-        modifierFlags = [anEvent modifierFlags];
-
-    if (key == CPLeftArrowFunctionKey || key == CPRightArrowFunctionKey)
-    {
-        if (lastPosition === 0 && key == CPLeftArrowFunctionKey && _delegate._internObjectValue != @"")
-        {
-            [_delegate _deselectAll];
-            [_delegate _selectPreviousTextField];
-            return;
-        }
-
-        if (lastPosition === length && key == CPRightArrowFunctionKey && _delegate._internObjectValue != @"")
-        {
-            [_delegate _deselectAll];
-            [_delegate selectTextField:_nextTextField];
-            return;
-        }
-    }
-
-    if (keyCode == CPDeleteKeyCode)
-    {
-        if (![[self stringValue] length])
-        {
-            [_delegate _selectPreviousTextField];
-            return;
-        }
-    }
-
-    if (key == CPEscapeFunctionKey)
-    {
-        [_delegate _deselectAll];
-        return;
-    }
+    var key = [anEvent charactersIgnoringModifiers],
+        keyCode =  [anEvent keyCode];
 
     if (key == CPSpaceFunctionKey)
     {
@@ -1193,10 +1156,47 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 
     [super keyDown:anEvent];
+}
 
-    // TODO: hack...28th august
-    if (keyCode == CPDeleteKeyCode)
+- (void)moveLeft:(id)sender
+{
+    var inputElement = [self _inputElement],
+        value = inputElement.value,
+        lastPosition = value.slice(0, inputElement.selectionStart).length;
+
+    if (lastPosition === 0 && _delegate._internObjectValue != @"")
+    {
+        [_delegate _deselectAll];
+        [_delegate _selectPreviousTextField];
+    }
+}
+
+- (void)moveRight:(id)sender
+{
+    var inputElement = [self _inputElement],
+        value = inputElement.value,
+        lastPosition = value.slice(0, inputElement.selectionStart).length,
+        length = [[self stringValue] length];
+
+    if (lastPosition === length && _delegate._internObjectValue != @"")
+    {
+        [_delegate _deselectAll];
+        [_delegate selectTextField:_nextTextField];
+    }
+}
+
+- (void)cancelOperation:(id)sender
+{
+    [_delegate _deselectAll];
+}
+
+- (void)deleteBackward:(id)sender
+{
+    if (![[self stringValue] length])
+    {
+        [_delegate _selectPreviousTextField];
         [[[self window] platformWindow] _propagateCurrentDOMEvent:NO];
+    }
 }
 
 - (BOOL)performKeyEquivalent:(CPEvent)anEvent
@@ -1594,17 +1594,74 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     if ([[self window] firstResponder] == self && key == @"x" && (modifierFlags & (CPCommandKeyMask | CPControlKeyMask)))
     {
         setTimeout(function(){
-        var textField = [_networkTextField._networkElementTextFields firstObject];
-        [self _selectTextField:textField range:CPMakeRange(0,0)];
+            var textField = [_networkTextField._networkElementTextFields firstObject];
+            [self _selectTextField:textField range:CPMakeRange(0,0)];
 
-        [_networkTextField setStringValue:@""];
-        [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
+            [_networkTextField setStringValue:@""];
+            [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
         },0);
 
         return [super performKeyEquivalent:anEvent];
     }
 
     return [super performKeyEquivalent:anEvent];
+}
+
+- (void)moveLeft:(id)sender
+{
+    [self _selectFirstTextField];
+}
+
+- (void)moveDown:(id)sender
+{
+    [self _selectFirstTextField];
+}
+
+- (void)moveRight:(id)sender
+{
+    [self _selectLastValidTextField];
+}
+
+- (void)moveUp:(id)sender
+{
+    [self _selectLastValidTextField];
+}
+
+- (void)_selectLastValidTextField
+{
+    var textField;
+
+    for (var i = [_networkTextField._networkElementTextFields count] - 1; i >= 0; i--)
+    {
+        textField = _networkTextField._networkElementTextFields[i];
+
+        if ([[textField stringValue] length])
+            break;
+    }
+
+    [self _selectTextField:textField range:CPMakeRange([[textField stringValue] length],0)];
+}
+
+- (void)_selectFirstTextField
+{
+    var textField = [_networkTextField._networkElementTextFields firstObject];
+    [self _selectTextField:textField range:CPMakeRange(0,0)];
+}
+
+- (void)cancelOperation:(id)sender
+{
+    [self _selectFirstTextField];
+}
+
+- (void)deleteForward:(id)sender
+{
+    if (![_networkTextField isEnabled])
+        return;
+
+    var textField = [_networkTextField._networkElementTextFields firstObject];
+    [self _selectTextField:textField range:CPMakeRange(0,0)];
+    [_networkTextField setStringValue:@""];
+    [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
 }
 
 - (void)keyDown:(CPEvent)anEvent
@@ -1620,52 +1677,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     if (key == @"x" && (modifierFlags & (CPCommandKeyMask | CPControlKeyMask)))
         return;
 
-    if (key == CPLeftArrowFunctionKey || key == CPDownArrowFunctionKey)
-    {
-        var textField = [_networkTextField._networkElementTextFields firstObject];
-
-        [self _selectTextField:textField range:CPMakeRange(0,0)];
-
-        return;
-    }
-
-    if (key == CPRightArrowFunctionKey || key == CPUpArrowFunctionKey)
-    {
-        var textField;
-
-        for (var i = [_networkTextField._networkElementTextFields count] - 1; i >= 0; i--)
-        {
-            textField = _networkTextField._networkElementTextFields[i];
-
-            if ([[textField stringValue] length])
-                break;
-        }
-
-        [self _selectTextField:textField range:CPMakeRange([[textField stringValue] length],0)];
-
-        return;
-    }
-
-    if (keyCode == CPEscapeKeyCode)
-    {
-        var textField = [_networkTextField._networkElementTextFields firstObject];
-        [self _selectTextField:textField range:CPMakeRange(0,0)];
-
-        return;
-    }
+    [self interpretKeyEvents:[anEvent]];
 
     if (![_networkTextField isEnabled])
         return;
-
-    if (keyCode == CPDeleteKeyCode)
-    {
-        var textField = [_networkTextField._networkElementTextFields firstObject];
-        [self _selectTextField:textField range:CPMakeRange(0,0)];
-        [_networkTextField setStringValue:@""];
-        [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
-
-        return;
-    }
 
     if (keyCode >= CPZeroKeyCode && keyCode <= CPNineKeyCode
         || (mode == NUNetworkMACMode && ((keyCode >= CPZeroKeyCode && keyCode <= CPNineKeyCode) || (keyCode >= CPAKeyCode && keyCode <= CPFKeyCode))))
@@ -1694,8 +1709,6 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
         [_networkTextField setStringValue:key];
         [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
-
-        return;
     }
 }
 

@@ -258,7 +258,7 @@ BUILDER ("BUILDER", function(task)
     task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"]);
     task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
     task.setInfoPlistPath("Info.plist");
-    task.setPreventsNib2Cib(true);
+    task.setPreventsNib2Cib(false);
     task.setProductName(BUILD_INFO["PROJECT_NAME"]);
     task.setResources(new FILELIST("Resources/**"));
     task.setSources(BUILD_INFO["PROJECT_SOURCES"]);

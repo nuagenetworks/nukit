@@ -12,3 +12,4 @@ debug.txt
 *.XcodeSupport*
 *Build/*
 *.xcodeproj
+*.cib

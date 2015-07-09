@@ -123,6 +123,7 @@
     [tableViewItems setAllowsEmptySelection:NO];
     [tableViewItems setIndentationPerLevel:0];
     [tableViewItems setAutoresizingMask:CPViewHeightSizable];
+    [tableViewItems setNextResponder:self];
 
     var button = [CPButton buttonWithTitle:nil];
     [button setEnabled:NO];
@@ -223,6 +224,11 @@
     }
 
     return modules;
+}
+
+- (void)moduleDidChangeVisibleSubmodule
+{
+    [tableViewItems setNextKeyView:[[self visibleSubModule] initialFirstResponder]];
 }
 
 

@@ -67,7 +67,6 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     NUServerFaultWindowController   _serverFaultWindowController    @accessors(getter=serverFaultWindowController);
 
     BOOL                            _isAppClosing;
-    CPArray                         _externalWindows;
     CPArray                         _sharedModules;
     CPPopover                       _lockedPopover;
     CPView                          _lockedPopoverView;
@@ -99,7 +98,6 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
         [self installStyleSheetOnDocument:document];
 
-        _externalWindows             = [];
         _sharedModules               = @{};
 
         _loginWindowController       = [NULoginWindowController new];
@@ -335,26 +333,9 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 #pragma mark -
 #pragma mark External Platform Windows Management
 
-- (void)registerExternalWindow:(CPPlatformWindow)aWindow
-{
-    if (![_externalWindows containsObject:aWindow])
-        [_externalWindows addObject:aWindow];
-}
-
-- (void)unregisterExternalWindow:(CPPlatformWindow)aWindow
-{
-    if ([_externalWindows containsObject:aWindow])
-        [_externalWindows removeObject:aWindow];
-}
-
 - (void)closeExternalWindows
 {
-    var windows = [_externalWindows copy];
-
-    for (var i = [windows count] - 1; i >= 0; i--)
-        [windows[i] orderOut:nil];
-
-    [NUInspectorWindowController flushInspectorRegistry];
+    [CPPlatform closeAllPlatformWindows];
 }
 
 

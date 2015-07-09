@@ -332,7 +332,7 @@ var NUInspectorWindowsRegistry = @{},
 
 - (IBAction)openAnotherInspector:(id)aSender
 {
-    [[NUKit kit] openInspector:aSender];
+    [[NUKit kit] openInspectorForSelectedObject];
 }
 
 - (IBAction)openAPIDocInExternalWindow:(id)aSender
@@ -404,7 +404,6 @@ var NUInspectorWindowsRegistry = @{},
     [self unregisterFromPushNotification];
     [self _hideModuleOfTabItem:[tabViewMain selectedTabViewItem]];
     [self _unbindControls];
-    [[NUKit kit] unregisterExternalWindow:[self window]];
     [NUInspectorWindowsRegistry removeObjectForKey:[_inspectedObject ID]];
 
     _inspectedObject = nil;
@@ -482,8 +481,6 @@ var NUInspectorWindowsRegistry = @{},
 
     [self registerForPushNotification];
     [self _bindControls];
-
-    [[NUKit kit] registerExternalWindow:[self window]];
 }
 
 - (void)loadWindow

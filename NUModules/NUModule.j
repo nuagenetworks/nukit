@@ -38,14 +38,15 @@
 @import "NUCategory.j"
 @import "NUDataTransferController.j"
 @import "NUEditorsViewController.j"
+@import "NUExpandableSearchField.j"
 @import "NUJobExport.j"
 @import "NUJobImport.j"
+@import "NUKitObject.j"
 @import "NUModuleContext.j"
 @import "NUOutlineViewDataSource.j"
 @import "NUSkin.j"
 @import "NUTabViewItemPrototype.j"
 @import "NUTotalNumberValueTransformer.j"
-@import "NUKitObject.j"
 
 @class NUKit
 
@@ -323,7 +324,8 @@ NUModuleTabViewModeIcon = 2;
         [tableView setDelegate:self];
         [tableView setTarget:self];
 
-        // [tableView setNextResponder:self];
+        [tableView setNextResponder:self];
+        [tableView setNextKeyView:tabViewContent];
         [tableView setDoubleAction:@selector(openEditObjectPopover:)];
 
         // set ourself as the scroll view delegate
@@ -334,6 +336,7 @@ NUModuleTabViewModeIcon = 2;
     {
         [filterField setTarget:self];
         [filterField setAction:@selector(filterObjects:)];
+        [filterField setNextKeyView:tableView];
 
         var searchButton = [filterField searchButton];
         [searchButton setTarget:self];
@@ -410,6 +413,7 @@ NUModuleTabViewModeIcon = 2;
         }
 
         [viewGettingStarted setBackgroundColor:[CPColor whiteColor]];
+        [viewGettingStarted setNextResponder:self];
     }
 
     if (buttonHelp)
@@ -872,6 +876,7 @@ NUModuleTabViewModeIcon = 2;
     if (!_isVisible)
         return;
 
+    [self hideLoading];
     [self archiveCurrentSelection];
     [self hideAllSubModules];
 
@@ -1328,6 +1333,9 @@ NUModuleTabViewModeIcon = 2;
 {
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
 
+    if (![self isActionPermitted:action])
+        return;
+
     [self setCurrentContext:[self defaultContextForAction:action]];
 
     var currentEditedObject = [self createObjectWithRESTName:[_currentContext identifier]];
@@ -1355,10 +1363,10 @@ NUModuleTabViewModeIcon = 2;
         selectedRow  = [tableView selectedRow],
         ignoreAction = aSender == tableView && !CGRectContainsPoint([tableView convertRectToBase:[tableView rectOfRow:selectedRow]], clickPoint);
 
-    var currentEditedObject = [tableView className] == @"CPTableView" ? [_dataSource objectAtIndex:selectedRow] : [tableView itemAtRow:selectedRow];
-
     if (![self isActionPermitted:NUModuleActionEdit] || ignoreAction)
         return;
+
+    var currentEditedObject = [tableView className] == @"CPTableView" ? [_dataSource objectAtIndex:selectedRow] : [tableView itemAtRow:selectedRow];
 
     [self closeAllPopovers];
 
@@ -1369,7 +1377,7 @@ NUModuleTabViewModeIcon = 2;
     var editionPopoverView = [[[_currentContext popover] contentViewController] view];
     _cucappID(editionPopoverView, @"popover_" + [currentEditedObject RESTName]);
 
-    if ([aSender isKindOfClass:CPMenuItem])
+    if ([aSender isKindOfClass:CPMenuItem] || aSender == self)
         aSender = [self defaultPopoverTargetForMenuItem];
 
     [_currentContext openPopoverForAction:NUModuleActionEdit sender:aSender];
@@ -1377,6 +1385,9 @@ NUModuleTabViewModeIcon = 2;
 
 - (IBAction)openDeleteObjectPopover:(id)aSender
 {
+    if (![self isActionPermitted:NUModuleActionDelete])
+        return;
+
     if (NUModuleAutoValidation || [[CPApp currentEvent] modifierFlags] & CPShiftKeyMask)
     {
         [self _performDeleteObjects:nil];
@@ -1637,7 +1648,6 @@ NUModuleTabViewModeIcon = 2;
 
     // open the window and register it
     [externalWindow makeKeyAndOrderFront:nil];
-    [[NUKit kit] registerExternalWindow:externalWindow];
 
     // add CSS and theme stuff
     [[NUKit kit] installStyleSheetOnDocument:plaformWindow._DOMWindow.document];
@@ -1664,7 +1674,6 @@ NUModuleTabViewModeIcon = 2;
     [self setCurrentParent:nil];
 
     // close the window
-    [[NUKit kit] unregisterExternalWindow:_externalWindow];
     [_externalWindow orderOut:nil];
 }
 
@@ -1749,7 +1758,6 @@ NUModuleTabViewModeIcon = 2;
     return NO;
 }
 
-
 - (void)setSubModules:(CPArray)someModules
 {
     for (var i = [_subModules count] - 1; i >= 0; i--)
@@ -1810,13 +1818,14 @@ NUModuleTabViewModeIcon = 2;
     if (tabViewContent)
         previousSelectedIdentifier = [[tabViewContent selectedTabViewItem] identifier];
 
-    [self _updateActiveSubModules]
+    [self _updateActiveSubModules];
 
     if (tabViewContent)
     {
         var newIndex = [tabViewContent indexOfTabViewItemWithIdentifier:previousSelectedIdentifier];
         [tabViewContent selectTabViewItemAtIndex:(newIndex != CPNotFound) ? newIndex : 0];
-        [[self _subModuleWithIdentifier:[[tabViewContent selectedTabViewItem] identifier]] willShow];
+        // not sure this is necessary selectTabViewItemAtIndex should call the delegate
+        // [[self _subModuleWithIdentifier:[[tabViewContent selectedTabViewItem] identifier]] willShow];
     }
     else
     {
@@ -2233,6 +2242,12 @@ NUModuleTabViewModeIcon = 2;
 {
     if (tableView)
         [[NUDataTransferController defaultDataTransferController] showFetchingViewOnView:tableView];
+}
+
+- (void)hideLoading
+{
+    if (tableView)
+        [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:tableView];
 }
 
 - (void)closeAllPopovers
@@ -2915,7 +2930,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)setDataSourceContent:(CPArray)contents
 {
-    [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:tableView];
+    [self hideLoading];
 
     [_dataSource setContent:contents];
     [self sortDataSourceContent];
@@ -3054,7 +3069,12 @@ NUModuleTabViewModeIcon = 2;
     if (module)
         return [module initialFirstResponder];
 
-    return tableView;
+    return tableView || tabViewContent;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
 }
 
 
@@ -3109,8 +3129,7 @@ NUModuleTabViewModeIcon = 2;
     [editorController setTitleFromKeyPath:editorTitleKeyPath ofObject:firstObject transformer:editorTitleTransformer];
     [editorController setImage:editorImage];
 
-    if (multipleSelection)
-        [editorController showMultipleSelectionView:YES];
+    [editorController showMultipleSelectionView:multipleSelection];
 
     [self showModuleEditor:_stickyEditor || singleSelection || multipleSelection];
 }
@@ -3120,7 +3139,6 @@ NUModuleTabViewModeIcon = 2;
     if (!_selectionDidChanged && [self moduleShouldChangeSelection])
         [self updateEditorControllerWithObjects:_currentSelectedObjects];
 }
-
 
 
 #pragma mark Editor Management Internal API
@@ -3151,6 +3169,54 @@ NUModuleTabViewModeIcon = 2;
 - (CPImage)moduleEditorImageTitleForObject:(id)anObject
 {
     return [anObject icon];
+}
+
+
+- (void)keyUp:(CPEvent)anEvent
+{
+    var modifier = [anEvent modifierFlags] & CPControlKeyMask;
+
+    if (modifier && [anEvent characters] == 'F')
+    {
+        [[[self view] window] makeFirstResponder:filterField];
+    }
+    else if (modifier && [anEvent characters] == 'N')
+    {
+        [self openNewObjectPopover:[_buttonAddObject isHidden] ? _buttonFirstCreate : _buttonAddObject];
+    }
+    else if ([anEvent keyCode] == CPReturnKeyCode)
+    {
+        [self openEditObjectPopover:self];
+    }
+    else
+    {
+        [super keyUp:anEvent];
+    }
+}
+
+
+#pragma mark -
+#pragma mark KVO Observers
+
+- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
+{
+    if (_latestPageLoaded >= _maxPossiblePage)
+        return;
+
+    var scrollPosition = CGRectGetMaxY([object bounds]);
+
+    if (scrollPosition + NUModuleRESTPageLoadingTrigger >= [tableView frame].size.height)
+    {
+        CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
+
+        // close any deletion in process if we are loading something to avoid incoherency
+        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
+
+        // do not observe bounds change until we receive the next page
+        [self _removeScrollViewObservers];
+
+        [self loadNextPage];
+    }
 }
 
 
@@ -3349,7 +3415,11 @@ NUModuleTabViewModeIcon = 2;
 - (void)tabView:(TNTabView)aTabView didSelectTabViewItem:(CPTabViewItem)anItem
 {
     [self _setCurrentParentForSubModules];
-    [[self _subModuleWithIdentifier:[anItem identifier]] willShow];
+
+    var module = [self _subModuleWithIdentifier:[anItem identifier]];
+
+    [module willShow];
+    [tabViewContent setNextKeyView:[module initialFirstResponder]];
 
     [self moduleDidChangeVisibleSubmodule];
 }
@@ -3404,31 +3474,6 @@ NUModuleTabViewModeIcon = 2;
 
 
 #pragma mark -
-#pragma mark KVO Observers
-
-- (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
-{
-    if (_latestPageLoaded >= _maxPossiblePage)
-        return;
-
-    var scrollPosition = CGRectGetMaxY([object bounds]);
-
-    if (scrollPosition + NUModuleRESTPageLoadingTrigger >= [tableView frame].size.height)
-    {
-        CPLog.debug("PAGINATION: Reached trigger for scroll view. Loading next page.");
-
-        // close any deletion in process if we are loading something to avoid incoherency
-        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
-
-        // do not observe bounds change until we receive the next page
-        [self _removeScrollViewObservers];
-
-        [self loadNextPage];
-    }
-}
-
-
-#pragma mark -
 #pragma mark Popover Delegate
 
 - (void)popoverDidClose:(CPPopover)aPopover
@@ -3459,7 +3504,6 @@ NUModuleTabViewModeIcon = 2;
         return;
 
     [self didCloseFromExternalWindow];
-    [[NUKit kit] unregisterExternalWindow:[self externalWindow]];
 }
 
 #pragma mark -

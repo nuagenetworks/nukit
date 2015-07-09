@@ -19,6 +19,7 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
+@import <RESTCappuccino/NURESTModelController.j>
 
 @import "NUKitObject.j"
 @import "NUObjectsChooser.j"
@@ -41,6 +42,10 @@ NUObjectAssociatorDisplayModeText = 2;
 
 var BUTTONS_SIZE = 12;
 
+NUObjectAssociatorSettingsCategoryNameKey                   = @"NUObjectAssociatorSettingsCategoryNameKey";
+NUObjectAssociatorSettingsDataViewNameKey                   = @"NUObjectAssociatorSettingsDataViewNameKey";
+NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey";
+
 
 @implementation NUAbstractObjectAssociator : CPViewController
 {
@@ -49,13 +54,14 @@ var BUTTONS_SIZE = 12;
     BOOL                        _hasAssociatedObject        @accessors(getter=hasAssociatedObject);
     BOOL                        _hidesDataViewsControls     @accessors(property=hidesDataViewsControls);
     BOOL                        _modified                   @accessors(property=modified);
+    id                          _currentAssociatedObject    @accessors(property=currentAssociatedObject);
     id                          _currentParent              @accessors(property=currentParent);
     id                          _delegate                   @accessors(property=delegate);
     int                         _displayMode                @accessors(property=displayMode);
-    id                          _currentAssociatedObject    @accessors(property=currentAssociatedObject);
 
     BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
+    CPDictionary                _categoriesRegistry;
     CPButton                    _buttonChooseAssociatedObject;
     CPButton                    _buttonCleanAssociatedObject;
     CPTextField                 _fieldAssociatedObjectText;
@@ -78,6 +84,7 @@ var BUTTONS_SIZE = 12;
     [super viewDidLoad];
 
     _hidesDataViewsControls = YES;
+    _categoriesRegistry       = @{};
 
     var view = [self view],
         frameSize = [view frameSize];
@@ -85,11 +92,12 @@ var BUTTONS_SIZE = 12;
     [view setBackgroundColor:NUSkinColorWhite];
     [view setBorderColor:NUSkinColorGrey];
 
-    _associatedObjectChooser = [[NUObjectsChooser alloc] initWithCibName:@"ObjectSelector" bundle:[CPBundle mainBundle]];
+    _associatedObjectChooser = [NUObjectsChooser new];
     [_associatedObjectChooser view];
     [_associatedObjectChooser setDelegate:self];
     [_associatedObjectChooser setAllowsMultipleSelection:NO];
-    [self configureDataViewsForObjectChooser:_associatedObjectChooser];
+
+    [self _configureObjectsChooser];
 
     // VIEW INITIALIZATION
 
@@ -120,7 +128,7 @@ var BUTTONS_SIZE = 12;
     [_buttonChooseAssociatedObject setToolTip:@"Associate an object"];
     [_buttonChooseAssociatedObject bind:CPHiddenBinding toObject:self withKeyPath:@"associationButtonHidden" options:nil];
     [_innerButtonContainer addSubview:_buttonChooseAssociatedObject];
-    _cucappID(_buttonChooseAssociatedObject, @"button-set-associatedobject");
+    _cucappID(_buttonChooseAssociatedObject, [self className] + @"-button-set-associatedobject");
 
     // Button remove association
     _buttonCleanAssociatedObject = [[CPButton alloc] initWithFrame:CGRectMake(0, 14, BUTTONS_SIZE, BUTTONS_SIZE)];
@@ -133,12 +141,13 @@ var BUTTONS_SIZE = 12;
     [_buttonCleanAssociatedObject setToolTip:@"Disassociate the object"];
     [_buttonCleanAssociatedObject bind:CPHiddenBinding toObject:self withKeyPath:@"disassociationButtonHidden" options:nil];
     [_innerButtonContainer addSubview:_buttonCleanAssociatedObject];
-    _cucappID(_buttonCleanAssociatedObject, @"button-unset-associatedobject");
+    _cucappID(_buttonCleanAssociatedObject, [self className] + @"-button-clean-associatedobject");
 
     // Data View Container
     _viewDataViewContainer = [[CPView alloc] initWithFrame:CGRectMakeZero()];
     [_viewDataViewContainer setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
     [_viewAssociatorContainer addSubview:_viewDataViewContainer];
+    _cucappID(_buttonCleanAssociatedObject, [self className] + @"-dataview-container");
 
     // Field shown when no association is present
     _fieldEmptyAssociatorTitle = [CPTextField labelWithTitle:[self emptyAssociatorTitle]];
@@ -166,16 +175,6 @@ var BUTTONS_SIZE = 12;
     return NUObjectAssociatorDisplayModeDataView;
 }
 
-- (void)configureDataViewsForObjectChooser:(NUObjectsChooser)anObjectChooser
-{
-    throw ("implement me");
-}
-
-- (Class)classForAssociatedObject
-{
-    throw ("implement me")
-}
-
 - (CPString)emptyAssociatorTitle
 {
     throw ("implement me");
@@ -187,11 +186,6 @@ var BUTTONS_SIZE = 12;
 }
 
 - (CPString)keyPathForAssociatedObjectID
-{
-    throw ("implement me");
-}
-
-- (CPString)fetcherKeyPathOfAssociatedObjects
 {
     throw ("implement me");
 }
@@ -219,6 +213,16 @@ var BUTTONS_SIZE = 12;
 - (CPString)associatedObjectNameKeyPath
 {
     return @"name";
+}
+
+- (CPArray)currentActiveContextIdentifiers
+{
+    throw ("implement me");
+}
+
+- (CPDictionary)associatorSettings
+{
+    throw ("implement me");
 }
 
 
@@ -393,6 +397,62 @@ var BUTTONS_SIZE = 12;
 #pragma mark -
 #pragma mark Utilities
 
+- (void)_configureObjectsChooser
+{
+    var settings    = [self associatorSettings],
+        RESTNames   = [settings allKeys];
+
+    for (var i = [RESTNames count] - 1; i >= 0; i--)
+    {
+        var RESTName            = RESTNames[i],
+            defaultController   = [NURESTModelController defaultController],
+            objectClass         = [defaultController modelClassForRESTName:RESTName];
+
+        if (![settings containsKey:RESTName])
+            [CPException raise:CPInternalInconsistencyException reason:"No setting defined for entity " + RESTName];
+
+        var setting = [settings objectForKey:RESTName];
+
+        if (![setting containsKey:NUObjectAssociatorSettingsDataViewNameKey])
+            [CPException raise:CPInternalInconsistencyException reason:"No dataView defined for " + RESTName];
+
+        if (![setting containsKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey])
+            [CPException raise:CPInternalInconsistencyException reason:"No fetcherKeyPath defined for " + RESTName];
+
+        var dataView        = [setting objectForKey:NUObjectAssociatorSettingsDataViewNameKey],
+            fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
+            categoryName    = [setting containsKey:NUObjectAssociatorSettingsCategoryNameKey] ? [setting objectForKey:NUObjectAssociatorSettingsCategoryNameKey] : nil;
+
+        [_associatedObjectChooser registerDataViewWithName:dataView forClass:objectClass];
+        [_associatedObjectChooser configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
+
+        if (categoryName)
+            [_categoriesRegistry setObject:[NUCategory categoryWithName:categoryName] forKey:RESTName];
+    }
+}
+
+- (CPArray)_currentCategories
+{
+    if (![_categoriesRegistry count])
+        return;
+
+    var identifiers = [self currentActiveContextIdentifiers],
+        categories  = [CPArray new];
+
+    if (![identifiers count])
+        return;
+
+    for (var i = [identifiers count] - 1; i >= 0; i--)
+    {
+        var identifier  = identifiers[i],
+            category    = [_categoriesRegistry objectForKey:identifier];
+
+        [categories addObject:category];
+    }
+
+    return categories
+}
+
 - (void)showLoading:(BOOL)shouldShow
 {
     if (shouldShow)
@@ -412,19 +472,45 @@ var BUTTONS_SIZE = 12;
         return;
     }
 
-    var associatedObject = [[self classForAssociatedObject] new];
-    [associatedObject setID:anID];
-    [associatedObject fetchAndCallSelector:@selector(_didFetchAssociatedObject:connection:) ofObject:self];
+    var identifiers = [self currentActiveContextIdentifiers],
+        settings    = [self associatorSettings],
+        parentObject = [self parentOfAssociatedObjects];
+
+    if (!parentObject)
+        return;
+
+    for (var i = [identifiers count] - 1; i >= 0; i--)
+    {
+        var identifier      = identifiers[i],
+            setting         = [settings objectForKey:identifier],
+            fetcherKeyPath  = [setting objectForKey:NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey],
+            fetcher         = [parentObject valueForKeyPath:fetcherKeyPath],
+            predicateFilter = [CPPredicate predicateWithFormat:@"ID == %@", anID];
+
+        [fetcher fetchWithMatchingFilter:predicateFilter
+                            masterFilter:nil
+                               orderedBy:nil
+                               groupedBy:nil
+                                    page:0
+                                pageSize:1
+                                  commit:NO
+                         andCallSelector:@selector(_fetcher:ofObject:didFetchContent:)
+                                ofObject:self
+                                   block:nil];
+
+    }
 
     [self showLoading:YES];
 }
 
-- (void)_didFetchAssociatedObject:(RESTObject)anObject connection:(NURESTConnection)aConnection
+- (void)_fetcher:(id)aFetcher ofObject:(NURESTObject)anObject didFetchContent:(CPArray)someContents
 {
+    if (![someContents count])
+        return;
+
     [self showLoading:NO];
 
-    if (aConnection && ![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
-        return;
+    var anObject = [someContents firstObject];
 
     [self _updateDataViewWithAssociatedObject:anObject];
     [self didFetchAssociatedObject:anObject];
@@ -509,16 +595,13 @@ var BUTTONS_SIZE = 12;
     else
         [_associatedObjectChooser setIgnoredObjects:[]];
 
-    var fetcherKeyPath      = [self fetcherKeyPathOfAssociatedObjects],
-        parentObject        = [self parentOfAssociatedObjects],
-        managedObjectClass  = [self classForAssociatedObject];
-
+    [_associatedObjectChooser setCategories:[self _currentCategories]];
     [_associatedObjectChooser setModuleTitle:[self titleForObjectChooser]];
     [_associatedObjectChooser setMasterFilter:[self filterObjectPredicate]];
     [_associatedObjectChooser setDisplayFilter:[self displayObjectPredicate]];
-
     [_associatedObjectChooser setTitle:[self titleForObjectChooser]];
-    [_associatedObjectChooser configureFetcherKeyPath:fetcherKeyPath forClass:managedObjectClass];
+
+    var parentObject = [self parentOfAssociatedObjects];
     [_associatedObjectChooser showOnView:aSender forParentObject:parentObject];
 }
 
@@ -629,6 +712,35 @@ var BUTTONS_SIZE = 12;
 - (void)didObjectChooserCancelSelection:(NUObjectsChooser)anObjectChooser
 {
     [self closePopover];
+}
+
+- (NUCategory)categoryForObject:(id)anObject
+{
+    if (![_categoriesRegistry count])
+        return;
+
+    return [_categoriesRegistry objectForKey:[anObject RESTName]];
+}
+
+- (CPArray)currentActiveContextsForChooser:(NUObjectChooser)anObjectChooser
+{
+    var identifiers = [self currentActiveContextIdentifiers],
+        contexts    = [CPArray new],
+        index;
+
+    if (!identifiers)
+        return [];
+
+    for (index = [identifiers count] - 1; index >= 0; index--)
+    {
+        var identifier  = identifiers[index],
+            context     = [anObjectChooser contextWithIdentifier:identifier];
+
+        if (![contexts containsObject:context])
+            [contexts addObject:context];
+    }
+
+    return contexts;
 }
 
 

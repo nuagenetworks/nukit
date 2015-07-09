@@ -39,11 +39,20 @@ function createDownload(content, filename, extension)
 {
     var contentType = 'application/octet-stream',
         a = document.createElement('a'),
-        blob = new Blob([content], {'type':contentType});
+        blob = new Blob([content], {'type':contentType}),
+        url = window.URL.createObjectURL(blob);
 
-    a.href = window.URL.createObjectURL(blob);
+    a.style = "display: none";
+    a.href = url
     a.download = filename + "." + extension;
+    document.body.appendChild(a);
     a.click();
+
+    setTimeout(function(){
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 100);
+
     delete a;
 }
 
@@ -490,4 +499,28 @@ function _phoneNumber(aPhoneNumber, mandatory)
         success = re.test(aPhoneNumber);
 
     return success ? null : "Not a valid phone number";
+}
+
+function _validateArray(array, validation_function, additional_validation_parameters)
+{
+    array = [array arrangedObjects];
+
+    var errors = [];
+
+    for (var i = array.length - 1; i >= 0; i--)
+    {
+        var value = array[i],
+            params = additional_validation_parameters.slice();
+
+        params.reverse();
+        params.push(value);
+        params.reverse();
+
+        var result = validation_function.apply(this, params);
+
+        if (result)
+            errors.push("'" + value + "': " + result);
+    }
+
+    return !errors.length ? null : errors.join(", ");
 }
