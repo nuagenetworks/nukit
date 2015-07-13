@@ -40,6 +40,7 @@
 {
     [super viewDidLoad];
 
+    [popoverConfirmation setAppearance:CPPopoverAppearanceHUD];
     [[[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"] setBGColor:@"red"];
     [viewInvalidInput setBackgroundColor:NUSkinColorOrange];
 }
