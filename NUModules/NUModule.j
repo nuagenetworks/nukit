@@ -324,7 +324,6 @@ NUModuleTabViewModeIcon = 2;
         [tableView setDelegate:self];
         [tableView setTarget:self];
 
-        [tableView setNextResponder:self];
         [tableView setNextKeyView:tabViewContent];
         [tableView setDoubleAction:@selector(openEditObjectPopover:)];
 
@@ -413,7 +412,6 @@ NUModuleTabViewModeIcon = 2;
         }
 
         [viewGettingStarted setBackgroundColor:[CPColor whiteColor]];
-        [viewGettingStarted setNextResponder:self];
     }
 
     if (buttonHelp)
@@ -836,6 +834,8 @@ NUModuleTabViewModeIcon = 2;
 
     _isProcessingPush    = NO;
     _isVisible           = YES;
+
+    [[self view] setNextResponder:self];
 
     [self cleanOutdatedArchivedSelection];
     [self adjustSplitViewSize];
@@ -3171,27 +3171,28 @@ NUModuleTabViewModeIcon = 2;
     return [anObject icon];
 }
 
-
-- (void)keyUp:(CPEvent)anEvent
+- (void)interpretKeyEvents:(CPArray)someEvents
 {
-    var modifier = [anEvent modifierFlags] & CPControlKeyMask;
+    var event    = [someEvents firstObject],
+        modifier = [event modifierFlags] & CPControlKeyMask;
 
-    if (modifier && [anEvent characters] == 'F')
+    if (modifier && [event charactersIgnoringModifiers] == 'f')
     {
         [[[self view] window] makeFirstResponder:filterField];
     }
-    else if (modifier && [anEvent characters] == 'N')
+    else if (modifier && [event charactersIgnoringModifiers] == 'n')
     {
         [self openNewObjectPopover:[_buttonAddObject isHidden] ? _buttonFirstCreate : _buttonAddObject];
     }
-    else if ([anEvent keyCode] == CPReturnKeyCode)
+    else if ([event keyCode] == CPReturnKeyCode)
     {
         [self openEditObjectPopover:self];
     }
-    else
-    {
-        [super keyUp:anEvent];
-    }
+}
+
+- (void)keyDown:(CPEvent)anEvent
+{
+    [self interpretKeyEvents:[anEvent]];
 }
 
 
