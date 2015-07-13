@@ -63,6 +63,7 @@ var NUAdvancedFilteringViewControllerDefault;
 
 - (void)viewDidLoad
 {
+    [self view]._DOMElement.style.borderRadius = "5px";
     [[predicateEditorSearch superview] setBackgroundColor:NUSkinColorWhite];
     [predicateEditorSearch setRowHeight:24.0];
     [predicateEditorSearch setCanRemoveAllRows:NO];
