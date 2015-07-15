@@ -36,7 +36,7 @@
 
 - (void)awakeFromCib
 {
-    _expandedWidth = 150;
+    _expandedWidth = [self _widthFromSuperView];
     _contractedWidth = 22;
     _timeout = nil;
 
@@ -50,18 +50,26 @@
 #pragma mark -
 #pragma mark Overrides
 
-- (void)textDidBlur:(CPNotification)aNotification
+- (BOOL)resignFirstResponder
 {
     if ([self isExpanded] && [[self stringValue] length] == 0)
-        [self _contractWithAnimation:YES];
+        [self _contractWithAnimation:![self isHidden]]; // Animation will reset isHidden to YES
 
-    [super textDidBlur:aNotification];
+    return [super resignFirstResponder];
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return ![self isHidden];
 }
 
 - (BOOL)becomeFirstResponder
 {
     if (![self isExpanded])
+    {
         [self _expandWithAnimation:YES];
+        return; // Will be first responder after expansion
+    }
 
     return [super becomeFirstResponder];
 }
@@ -82,6 +90,9 @@
 
 - (void)mouseDown:(CPEvent)anEvent
 {
+    if ([self isHidden])
+        return;
+
     if (_timeout || [_animation isAnimating])
         return;
 
@@ -93,7 +104,7 @@
                 [self _expandWithAnimation:YES];
 
             else if ([[CPApp currentEvent] clickCount] === 2 && [[self searchButton] target] && [[self searchButton] action])
-                [[self searchButton] mouseDown:[CPApp currentEvent]];
+                [super mouseDown:anEvent];
 
             _timeout = nil;
         }, 300);
@@ -144,13 +155,16 @@
 
 - (void)_contractWithAnimation:(bool)shouldAnimate
 {
-    var frame = [self frame],
-        mask = [self autoresizingMask];
+    var frame   = [self frame],
+        mask    = [self autoresizingMask];
 
     _expandedWidth = [self _widthFromSuperView];
 
     if (!(mask & CPViewMaxXMargin))
-        frame.origin.x = frame.origin.y + _expandedWidth - _contractedWidth;
+    {
+        var marginRight = [[self superview] frameSize].width - frame.origin.x - frame.size.width;
+        frame.origin.x = marginRight + _expandedWidth - _contractedWidth;
+    }
 
     frame.size.width = _contractedWidth;
 
@@ -170,7 +184,6 @@
         [self setFrame:frame];
 
     [self setIsExpanded:NO];
-
 }
 
 - (void)_expandWithAnimation:(bool)shouldAnimate
@@ -202,11 +215,10 @@
     else
     {
         [self setFrame:frame];
-        [self becomeFirstResponder];
+        [super becomeFirstResponder];
     }
 
     [self setIsExpanded:YES];
-
 }
 
 - (void)animationDidEnd:(CPAnimation)anAnimation
@@ -219,10 +231,7 @@
         [self setAutoresizingMask: mask | CPViewMinXMargin | CPViewWidthSizable];
     }
     else
-    {
         [self setAutoresizingMask: mask & ~CPViewWidthSizable];
-    }
-
 }
 
 
@@ -231,8 +240,16 @@
 
 - (int)_widthFromSuperView
 {
-    // Left and right margins are set to top margin to center the input field
-    return [[self superview] frameSize].width - (2 * [self frameOrigin].y);
+    var parentWidth = [[self superview] frameSize].width,
+        margin = [self frameOrigin].x,
+        mask = [self autoresizingMask];
+
+    if (!(mask & CPViewMaxXMargin))
+    {
+        margin = parentWidth - [self frameOrigin].x - [self frameSize].width
+    }
+
+    return parentWidth - (2 * margin);
 }
 
 @end
