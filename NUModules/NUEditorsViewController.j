@@ -37,6 +37,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     @outlet CPView          viewNoSelection;
     @outlet CPView          viewLabel;
 
+    BOOL                    _isLocked                       @accessors(property=isLocked);
     id                      _delegate                       @accessors(getter=delegate);
     NUModule                _currentController              @accessors(getter=currentController);
     NUModule                _parentModule                   @accessors(property=parentModule);
@@ -69,7 +70,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 - (void)setImage:(CPImage)anImage
 {
-    if (!imageTitle)
+    if (_isLocked || !imageTitle)
         return;
 
     [imageTitle setImage:anImage];
@@ -77,6 +78,9 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 - (void)setTitleFromKeyPath:(CPString)aKeyPath ofObject:(id)anObject transformer:(id)aTransformer
 {
+    if (_isLocked)
+        return;
+
     [self resetLabelTitle];
 
     if (!aKeyPath)
@@ -109,7 +113,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 - (void)setCurrentParent:(NURESTObject)anObject
 {
-    if (anObject == [self currentParent])
+    if (_isLocked || anObject == [self currentParent])
         return;
 
     if (!anObject)

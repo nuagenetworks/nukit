@@ -1724,7 +1724,7 @@ NUModuleTabViewModeIcon = 2;
 
 
 #pragma mark -
-#pragma mark  SubModules Management
+#pragma mark SubModules Management
 
 - (void)_updateActiveSubModules
 {
@@ -1865,6 +1865,7 @@ NUModuleTabViewModeIcon = 2;
     else
         [_activeSubModules makeObjectsPerformSelector:@selector(setCurrentParent:) withObject:parentObject];
 }
+
 
 #pragma mark  Sub Modules Internal API
 
@@ -2177,6 +2178,8 @@ NUModuleTabViewModeIcon = 2;
             [self _reloadUIAfterPush];
             break;
     }
+
+    [self performPostRefetchOperation];
 }
 
 - (void)_updateCurrentEditedObjectWithObjectIfNeeded:(id)anObject
@@ -2966,6 +2969,11 @@ NUModuleTabViewModeIcon = 2;
 }
 
 - (void)performPostFetchOperation
+{
+
+}
+
+- (void)performPostRefetchOperation
 {
 
 }
