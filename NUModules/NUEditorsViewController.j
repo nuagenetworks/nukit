@@ -17,6 +17,7 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPViewController.j>
+@import <AppKit/CPTableView.j>
 @import <AppKit/CPView.j>
 @import <RESTCappuccino/NURESTObject.j>
 
@@ -38,10 +39,12 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     @outlet CPView          viewLabel;
 
     BOOL                    _isLocked                       @accessors(property=isLocked);
+    CPTableView             _focusedTableView               @accessors(property=focusedTableView);
     id                      _delegate                       @accessors(getter=delegate);
     NUModule                _currentController              @accessors(getter=currentController);
     NUModule                _parentModule                   @accessors(property=parentModule);
     NURESTObject            _parentOfEditedObject           @accessors(property=parentOfEditedObject);
+
 
     unsigned                _implementedDelegateMethods;
     CPDictionary            _editorsRegistry;
@@ -67,6 +70,27 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 #pragma mark -
 #pragma mark Custom Getter / Setter
+
+- (void)setFocusedTableView:(CPTableView)aTableView
+{
+    if (_isLocked || _focusedTableView == aTableView)
+        return;
+
+    if (_focusedTableView)
+    {
+        [[_focusedTableView window] makeFirstResponder:nil];
+        _focusedTableView._unfocusedSelectionHighlightColor = nil;
+        [_focusedTableView setNeedsDisplay:YES];
+    }
+
+    _focusedTableView = aTableView
+
+    if (_focusedTableView)
+    {
+        _focusedTableView._unfocusedSelectionHighlightColor = [_focusedTableView selectionHighlightColor];
+        [_focusedTableView setNeedsDisplay:YES];
+    }
+}
 
 - (void)setImage:(CPImage)anImage
 {
@@ -148,10 +172,15 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     var width = [[self view] frameSize].width,
         height = [[self view] frameSize].height;
 
+    if (_currentController == aController)
+    {
+        [_currentController setCurrentParent:anObject];
+        return;
+    }
+
     if (_currentController)
     {
         [_currentController willHide];
-        [_currentController setCurrentParent:nil];
         [[_currentController view] removeFromSuperview];
     }
 

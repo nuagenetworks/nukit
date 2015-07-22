@@ -3133,6 +3133,7 @@ NUModuleTabViewModeIcon = 2;
         editorTitleTransformer  = [self moduleEditorTitleTransformer],
         editorImage             = singleSelection ? [self moduleEditorImageTitleForObject:firstObject] : nil;
 
+    [editorController setFocusedTableView:tableView]
     [editorController setCurrentParent:firstObject];
     [editorController setTitleFromKeyPath:editorTitleKeyPath ofObject:firstObject transformer:editorTitleTransformer];
     [editorController setImage:editorImage];
