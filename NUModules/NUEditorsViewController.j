@@ -172,12 +172,6 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     var width = [[self view] frameSize].width,
         height = [[self view] frameSize].height;
 
-    if (_currentController == aController)
-    {
-        [_currentController setCurrentParent:anObject];
-        return;
-    }
-
     if (_currentController)
     {
         [_currentController willHide];
