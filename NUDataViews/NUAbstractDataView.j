@@ -96,6 +96,10 @@
     }
 }
 
+- (int)computedHeightForObjectValue:(id)anObjectValue
+{
+    return [self frameSize].height;
+}
 
 #pragma mark -
 #pragma mark Bindings

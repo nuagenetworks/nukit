@@ -3244,7 +3244,12 @@ NUModuleTabViewModeIcon = 2;
 
 - (int)outlineView:(CPOutlineView)anOutlineView heightOfRowByItem:(id)anItem
 {
-    return [[self _dataViewForObject:anItem] frameSize].height;
+    var dataView = [self _dataViewForObject:anItem];
+
+    if ([dataView respondsToSelector:@selector(computedHeightForObjectValue:)])
+        return [dataView computedHeightForObjectValue:anItem];
+    else
+        return [dataView frameSize].height;
 }
 
 - (CPView)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
@@ -3342,7 +3347,12 @@ NUModuleTabViewModeIcon = 2;
 
 - (int)tableView:(CPTableView)aTableView heightOfRow:(int)aRow
 {
-    return [[self _dataViewForObject:[_dataSource objectAtIndex:aRow]] frameSize].height;
+    var dataView = [self _dataViewForObject:[_dataSource objectAtIndex:aRow]];
+
+    if ([dataView respondsToSelector:@selector(computedHeightForObjectValue:)])
+        return [dataView computedHeightForObjectValue:[_dataSource objectAtIndex:aRow]];
+    else
+        return [dataView frameSize].height;
 }
 
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
