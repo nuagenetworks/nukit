@@ -119,6 +119,10 @@ var _isCPArrayControllerKind = function(object, keyPath)
     CPPopover       _popover                        @accessors(property=popover);
     CPString        _fetcherKeyPath                 @accessors(property=fetcherKeyPath);
     CPString        _identifier                     @accessors(property=identifier);
+    CPString        _buttonCreateLabel              @accessors(property=buttonCreateLabel);
+    CPString        _buttonEditLabel                @accessors(property=buttonEditLabel);
+    CPString        _buttonInstantiateLabel         @accessors(property=buttonInstantiateLabel);
+    CPString        _name                           @accessors(property=name);
     CPString        _name                           @accessors(property=name);
     CPView          _editionView                    @accessors(property=editionView);
     id              _delegate                       @accessors(property=delegate);
@@ -171,6 +175,9 @@ var _isCPArrayControllerKind = function(object, keyPath)
         _preferedPopoverEdge            = CPMaxYEdge;
         _bindedControlsCache            = @{};
         _additionalEditionViews         = [];
+        _buttonCreateLabel              = @"Create";
+        _buttonEditLabel                = @"Update";
+        _buttonInstantiateLabel         = @"Instantiate";
         _createAction                   = @selector(createChildObject:andCallSelector:ofObject:);
         _instantiateAction              = @selector(instantiateChildObject:fromTemplate:andCallSelector:ofObject:);
         _updateAction                   = @selector(saveAndCallSelector:ofObject:);
@@ -802,21 +809,21 @@ var _isCPArrayControllerKind = function(object, keyPath)
     {
         case NUModuleActionEdit:
             [_fieldTitle setStringValue:@"Edit " + _name];
-            [_buttonSave setTitle:@"Update"];
+            [_buttonSave setTitle:_buttonEditLabel];
             [_buttonSave setTarget:self];
             [_buttonSave setAction:@selector(updateEditedObject:)];
             break;
 
         case NUModuleActionInstantiate:
             [_fieldTitle setStringValue:@"Instantiate " + _name];
-            [_buttonSave setTitle:@"Instantiate"];
+            [_buttonSave setTitle:_buttonInstantiateLabel];
             [_buttonSave setTarget:self];
             [_buttonSave setAction:@selector(instantiateEditedObject:)];
             break;
 
         default:
             [_fieldTitle setStringValue:@"New " + _name];
-            [_buttonSave setTitle:@"Create"];
+            [_buttonSave setTitle:_buttonCreateLabel];
             [_buttonSave setTarget:self];
             [_buttonSave setAction:@selector(createEditedObject:)];
             break;
