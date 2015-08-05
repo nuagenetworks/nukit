@@ -1,3 +1,4 @@
+@import "NUAdvancedSearchField.j"
 @import "NUExpandableSearchField.j"
 @import "NUFileDropController.j"
 @import "NUHorizontalScrollView.j"
