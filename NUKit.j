@@ -641,6 +641,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
         case @"NUTreeView":
         case @"NUGraphView":
+        case @"OSMMapView":
             inspectedObject = [[responder selectedItems] firstObject];
             break;
     }
