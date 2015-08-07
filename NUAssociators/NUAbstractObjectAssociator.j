@@ -51,6 +51,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 @implementation NUAbstractObjectAssociator : CPViewController
 {
     BOOL                        _associationButtonHidden    @accessors(property=associationButtonHidden);
+    BOOL                        _controlButtonsHidden       @accessors(property=controlButtonsHidden);
     BOOL                        _disassociationButtonHidden @accessors(property=disassociationButtonHidden);
     BOOL                        _hasAssociatedObject        @accessors(getter=hasAssociatedObject);
     BOOL                        _hidesDataViewsControls     @accessors(property=hidesDataViewsControls);
@@ -162,9 +163,12 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     _fieldAssociatedObjectText = [CPTextField labelWithTitle:@""];
     [_fieldAssociatedObjectText setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
+    [self setControlButtonsHidden:NO];
+
     // set default view mode only if it's not already set to something
     if (!_displayMode)
         [self setDisplayMode:[self defaultDisplayMode]];
+
 }
 
 
@@ -322,6 +326,18 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _repositionAssociateButton];
 }
 
+- (void)setControlButtonsHidden:(BOOL)shouldHide
+{
+    if (_controlButtonsHidden == shouldHide)
+        return;
+
+    _controlButtonsHidden = shouldHide;
+    [_viewButtonsContainer setHidden:_controlButtonsHidden];
+
+    if (_displayMode)
+        [self _layoutAssociator];
+}
+
 - (void)setDisplayMode:(int)aMode
 {
     if (_displayMode === aMode)
@@ -331,36 +347,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     _displayMode = aMode;
     [self didChangeValueForKey:@"displayMode"];
 
-    var generalFrame  = [[self view] frame],
-        generalHeight = CGRectGetHeight(generalFrame),
-        generalWidth  = CGRectGetWidth(generalFrame),
-        generalCenter = CGPointMake(CGRectGetMidX(generalFrame), CGRectGetMidY(generalFrame));
-
-    switch (_displayMode)
-    {
-        case NUObjectAssociatorDisplayModeDataView:
-            [_viewButtonsContainer setFrame:CGRectMake(0, 0, 22, generalHeight)];
-            [_innerButtonContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width / 2 - 6, [_viewButtonsContainer frameSize].height / 2 - 14, 12, 26)];
-            [_buttonChooseAssociatedObject setFrameOrigin:CGPointMake(0, 0)];
-            [_buttonCleanAssociatedObject setFrameOrigin:CGPointMake(0, 14)];
-            [_viewDataViewContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width, 0, generalWidth - [_viewButtonsContainer frameSize].width, generalHeight)];
-            [_fieldEmptyAssociatorTitle setFrameOrigin:CGPointMake([_viewDataViewContainer frameSize].width / 2 - [_fieldEmptyAssociatorTitle frameSize].width / 2, [_viewDataViewContainer frameSize].height / 2 - [_fieldEmptyAssociatorTitle frameSize].height / 2)];
-            break;
-
-        case NUObjectAssociatorDisplayModeText:
-            [_viewButtonsContainer setFrame:CGRectMake(0, 0, 37, generalHeight)];
-            [_innerButtonContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width / 2 - 15, [_viewButtonsContainer frameSize].height / 2 - 7, 26, 12)];
-            [_buttonChooseAssociatedObject setFrameOrigin:CGPointMake(0, 0)];
-            [_buttonCleanAssociatedObject setFrameOrigin:CGPointMake(14, 0)];
-            [_viewDataViewContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width, 0, generalWidth - [_viewButtonsContainer frameSize].width, generalHeight)];
-            [_fieldEmptyAssociatorTitle setFrameOrigin:CGPointMake([_viewDataViewContainer frameSize].width / 2 - [_fieldEmptyAssociatorTitle frameSize].width / 2, [_viewDataViewContainer frameSize].height / 2 - [_fieldEmptyAssociatorTitle frameSize].height / 2)];
-            break;
-
-        default:
-            [CPException raise:CPInvalidArgumentException reason:@"display mode must be either 'NUObjectAssociatorDisplayModeDataView' or 'NUObjectAssociatorDisplayModeText"];
-    }
-
-    [self _repositionAssociateButton];
+    [self _layoutAssociator];
 }
 
 - (CPView)_associatorDataViewForCurrentAssociatedObject
@@ -606,6 +593,43 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     }
     else
         [_buttonChooseAssociatedObject setFrameOrigin:CGPointMakeZero()];
+}
+
+- (void)_layoutAssociator
+{
+    var generalFrame  = [[self view] frame],
+        generalHeight = CGRectGetHeight(generalFrame),
+        generalWidth  = CGRectGetWidth(generalFrame),
+        generalCenter = CGPointMake(CGRectGetMidX(generalFrame), CGRectGetMidY(generalFrame));
+
+    switch (_displayMode)
+    {
+        case NUObjectAssociatorDisplayModeDataView:
+            [_viewButtonsContainer setFrame:CGRectMake(0, 0, 22, generalHeight)];
+            [_innerButtonContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width / 2 - 6, [_viewButtonsContainer frameSize].height / 2 - 14, 12, 26)];
+            [_buttonChooseAssociatedObject setFrameOrigin:CGPointMake(0, 0)];
+            [_buttonCleanAssociatedObject setFrameOrigin:CGPointMake(0, 14)];
+            break;
+
+        case NUObjectAssociatorDisplayModeText:
+            [_viewButtonsContainer setFrame:CGRectMake(0, 0, 37, generalHeight)];
+            [_innerButtonContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width / 2 - 15, [_viewButtonsContainer frameSize].height / 2 - 7, 26, 12)];
+            [_buttonChooseAssociatedObject setFrameOrigin:CGPointMake(0, 0)];
+            [_buttonCleanAssociatedObject setFrameOrigin:CGPointMake(14, 0)];
+            [_viewDataViewContainer setFrame:CGRectMake([_viewButtonsContainer frameSize].width, 0, generalWidth - [_viewButtonsContainer frameSize].width, generalHeight)];
+            break;
+
+        default:
+            [CPException raise:CPInvalidArgumentException reason:@"display mode must be either 'NUObjectAssociatorDisplayModeDataView' or 'NUObjectAssociatorDisplayModeText"];
+    }
+
+    var viewButtonsContainerWidth = [_viewButtonsContainer isHidden] ? 0 : [_viewButtonsContainer frameSize].width;
+
+    [_viewDataViewContainer setFrame:CGRectMake(viewButtonsContainerWidth, 0, generalWidth - viewButtonsContainerWidth, generalHeight)];
+
+    [_fieldEmptyAssociatorTitle setFrameOrigin:CGPointMake([_viewDataViewContainer frameSize].width / 2 - [_fieldEmptyAssociatorTitle frameSize].width / 2, [_viewDataViewContainer frameSize].height / 2 - [_fieldEmptyAssociatorTitle frameSize].height / 2)];
+
+    [self _repositionAssociateButton];
 }
 
 
