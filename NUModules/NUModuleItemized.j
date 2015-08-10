@@ -186,7 +186,7 @@
 
     [_checkBoxShowName setState:[[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey]];
     [self _updateItemTableVisibility:self];
-    [self _showItemTable:([_dataSourceModules count] > 0)];
+    [self _showItemTable:([_dataSourceModules count] > 1)];
 
     if (_lastExpandedRootModule)
         [tableViewItems expandItem:[self _moduleItemForModule:_lastExpandedRootModule]];
