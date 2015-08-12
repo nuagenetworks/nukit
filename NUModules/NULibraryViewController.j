@@ -40,12 +40,14 @@ var NULibraryViewControllerImageCollapseShow,
 
 @implementation NULibraryViewController : CPViewController
 {
+    @outlet CPTextField                 labelTitle;
     @outlet CPTextField                 labelMultiplier;
     @outlet CPTextField                 labelMultiplierError;
     @outlet NULibraryTableView          tableViewLibrary;
     @outlet NUNumericTextField          fieldMultiplier;
 
-    id                                  _delegate @accessors(property=delegate);
+    id                                  _delegate               @accessors(property=delegate);
+    int                                 _defaultHeight          @accessors(property=defaultHeight);
 
     BOOL                                _isVisible;
     CPDictionary                        _contentRegistry;
@@ -67,6 +69,20 @@ var NULibraryViewControllerImageCollapseShow,
     return obj;
 }
 
++ (id)libraryControllerWithSplitViewInnerView:(CPView)aContainer delegate:(id)aDelegate
+{
+    var obj   = [self new],
+        frame = [aContainer bounds];
+
+    [obj setSplitView:[aContainer superview]];
+    [obj setDelegate:aDelegate];
+
+    [[obj view] setFrame:frame];
+    [aContainer addSubview:[obj view]];
+
+    return obj;
+}
+
 
 #pragma mark -
 #pragma mark Initialization
@@ -74,6 +90,8 @@ var NULibraryViewControllerImageCollapseShow,
 - (void)awakeFromCib
 {
     _contentRegistry = @{};
+    _defaultHeight   = 200;
+    _title           = @"Library";
 
     _dataSourceLibrary = [[TNTableViewDataSource alloc] init];
     [_dataSourceLibrary setTable:tableViewLibrary];
@@ -86,6 +104,8 @@ var NULibraryViewControllerImageCollapseShow,
     _cucappID(tableViewLibrary, @"library-table-view");
 
     [labelMultiplierError setHidden:YES];
+
+    [labelTitle bind:CPValueBinding toObject:self withKeyPath:@"title" options:nil];
 }
 
 
@@ -174,7 +194,7 @@ var NULibraryViewControllerImageCollapseShow,
     [_splitView setDelegate:nil];
 
     if (_isVisible)
-        [_splitView setPosition:([_splitView frameSize].height -  200) ofDividerAtIndex:0];
+        [_splitView setPosition:([_splitView frameSize].height - _defaultHeight) ofDividerAtIndex:0];
     else
         [_splitView setPosition:([_splitView frameSize].height) ofDividerAtIndex:0];
 

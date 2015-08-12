@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8173.3" systemVersion="15A244d" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8173.3"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NULibraryViewController">
@@ -9,6 +9,7 @@
                 <outlet property="fieldMultiplier" destination="7VW-0Y-hKV" id="s91-Y7-2lN"/>
                 <outlet property="labelMultiplier" destination="OOG-TM-eRz" id="bg4-yZ-7Yh"/>
                 <outlet property="labelMultiplierError" destination="Lwc-Fu-boP" id="tZV-Xq-zvD"/>
+                <outlet property="labelTitle" destination="uNE-SI-Omx" id="HP2-gB-7Gz"/>
                 <outlet property="tableViewLibrary" destination="yzf-ad-rDs" id="Oux-0z-d7K"/>
                 <outlet property="view" destination="o8X-7R-394" id="lGM-l5-MWX"/>
             </connections>
@@ -29,8 +30,9 @@
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="34" id="yzf-ad-rDs" customClass="NULibraryTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="300" height="36"/>
                                 <autoresizingMask key="autoresizingMask"/>
+                                <animations/>
                                 <size key="intercellSpacing" width="3" height="2"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
                                     <tableColumn identifier="self" width="297" minWidth="40" maxWidth="1000" id="J3L-2j-RiD">
@@ -50,20 +52,25 @@
                                 </tableColumns>
                             </tableView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="fYZ-Gj-kdC">
+                    <animations/>
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="fYZ-Gj-kdC">
                         <rect key="frame" x="1" y="119" width="223" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="gKW-9E-Sgx">
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="gKW-9E-Sgx">
                         <rect key="frame" x="224" y="17" width="15" height="102"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </scroller>
                 </scrollView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="uNE-SI-Omx">
                     <rect key="frame" x="2" y="195" width="102" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Library" id="tC0-rn-z1h">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" red="0.4156863093" green="0.4156863093" blue="0.4156863093" alpha="1" colorSpace="deviceRGB"/>
@@ -73,6 +80,7 @@
                 <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="GBb-zy-4yn">
                     <rect key="frame" x="0.0" y="191" width="300" height="5"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <animations/>
                     <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                     <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <font key="titleFont" metaFont="system"/>
@@ -80,6 +88,7 @@
                 <textField toolTip="The next action will create the specified amount of objects" verticalHuggingPriority="750" id="7VW-0Y-hKV" customClass="NUNumericTextField">
                     <rect key="frame" x="267" y="194" width="30" height="16"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <animations/>
                     <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" placeholderString="n" drawsBackground="YES" id="7k3-WW-3wU">
                         <font key="font" metaFont="miniSystem"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -92,6 +101,7 @@
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="OOG-TM-eRz">
                     <rect key="frame" x="207" y="197" width="54" height="11"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Multiplier X" id="35E-hG-rNs">
                         <font key="font" metaFont="miniSystem"/>
                         <color key="textColor" red="0.4156863093" green="0.4156863093" blue="0.4156863093" alpha="1" colorSpace="deviceRGB"/>
@@ -101,6 +111,7 @@
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Lwc-Fu-boP">
                     <rect key="frame" x="108" y="197" width="95" height="11"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="maximum is 20" id="kRf-d1-39r">
                         <font key="font" metaFont="miniSystem"/>
                         <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -108,6 +119,7 @@
                     </textFieldCell>
                 </textField>
             </subviews>
+            <animations/>
         </customView>
     </objects>
 </document>
