@@ -22,6 +22,7 @@
 @import <AppKit/CPScrollView.j>
 @import <AppKit/CPScroller.j>
 @import <AppKit/CPPanel.j>
+@import "NUSkin.j"
 
 @class _NUAdvancedSearchFieldPanel
 
@@ -98,7 +99,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [super _init];
     [self _initSearchValues];
 
-    _panelBackgroundColor = [CPColor whiteColor];
+    _panelBackgroundColor = NUSkinColorWhite;
 
     [self setTarget:self];
     [self setAction:@selector(_searchFieldAction:)];
