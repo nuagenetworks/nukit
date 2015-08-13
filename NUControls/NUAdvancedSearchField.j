@@ -30,13 +30,13 @@
 @global CPApp
 @global CPViewFrameDidChangeNotification
 
-var NUAdvancedSearchFieldDataSource_searchField_groupDataViewForObjectValue_        = 1 << 1,
-    NUAdvancedSearchFieldDataSource_searchField_dataViewForObjectValue_             = 1 << 2,
-    NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_             = 1 << 3,
-    NUAdvancedSearchFieldDataSource_searchField_heightOfViewForObjectValue_         = 1 << 4,
-    NUAdvancedSearchFieldDataSource_searchField_heightOfGroupViewForObjectValue_    = 1 << 5,
-    NUAdvancedSearchFieldDelegate_didSelectItem_                                    = 1 << 6,
-    NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_                         = 1 << 7;
+var NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_        = 1 << 1,
+    NUAdvancedSearchFieldDelegate_didSelectItem_                               = 1 << 2,
+    NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_                    = 1 << 3,
+    NUAdvancedSearchFieldDelegate_searchField_dataViewForObjectValue_          = 1 << 4,
+    NUAdvancedSearchFieldDelegate_searchField_groupDataViewForObjectValue_     = 1 << 5,
+    NUAdvancedSearchFieldDelegate_searchField_heightOfGroupViewForObjectValue_ = 1 << 6,
+    NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_      = 1 << 7;
 
 
 @protocol NUAdvancedSearchFieldDelegate <CPObject>
@@ -44,6 +44,10 @@ var NUAdvancedSearchFieldDataSource_searchField_groupDataViewForObjectValue_    
 @optional
 - (void)searchField:(NUAdvancedSearchField)aSearchField didSelectItem:(id)anItem;
 - (void)searchFieldDidClosePanel:(NUAdvancedSearchField)aSearchField;
+- (CPView)searchField:(NUAdvancedSearchField)aSearchField groupDataViewForObjectValue:(id)anObjectValue;
+- (CPView)searchField:(NUAdvancedSearchField)aSearchField dataViewForObjectValue:(id)anObjectValue;
+- (float)searchField:(NUAdvancedSearchField)aSearchField heightOfViewForObjectValue:(id)anObjectValue;
+- (float)searchField:(NUAdvancedSearchField)aSearchField heightOfGroupViewForObjectValue:(id)anObjectValue;
 
 @end
 
@@ -51,10 +55,6 @@ var NUAdvancedSearchFieldDataSource_searchField_groupDataViewForObjectValue_    
 
 @optional
 - (CPDictionary)searchField:(NUAdvancedSearchField)aSearchField matchingItemsForString:(CPString)aStringValue;
-- (CPView)searchField:(NUAdvancedSearchField)aSearchField groupDataViewForObjectValue:(id)anObjectValue;
-- (CPView)searchField:(NUAdvancedSearchField)aSearchField dataViewForObjectValue:(id)anObjectValue;
-- (float)searchField:(NUAdvancedSearchField)aSearchField heightOfViewForObjectValue:(id)anObjectValue;
-- (float)searchField:(NUAdvancedSearchField)aSearchField heightOfGroupViewForObjectValue:(id)anObjectValue;
 
 @end
 
@@ -69,6 +69,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     CPMutableDictionary                         _content                    @accessors(property=content);
     id <NUAdvancedSearchFieldDataSource>        _searchFieldDataSource      @accessors(property=dataSource);
     id <NUAdvancedSearchFieldDelegate>          _searchFieldDelegate        @accessors(property=delegate);
+    CPColor                                     _panelBackgroundColor       @accessors(property=panelBackgroundColor);
 
     CPMutableArray                              _currentHiglightedItems;
     CPScrollView                                _scrollView;
@@ -78,12 +79,12 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     int                                         _totalHeightTableView;
     unsigned                                    _implementedSearchFieldDataSourceMethods;
     unsigned                                    _implementedSearchFieldDelegateMethods;
-    _NUAdvancedSearchFieldPanel                         _panel;
+    _NUAdvancedSearchFieldPanel                 _panel;
 }
 
 
 #pragma mark -
-#pragma mark Init methods
+#pragma mark Initialization
 
 - (void)_initSearchValues
 {
@@ -96,6 +97,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 {
     [super _init];
     [self _initSearchValues];
+
+    _panelBackgroundColor = [CPColor whiteColor];
 
     [self setTarget:self];
     [self setAction:@selector(_searchFieldAction:)];
@@ -139,6 +142,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_tableView setAllowsMultipleSelection:NO];
     [_tableView setDoubleAction:@selector(_doubleClickTableView:)];
     [_tableView setTarget:self];
+    [_tableView setBackgroundColor:[CPColor clearColor]];
 }
 
 - (void)_makeScrollViewWithFrame:(CGRect)aFrame
@@ -151,6 +155,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_scrollView setHasHorizontalScroller:NO];
     [_scrollView setLineScroll:[_tableView rowHeight]];
     [_scrollView setVerticalPageScroll:0.0];
+    [_scrollView setBackgroundColor:[CPColor clearColor]];
 }
 
 - (void)_makePanelWithFrame:(CGRect)aFrame
@@ -164,37 +169,68 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_panel setHasShadow:YES];
     [_panel setShadowStyle:CPMenuWindowShadowStyle];
     [_panel setDelegate:self];
+    [[_panel contentView] setBackgroundColor:_panelBackgroundColor];
+    [_panel contentView]._DOMElement.style.WebkitBackdropFilter = "blur(10px)";
 }
 
 
 #pragma mark -
-#pragma mark DataSource and delegate
+#pragma mark Notifications Handlers
+
+- (void)frameDidChangeNotification:(CPNotification)aNotification
+{
+    if ([self isVisible])
+    {
+        var frameSearchFieldInBase = [[self superview] convertRectToBase:[self frame]],
+            frame = [_panel frame];
+
+        frame.origin.x = frameSearchFieldInBase.origin.x + _BEZEL_INSET_LEFT;
+
+        [_panel setFrame:frame];
+    }
+}
+
+
+#pragma mark -
+#pragma mark DataSource Management
 
 - (void)setDataSource:(id <NUAdvancedSearchFieldDataSource>)aDataSource
 {
     _searchFieldDataSource = aDataSource;
     _implementedSearchFieldDataSourceMethods = 0;
 
-    if ([_searchFieldDataSource respondsToSelector:@selector(searchField:groupDataViewForObjectValue:)])
-        _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_groupDataViewForObjectValue_;
-
-    if ([_searchFieldDataSource respondsToSelector:@selector(searchField:dataViewForObjectValue:)])
-        _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_dataViewForObjectValue_;
-
     if ([_searchFieldDataSource respondsToSelector:@selector(searchField:matchingItemsForString:)])
         _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_;
-
-    if ([_searchFieldDataSource respondsToSelector:@selector(searchField:heightOfViewForObjectValue:)])
-        _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_heightOfViewForObjectValue_;
-
-    if ([_searchFieldDataSource respondsToSelector:@selector(searchField:heightOfGroupViewForObjectValue:)])
-        _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_heightOfGroupViewForObjectValue_;
 }
+
+- (CPDictionary)_sendDataSourceMatchingItemsForString:(CPString)aStringValue
+{
+    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_))
+        return @{};
+
+    return [_searchFieldDataSource searchField:self matchingItemsForString:aStringValue];
+}
+
+
+#pragma mark -
+#pragma mark Delegate Management
 
 - (void)setDelegate:(id <NUAdvancedSearchFieldDelegate>)aDelegate
 {
     _searchFieldDelegate = aDelegate
     _implementedSearchFieldDelegateMethods = 0;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchField:heightOfViewForObjectValue:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchField:groupDataViewForObjectValue:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchField_groupDataViewForObjectValue_;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchField:dataViewForObjectValue:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchField_dataViewForObjectValue_;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchField:heightOfGroupViewForObjectValue:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchField_heightOfGroupViewForObjectValue_;
 
     if ([_searchFieldDelegate respondsToSelector:@selector(searchField:didSelectItem:)])
         _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_didSelectItem_;
@@ -203,30 +239,58 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_;
 }
 
-
-#pragma mark -
-#pragma mark Overrides
-
-/*! Overide the stringValue, if @"" we close the panel
-*/
-- (void)setStringValue:(CPString)aStringValue
+- (CPView)_sendDelegateGroupDataViewForObjectValue:(id)anObjectValue
 {
-    [super setStringValue:aStringValue];
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_groupDataViewForObjectValue_))
+        return [CPTextField labelWithTitle:anObjectValue];
 
-    if (aStringValue === @"")
-    {
-         [self closePanel];
-         [self _updateCancelButtonVisibility];
-    }
+    return [_searchFieldDelegate searchField:self groupDataViewForObjectValue:anObjectValue];
+}
+
+- (CPView)_sendDelegateDataViewForObjectValue:(id)anObjectValue
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_dataViewForObjectValue_))
+        return [CPTextField labelWithTitle:anObjectValue];
+
+    return [_searchFieldDelegate searchField:self dataViewForObjectValue:anObjectValue];
+}
+
+- (float)_sendDelegateHeightOfViewForObjectValue:(id)anObjectValue
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_))
+        return 30;
+
+    return [_searchFieldDelegate searchField:self heightOfViewForObjectValue:anObjectValue];
+}
+
+- (float)_sendDelegateHeightOfGroupViewForObjectValue:(id)anObjectValue
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_heightOfGroupViewForObjectValue_))
+        return 30;
+
+    return [_searchFieldDelegate searchField:self heightOfGroupViewForObjectValue:anObjectValue];
+}
+
+- (void)_sendDelegateDidSelectItem:(id)anObjectValue
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_didSelectItem_))
+        return;
+
+    [_searchFieldDelegate searchField:self didSelectItem:anObjectValue];
+}
+
+- (void)_sendDelegateSearchFieldDidClosePanel
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_))
+        return;
+
+    [_searchFieldDelegate searchFieldDidClosePanel:self];
 }
 
 
 #pragma mark -
-#pragma mark Panel methods
+#pragma mark NUAdvancedSearchField API
 
-/*! Pop up the panel
-    Her we also modify the size of the panel depending on the size of the tableView
-*/
 - (void)showPanel
 {
     [self _calculateNumberOfItems];
@@ -264,29 +328,117 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [_panel orderFront:nil];
 }
 
-/*! Simulate a click on the selected item and close the panel and set the stringValue of the searchField to @""
-*/
-- (void)clickAndClose
-{
-    [self _selectItemClicked];
-    [self setStringValue:@""];
-}
-
-/*! Close the panel
-*/
 - (void)closePanel
 {
     [self _initSearchValues];
     [_panel orderOut:nil];
-    [self _searchFieldDidClosePanel];
+    [self _sendDelegateSearchFieldDidClosePanel];
+}
+
+- (void)setContent:(CPMutableDictionary)someContents
+{
+    [self setContent:someContents showPanel:YES];
+}
+
+- (void)setContent:(CPMutableDictionary)someContents showPanel:(BOOL)shouldShowPanel
+{
+    _content = someContents;
+
+    if (!shouldShowPanel)
+        return;
+
+    if ([_content count])
+        [self showPanel]
+    else
+        [self closePanel];
+}
+
+- (BOOL)selectNextItem
+{
+    if (![_tableView isEnabled])
+        return NO;
+
+    var row = [_tableView selectedRow];
+
+    if (row < (_numberOfItems - 1))
+    {
+        row++;
+
+        while ([self _isGroupRow:row] && row <= _numberOfItems - 1)
+            row++;
+
+        if (row == _numberOfItems)
+            return [self selectRow:[_tableView selectedRow]];
+
+        return [self selectRow:row];
+    }
+    else
+    {
+        return NO;
+    }
+}
+
+- (BOOL)selectPreviousItem
+{
+    if (![_tableView isEnabled])
+        return NO;
+
+    var row = [_tableView selectedRow];
+
+    if (row > 0)
+    {
+        row--;
+
+        while ([self _isGroupRow:row] && row > 0)
+            row--;
+
+        if (row == 0)
+            return [self selectRow:[_tableView selectedRow]];
+
+        return [self selectRow:row];
+    }
+    else
+    {
+         return NO;
+    }
+}
+
+- (BOOL)selectRow:(int)row
+{
+    if (row === [_tableView selectedRow])
+        return NO;
+
+    var validRow = (row >= 0 && row < [self numberOfRowsInTableView:_tableView]),
+        indexes = validRow ? [CPIndexSet indexSetWithIndex:row] : [CPIndexSet indexSet];
+
+    [_tableView selectRowIndexes:indexes byExtendingSelection:NO];
+
+    if (validRow)
+    {
+        [_tableView scrollRowToVisible:row];
+        return YES;
+    }
+    else
+        return NO;
+}
+
+- (BOOL)isVisible
+{
+    return [_panel isVisible];
+}
+
+- (void)setPanelBackgroundColor:(CPColor)aColor
+{
+    _panelBackgroundColor = aColor;
+
+    if (_panel)
+        [[_panel contentView] setBackgroundColor:_panelBackgroundColor];
 }
 
 
 #pragma mark -
-#pragma mark Datasource utilities
+#pragma mark Utilities
 
-/*! Calculate the number of items of the tableView (groups + items)
-*/
 - (void)_calculateNumberOfItems
 {
     _numberOfItems = 0;
@@ -302,8 +454,6 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
-/*! Return the objectValue of the given index
-*/
 - (id)_objectValueForIndex:(int)anIndex
 {
     var keys = [_content allKeys],
@@ -330,8 +480,6 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
-/*! Return a boolean to know is the given row is a group or not
-*/
 - (BOOL)_isGroupRow:(int)aRowIndex
 {
     var keys = [_content allKeys],
@@ -351,14 +499,72 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return NO;
 }
 
+- (void)_selectItemClicked
+{
+    var objectValue = [self _objectValueForIndex:[_tableView selectedRow]];
+    [self _sendDelegateDidSelectItem:objectValue];
+}
+
+- (void)_clickAndClose
+{
+    [self _selectItemClicked];
+    [self setStringValue:@""];
+}
+
 
 #pragma mark -
-#pragma mark Key event
+#pragma mark Action
+
+- (void)_doubleClickTableView:(id)sender
+{
+    [self _clickAndClose];
+}
+
+- (void)_searchFieldAction:(id)sender
+{
+    var objectValue = [sender objectValue];
+
+    // If the searchField is empty or a canvasView wasn't given we close the panel
+    if (!objectValue || objectValue === @"")
+    {
+        [self closePanel];
+        return;
+    }
+
+    [self _initSearchValues];
+
+    [self setContent:[self _sendDataSourceMatchingItemsForString:objectValue]]
+}
+
+
+#pragma mark -
+#pragma mark Overrides
+
+- (void)setStringValue:(CPString)aStringValue
+{
+    [super setStringValue:aStringValue];
+
+    if (aStringValue === @"")
+    {
+         [self closePanel];
+         [self _updateCancelButtonVisibility];
+    }
+}
+
+- (void)viewWillMoveToSuperview:(CPView)aView
+{
+    [super viewWillMoveToSuperview:aView];
+
+    [[CPNotificationCenter defaultCenter] removeObserver:self name:CPViewFrameDidChangeNotification object:nil];
+
+    if (aView)
+        [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(frameDidChangeNotification:) name:CPViewFrameDidChangeNotification object:nil];
+}
 
 - (void)insertNewline:(id)sender
 {
     if ([self isVisible] && [_tableView selectedRow] != CPNotFound)
-        [self clickAndClose];
+        [self _clickAndClose];
 }
 
 - (void)cancelOperation:(id)sender
@@ -383,143 +589,23 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [self _searchFieldAction:self];
 }
 
-#pragma mark -
-#pragma mark Utilities
-
-/*!
-    Returns whether the list is currently visible.
-*/
-- (BOOL)isVisible
-{
-    return [_panel isVisible];
-}
-
-
-#pragma mark -
-#pragma mark Manipulating the Selection
-
-/*!
-    Select the next item in the list if there one. If there is currently no selected item,
-    the first item is selected. Returns YES if the selection changed.
-*/
-- (BOOL)selectNextItem
-{
-    if (![_tableView isEnabled])
-        return NO;
-
-    var row = [_tableView selectedRow];
-
-    if (row < (_numberOfItems - 1))
-    {
-        row++;
-
-        while ([self _isGroupRow:row] && row <= _numberOfItems - 1)
-            row++;
-
-        if (row == _numberOfItems)
-            return [self selectRow:[_tableView selectedRow]];
-
-        return [self selectRow:row];
-    }
-    else
-    {
-        return NO;
-    }
-}
-
-/*!
-    Select the previous item in the list. If there is currently no selected item,
-    nothing happens. Returns YES if the selection changed.
-*/
-- (BOOL)selectPreviousItem
-{
-    if (![_tableView isEnabled])
-        return NO;
-
-    var row = [_tableView selectedRow];
-
-    if (row > 0)
-    {
-        row--;
-
-        while ([self _isGroupRow:row] && row > 0)
-            row--;
-
-        if (row == 0)
-            return [self selectRow:[_tableView selectedRow]];
-
-        return [self selectRow:row];
-    }
-    else
-    {
-         return NO;
-    }
-}
-
-
-/*!
-    Selects a row and scrolls it to be visible. Returns YES if the selection actually changed.
-*/
-- (BOOL)selectRow:(int)row
-{
-    if (row === [_tableView selectedRow])
-        return NO;
-
-    var validRow = (row >= 0 && row < [self numberOfRowsInTableView:_tableView]),
-        indexes = validRow ? [CPIndexSet indexSetWithIndex:row] : [CPIndexSet indexSet];
-
-    [_tableView selectRowIndexes:indexes byExtendingSelection:NO];
-
-    if (validRow)
-    {
-        [_tableView scrollRowToVisible:row];
-        return YES;
-    }
-    else
-        return NO;
-}
-
-/*! Select the item clicked
-*/
-- (void)_selectItemClicked
-{
-    var objectValue = [self _objectValueForIndex:[_tableView selectedRow]];
-    [self _didSelectItem:objectValue];
-}
-
-
-#pragma mark -
-#pragma mark Scroll methods
-
-/*!
-    Scroll the list down one page.
-*/
 - (void)scrollPageDown:(id)sender
 {
     if ([self isVisible])
         [_scrollView scrollPageDown:sender];
 }
 
-/*!
-    Scroll the list up one page.
-*/
 - (void)scrollPageUp:(id)sender
 {
     if ([self isVisible])
         [_scrollView scrollPageUp:sender];
 }
 
-/*!
-    Scroll to the top of the list.
-*/
 - (void)scrollToBeginningOfDocument:(id)sender
 {
     [_scrollView scrollToBeginningOfDocument:sender];
 }
 
-/*!
-    Scroll to the bottom of the list.
-*/
 - (void)scrollToEndOfDocument:(id)sender
 {
     [_scrollView scrollToEndOfDocument:sender];
@@ -533,160 +619,54 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 
 
 #pragma mark -
-#pragma mark Action
+#pragma mark CPTableView DataSource
 
-/*! Called when doubleClick on the tableView.
-    This close the panel
-*/
-- (void)_doubleClickTableView:(id)sender
-{
-    [self clickAndClose];
-}
-
-/*! Action of the searchField, here we gonna close or open the panel
-*/
-- (void)_searchFieldAction:(id)sender
-{
-    var objectValue = [sender objectValue];
-
-    // If the searchField is empty or a canvasView wasn't given we close the panel
-    if (!objectValue || objectValue === @"")
-    {
-        [self closePanel];
-        return;
-    }
-
-    [self _initSearchValues];
-
-    [self setContent:[self _matchingItemsForString:objectValue]]
-}
-
-- (void)setContent:(CPMutableDictionary)someContents
-{
-    [self setContent:someContents showPanel:YES];
-}
-
-- (void)setContent:(CPMutableDictionary)someContents showPanel:(BOOL)shouldShowPanel
-{
-    _content = someContents;
-
-    if (!shouldShowPanel)
-        return;
-
-    if ([_content count])
-        [self showPanel]
-    else
-        [self closePanel];
-}
-
-
-#pragma mark -
-#pragma mark Notification frame
-
-/*! Notification frameDidChangeNotification
-    This is needed when the frames searchField change, the panel will follow the searchField
-*/
-- (void)frameDidChangeNotification:(CPNotification)aNotification
-{
-    if ([self isVisible])
-    {
-        var frameSearchFieldInBase = [[self superview] convertRectToBase:[self frame]],
-            frame = [_panel frame];
-
-        frame.origin.x = frameSearchFieldInBase.origin.x + _BEZEL_INSET_LEFT;
-
-        [_panel setFrame:frame];
-    }
-}
-
-
-#pragma mark -
-#pragma mark Override
-
-- (void)viewWillMoveToSuperview:(CPView)aView
-{
-    [super viewWillMoveToSuperview:aView];
-
-    [[CPNotificationCenter defaultCenter] removeObserver:self name:CPViewFrameDidChangeNotification object:nil];
-
-    if (aView)
-        [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(frameDidChangeNotification:) name:CPViewFrameDidChangeNotification object:nil];
-}
-
-@end
-
-
-@implementation NUAdvancedSearchField (TableViewDataSource)
-
-/*! DataSource numberOfRowsInTableView
-*/
 - (int)numberOfRowsInTableView:(CPTableView)aTableView
 {
     return _numberOfItems;
 }
 
-/*! DataSource objectValueForTableColumn
-*/
 - (id)tableView:(CPTableView)aTableView objectValueForTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     return [self _objectValueForIndex:aRowIndex];
 }
 
-/*! DataSource viewForTableColumn
-    This method is going to check if we need a groupView or a dataView and call the appropriate datasource of the searchField
-*/
 - (id)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     var objectValue = [self _objectValueForIndex:aRowIndex];
 
     if ([self _isGroupRow:aRowIndex])
-        return [self _groupDataViewForObjectValue:objectValue];
+        return [self _sendDelegateGroupDataViewForObjectValue:objectValue];
 
-    return [self _dataViewForObjectValue:objectValue];
+    return [self _sendDelegateDataViewForObjectValue:objectValue];
 }
 
-@end
 
-@implementation NUAdvancedSearchField (TableViewDelegate)
+#pragma mark -
+#pragma mark CPTableView Delegates
 
-/*! Delegate shouldSelectRow.
-*/
 - (BOOL)tableView:(CPTableView)aTableView shouldSelectRow:(int)rowIndex
 {
     return ![self _isGroupRow:rowIndex];
 }
 
-/*! tableViewSelectionDidChange delegate.
-    When selecting a item, we center the treeView on this item.
-    If autoSelectObjectValue is set, this is going to select the item as well
-*/
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var selectedRow = [_tableView selectedRow],
         objectValue = [self _objectValueForIndex:selectedRow];
 
-    [self _didSelectItem:objectValue];
+    [self _sendDelegateDidSelectItem:objectValue];
 }
 
-/*! Return a boolean to know if the row is a group or not
-    @param aRowIndex
-    @return aBoolean
-*/
 - (BOOL)tableView:(CPTableView)aTableView isGroupRow:(int)aRowIndex
 {
     return [self _isGroupRow:aRowIndex];
 }
 
-/*! Delegate heightOfRow of the tableView
-    This method will check if we need the height of a groupView or a dataView.
-    This also calculate the total size of the tableView to fit well the panel.
-    @param row
-    @return the size of the row
-*/
 - (float)tableView:(CPTableView)tableView heightOfRow:(int)row
 {
     var objectValue = [self _objectValueForIndex:row],
-        height = [self _isGroupRow:row] ? [self _heightOfGroupViewForObjectValue:objectValue] : [self _heightOfViewForObjectValue:objectValue];
+        height = [self _isGroupRow:row] ? [self _sendDelegateHeightOfGroupViewForObjectValue:objectValue] : [self _sendDelegateHeightOfViewForObjectValue:objectValue];
 
     _totalHeightTableView += height;
 
@@ -696,94 +676,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 @end
 
 
-@implementation NUAdvancedSearchField (NUAdvancedSearchFieldDataSource)
 
-/*! _groupDictForItems dataSource
-    @param items, the items for the tableView
-    @return a dict. By default return @{@"Items", items}
-*/
-- (CPDictionary)_matchingItemsForString:(CPString)aStringValue
-{
-    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_))
-        return @{};
-
-    return [_searchFieldDataSource searchField:self matchingItemsForString:aStringValue];
-}
-
-/*! _groupDataViewForObjectValuedo dataSource
-    @param anObjectValue, the objectValue of the view
-    @return a view. By default return a CPTextField
-*/
-- (CPView)_groupDataViewForObjectValue:(id)anObjectValue
-{
-    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_groupDataViewForObjectValue_))
-        return [CPTextField labelWithTitle:anObjectValue];
-
-    return [_searchFieldDataSource searchField:self groupDataViewForObjectValue:anObjectValue];
-}
-
-/*! _dataViewForObjectValue dataSource
-    @param anObjectValue, the objectValue of the view
-    @return a view. By default return a CPTextField
-*/
-- (CPView)_dataViewForObjectValue:(id)anObjectValue
-{
-    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_dataViewForObjectValue_))
-        return [CPTextField labelWithTitle:anObjectValue];
-
-    return [_searchFieldDataSource searchField:self dataViewForObjectValue:anObjectValue];
-}
-
-/*! _heightOfViewForObjectValue dataSource
-    @param anObjectValue, the objectValue of the View
-    @return the height of the groupView. By default 30
-*/
-- (float)_heightOfViewForObjectValue:(id)anObjectValue
-{
-    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_heightOfViewForObjectValue_))
-        return 30;
-
-    return [_searchFieldDataSource searchField:self heightOfViewForObjectValue:anObjectValue];
-}
-
-/*! _heightOfGroupViewForObjectValue dataSource
-    @param anObjectValue, the objectValue of the groupView
-    @return the height of the groupView. By default 30
-*/
-- (float)_heightOfGroupViewForObjectValue:(id)anObjectValue
-{
-    if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_heightOfGroupViewForObjectValue_))
-        return 30;
-
-    return [_searchFieldDataSource searchField:self heightOfGroupViewForObjectValue:anObjectValue];
-}
-
-@end
-
-
-@implementation NUAdvancedSearchField (NUAdvancedSearchFieldDelegate)
-
-- (void)_didSelectItem:(id)anObjectValue
-{
-    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_didSelectItem_))
-        return;
-
-    [_searchFieldDelegate searchField:self didSelectItem:anObjectValue];
-}
-
-- (void)_searchFieldDidClosePanel
-{
-    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_))
-        return;
-
-    [_searchFieldDelegate searchFieldDidClosePanel:self];
-}
-
-@end
-
-
-/*! This class is used to trap the next mouse clicked. To close or not the panel
-*/
 @implementation _NUAdvancedSearchFieldPanel : CPPanel
 
 - (void)orderFront:(id)sender
