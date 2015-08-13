@@ -154,7 +154,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 {
     _scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
 
-    [_scrollView setBorderType:CPLineBorder];
+    [_scrollView setBorderType:CPNoBorder];
+    [_scrollView setBorderColor:NUSkinColorBlue];
     [_scrollView setAutohidesScrollers:NO];
     [_scrollView setHasVerticalScroller:YES];
     [_scrollView setHasHorizontalScroller:NO];
@@ -360,6 +361,10 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [self _initSearchValues];
     [_panel orderOut:nil];
     [self _sendDelegateSearchFieldDidClosePanel];
+
+    [_tableView setDelegate:nil];
+    [_tableView deselectAll];
+    [_tableView setDelegate:self];
 }
 
 - (void)setContent:(CPMutableDictionary)someContents
