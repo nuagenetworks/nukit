@@ -499,15 +499,10 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return NO;
 }
 
-- (void)_selectItemClicked
+- (void)_selectCurrentItemAndClosePanel
 {
     var objectValue = [self _objectValueForIndex:[_tableView selectedRow]];
     [self _sendDelegateDidSelectItem:objectValue];
-}
-
-- (void)_clickAndClose
-{
-    [self _selectItemClicked];
     [self setStringValue:@""];
 }
 
@@ -517,23 +512,28 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 
 - (void)_doubleClickTableView:(id)sender
 {
-    [self _clickAndClose];
+    [self _selectCurrentItemAndClosePanel];
 }
 
 - (void)_searchFieldAction:(id)sender
 {
-    var objectValue = [sender objectValue];
+    var stringValue = [sender stringValue];
 
     // If the searchField is empty or a canvasView wasn't given we close the panel
-    if (!objectValue || objectValue === @"")
+    if (!stringValue || stringValue === @"")
     {
+        [self setContent:[]];
         [self closePanel];
         return;
     }
 
     [self _initSearchValues];
+    [self setContent:[self _sendDataSourceMatchingItemsForString:stringValue]];
+}
 
-    [self setContent:[self _sendDataSourceMatchingItemsForString:objectValue]]
+- (void)_cancelButtonClick:(id)aSender
+{
+    [self setStringValue:@""];
 }
 
 
@@ -544,7 +544,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 {
     [super setStringValue:aStringValue];
 
-    if (aStringValue === @"")
+    if (!aStringValue || aStringValue === @"")
     {
          [self closePanel];
          [self _updateCancelButtonVisibility];
@@ -564,13 +564,12 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 - (void)insertNewline:(id)sender
 {
     if ([self isVisible] && [_tableView selectedRow] != CPNotFound)
-        [self _clickAndClose];
+        [self _selectCurrentItemAndClosePanel];
 }
 
 - (void)cancelOperation:(id)sender
 {
-    if ([self isVisible])
-        [self setStringValue:@""];
+    [self setStringValue:@""];
 }
 
 - (void)moveDown:(id)sender
