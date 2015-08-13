@@ -37,7 +37,9 @@ var NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_        =
     NUAdvancedSearchFieldDelegate_searchField_dataViewForObjectValue_          = 1 << 4,
     NUAdvancedSearchFieldDelegate_searchField_groupDataViewForObjectValue_     = 1 << 5,
     NUAdvancedSearchFieldDelegate_searchField_heightOfGroupViewForObjectValue_ = 1 << 6,
-    NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_      = 1 << 7;
+    NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_      = 1 << 7,
+    NUAdvancedSearchFieldDelegate_searchFieldShouldCancel_                     = 1 << 8,
+    NUAdvancedSearchFieldDelegate_searchFieldDidCancel_                        = 1 << 9;
 
 
 @protocol NUAdvancedSearchFieldDelegate <CPObject>
@@ -45,6 +47,8 @@ var NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_        =
 @optional
 - (void)searchField:(NUAdvancedSearchField)aSearchField didSelectItem:(id)anItem;
 - (void)searchFieldDidClosePanel:(NUAdvancedSearchField)aSearchField;
+- (BOOL)searchFieldShouldCancel:(NUAdvancedSearchField)aSearchField;
+- (void)searchFieldDidCancel:(NUAdvancedSearchField)aSearchField;
 - (CPView)searchField:(NUAdvancedSearchField)aSearchField groupDataViewForObjectValue:(id)anObjectValue;
 - (CPView)searchField:(NUAdvancedSearchField)aSearchField dataViewForObjectValue:(id)anObjectValue;
 - (float)searchField:(NUAdvancedSearchField)aSearchField heightOfViewForObjectValue:(id)anObjectValue;
@@ -238,6 +242,12 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 
     if ([_searchFieldDelegate respondsToSelector:@selector(searchFieldDidClosePanel:)])
         _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchFieldDidCancel:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchFieldDidCancel_;
+
+    if ([_searchFieldDelegate respondsToSelector:@selector(searchFieldShouldCancel:)])
+        _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchFieldShouldCancel_;
 }
 
 - (CPView)_sendDelegateGroupDataViewForObjectValue:(id)anObjectValue
@@ -286,6 +296,22 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         return;
 
     [_searchFieldDelegate searchFieldDidClosePanel:self];
+}
+
+- (BOOL)_sendDelegateShouldCancel
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldShouldCancel_))
+        return YES;
+
+    return [_searchFieldDelegate searchFieldShouldCancel:self];
+}
+
+- (void)_sendDelegateDidCancel
+{
+    if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldDidCancel_))
+        return;
+
+    [_searchFieldDelegate searchFieldDidCancel:self];
 }
 
 
@@ -500,11 +526,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return NO;
 }
 
-- (void)_selectCurrentItemAndClosePanel
+- (void)_selectCurrentItemAndReset:(BOOL)shouldReset
 {
     var objectValue = [self _objectValueForIndex:[_tableView selectedRow]];
     [self _sendDelegateDidSelectItem:objectValue];
-    [self setStringValue:@""];
+
+    if (shouldReset)
+        [self setStringValue:@""];
+    else
+        [self closePanel];
 }
 
 
@@ -513,7 +543,7 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 
 - (void)_doubleClickTableView:(id)sender
 {
-    [self _selectCurrentItemAndClosePanel];
+    [self _selectCurrentItemAndReset:NO];
 }
 
 - (void)_searchFieldAction:(id)sender
@@ -530,11 +560,6 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 
     [self _initSearchValues];
     [self setContent:[self _sendDataSourceMatchingItemsForString:stringValue]];
-}
-
-- (void)_cancelButtonClick:(id)aSender
-{
-    [self setStringValue:@""];
 }
 
 
@@ -565,12 +590,16 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 - (void)insertNewline:(id)sender
 {
     if ([self isVisible] && [_tableView selectedRow] != CPNotFound)
-        [self _selectCurrentItemAndClosePanel];
+        [self _selectCurrentItemAndReset:NO];
 }
 
 - (void)cancelOperation:(id)sender
 {
+    if (![self _sendDelegateShouldCancel])
+        return;
+
     [self setStringValue:@""];
+    [self _sendDelegateDidCancel];
 }
 
 - (void)moveDown:(id)sender
