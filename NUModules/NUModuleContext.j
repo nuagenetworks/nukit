@@ -355,7 +355,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
         {
             [_bindedControlsCache setObject:control forKey:aName];
 
-            if ([control isKindOfClass:CPTextField] && ![control isEditable])
+            if ([control isKindOfClass:CPTextField] && ![control isEditable] && [control lineBreakMode] == CPLineBreakByClipping)
                 [control setLineBreakMode:CPLineBreakByTruncatingTail];
         }
     }
@@ -460,7 +460,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
                 if ([control placeholderString])
                     [opts setObject:[control placeholderString] forKey:CPNullPlaceholderBindingOption];
 
-                if (![control isEditable])
+                if (![control isEditable] && [control lineBreakMode] == CPLineBreakByClipping)
                     [control setLineBreakMode:CPLineBreakByTruncatingTail];
 
                 [control setSelectable:YES];
