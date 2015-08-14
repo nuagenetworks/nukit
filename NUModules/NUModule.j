@@ -1329,7 +1329,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark CRUD Operations
 
-- (IBAction)openNewObjectPopover:(id)aSender
+- (@action)openNewObjectPopover:(id)aSender
 {
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
 
@@ -1354,7 +1354,7 @@ NUModuleTabViewModeIcon = 2;
     [_currentContext openPopoverForAction:action sender:aSender];
 }
 
-- (IBAction)openEditObjectPopover:(id)aSender
+- (@action)openEditObjectPopover:(id)aSender
 {
     if ([tableView numberOfSelectedRows] != 1)
         return;
@@ -1383,7 +1383,7 @@ NUModuleTabViewModeIcon = 2;
     [_currentContext openPopoverForAction:NUModuleActionEdit sender:aSender];
 }
 
-- (IBAction)openDeleteObjectPopover:(id)aSender
+- (@action)openDeleteObjectPopover:(id)aSender
 {
     if (![self isActionPermitted:NUModuleActionDelete])
         return;
@@ -1469,7 +1469,7 @@ NUModuleTabViewModeIcon = 2;
                                          ofObject:self];
 }
 
-- (IBAction)exportSelectedObjects:(id)aSender
+- (@action)exportSelectedObjects:(id)aSender
 {
     for (var i = [_currentSelectedObjects count] - 1; i >= 0; i--)
         [self exportObject:_currentSelectedObjects[i] usingAction:[self actionForSender:aSender]];
@@ -1554,7 +1554,7 @@ NUModuleTabViewModeIcon = 2;
     _fileUpload.click();
 }
 
-- (IBAction)import:(id)aSender
+- (@action)import:(id)aSender
 {
     [self importInObject:_currentParent usingAction:[self actionForSender:aSender]];
 }
@@ -1581,7 +1581,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Help Window
 
-- (IBAction)openHelpWindow:(id)aSender
+- (@action)openHelpWindow:(id)aSender
 {
     window.open([[CPURL URLWithString:@"Resources/Help/" + [[self class] moduleIdentifier] + @".html"] absoluteString], "_new", "width=800,height=600");
 }
@@ -1590,7 +1590,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Filtering
 
-- (IBAction)clickSearchButton:(id)aSender
+- (@action)clickSearchButton:(id)aSender
 {
     if ([self enableAdvancedSearch])
     {
@@ -1601,7 +1601,7 @@ NUModuleTabViewModeIcon = 2;
         [self filterObjects:aSender];
 }
 
-- (IBAction)filterObjects:(id)aSender
+- (@action)filterObjects:(id)aSender
 {
     var filterString = [aSender stringValue];
 
@@ -1621,7 +1621,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark External Windows
 
-- (IBAction)openModuleInExternalWindow:(id)aSender
+- (@action)openModuleInExternalWindow:(id)aSender
 {
     var bundle                 = [CPBundle bundleForClass:[self class]],
         externalizedModule     = [[[self class] alloc] initWithCibName:[self cibName] bundle:bundle],
@@ -3089,7 +3089,7 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Inspector Management
 
-- (IBAction)openInspector:(id)aSender
+- (@action)openInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForSelectedObject];
 }
@@ -3143,7 +3143,7 @@ NUModuleTabViewModeIcon = 2;
     [self showModuleEditor:_stickyEditor || singleSelection || multipleSelection];
 }
 
-- (IBAction)sharedEditorTableAction:(id)aSender
+- (@action)sharedEditorTableAction:(id)aSender
 {
     if (!_selectionDidChanged && [self moduleShouldChangeSelection])
         [self updateEditorControllerWithObjects:_currentSelectedObjects];

@@ -191,7 +191,7 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)saveCurrentParent:(id)aSender
+- (@action)saveCurrentParent:(id)aSender
 {
     if (_currentContext && [[_currentContext currentValidation] success])
         [_currentContext updateEditedObject:self];

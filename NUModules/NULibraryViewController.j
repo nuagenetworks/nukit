@@ -237,7 +237,7 @@ var NULibraryViewControllerImageCollapseShow,
     [self setMultiplierValue:1];
 }
 
-- (IBAction)updateFieldMultiplier:(id)aSender
+- (@action)updateFieldMultiplier:(id)aSender
 {
     if ([aSender intValue] > 20)
     {

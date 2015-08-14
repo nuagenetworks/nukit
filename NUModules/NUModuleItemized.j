@@ -343,7 +343,7 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)_changeSelection:(id)aSender
+- (@action)_changeSelection:(id)aSender
 {
     var index       = [tableViewItems selectedRow],
         moduleItem  = [tableViewItems itemAtRow:index],
@@ -372,7 +372,7 @@
     }
 }
 
-- (IBAction)_updateItemTableVisibility:(id)aSender
+- (@action)_updateItemTableVisibility:(id)aSender
 {
     [[CPUserDefaults standardUserDefaults] setObject:[_checkBoxShowName state] forKey:_itemsVisibilitySaveKey];
     [self _expandItemTable:([_checkBoxShowName state] == CPOnState)]

@@ -197,7 +197,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark Overrides
 
-- (IBAction)openUnassignObjectPopover:(id)aSender
+- (@action)openUnassignObjectPopover:(id)aSender
 {
     if (NUModuleAutoValidation || [[CPApp currentEvent] modifierFlags] & CPShiftKeyMask)
     {
@@ -226,7 +226,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [popoverConfirmation setDefaultButton:buttonConfirm];
 }
 
-- (IBAction)_performUnassignObjects:(id)aSender
+- (@action)_performUnassignObjects:(id)aSender
 {
     var content = [CPArray arrayWithArray:[self flattenedDataSourceContent]];
     [content removeObjectsInArray:_currentSelectedObjects];
@@ -239,7 +239,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark NUModuleContext Delegates
 
-- (IBAction)openAssignObjectPopover:(id)aSender
+- (@action)openAssignObjectPopover:(id)aSender
 {
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
 

@@ -238,12 +238,12 @@ var NUMainWindowControllerDefault,
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)logOut:(id)aSender
+- (@action)logOut:(id)aSender
 {
     [[NUKit kit] performLogout];
 }
 
-- (IBAction)switchPrincipalModule:(id)aSender
+- (@action)switchPrincipalModule:(id)aSender
 {
     var module = [aSender tag];
 
@@ -253,7 +253,7 @@ var NUMainWindowControllerDefault,
         [self _showPrincipalModule:module withCurrentParent:[[NUKit kit] RESTUser]];
 }
 
-- (IBAction)ignoreWindowSizeWarning:(id)aSender
+- (@action)ignoreWindowSizeWarning:(id)aSender
 {
     _ignoreWindowSize = YES;
     [self _manageVisibilityOfWindowSizeWarning];
@@ -264,7 +264,7 @@ var NUMainWindowControllerDefault,
 #pragma mark -
 #pragma mark Overrides
 
-- (IBAction)showWindow:(id)aSender
+- (@action)showWindow:(id)aSender
 {
     if ([[self window] isVisible])
         return;

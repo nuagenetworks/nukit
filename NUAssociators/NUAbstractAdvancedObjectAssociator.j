@@ -97,7 +97,7 @@
 #pragma mark -
 #pragma mark Action
 
-- (IBAction)removeCurrentAssociatedObject:(id)aSender
+- (@action)removeCurrentAssociatedObject:(id)aSender
 {
     [self _updateDataViewWithAssociatedObject:nil];
     [self _sendDelegateDidAssociatorChangeAssociation];
@@ -106,7 +106,7 @@
     [self setModified:YES];
 }
 
-- (IBAction)save:(id)aSender
+- (@action)save:(id)aSender
 {
     // if we have no associated object, then we check if we have a current association object
     if (!_currentAssociatedObject)

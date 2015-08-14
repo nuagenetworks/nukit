@@ -54,12 +54,12 @@
 #pragma mark -
 #pragma mark Utilities
 
-- (IBAction)logOut:(id)aSender
+- (@action)logOut:(id)aSender
 {
     [[NUKit kit] performLogout];
 }
 
-- (IBAction)showWindow:(id)aSender
+- (@action)showWindow:(id)aSender
 {
     [[self window] center];
     [super showWindow:aSender];
