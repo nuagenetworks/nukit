@@ -237,17 +237,14 @@ function _IPAddress(string, canBeNull, canBeAll)
 
 function _netmaskBetween(string, minValue, maxValue)
 {
-    if (!string || string.indexOf('/') == 0)
+    if (!string || string.indexOf('/') < 0)
         return "Invalid netmask"
 
-    var network = new IPLib.CIDR(string),
-        netmask = network.getNetmask();
+    var value = string.split("/")[1],
+        netmask = parseInt(value);
 
-    if (netmask.nm < minValue)
-        return "Netmask is lower than " + minValue;
-
-    if (netmask.nm > maxValue)
-        return "Netmask is bigger than " + maxValue;
+    if (netmask < minValue || netmask > maxValue)
+        return "Netmask should be between /" + minValue + " and /" + maxValue;
 
     return null;
 }
