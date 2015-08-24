@@ -235,6 +235,23 @@ function _IPAddress(string, canBeNull, canBeAll)
     return success ? null : "Not a valid address";
 }
 
+function _netmaskBetween(string, minValue, maxValue)
+{
+    if (!string || string.indexOf('/') == 0)
+        return "Invalid netmask"
+
+    var network = new IPLib.CIDR(string),
+        netmask = network.getNetmask();
+
+    if (netmask.nm < minValue)
+        return "Netmask is lower than " + minValue;
+
+    if (netmask.nm > maxValue)
+        return "Netmask is bigger than " + maxValue;
+
+    return null;
+}
+
 function _virtualIP(string)
 {
     if (string == "0.0.0.0")
