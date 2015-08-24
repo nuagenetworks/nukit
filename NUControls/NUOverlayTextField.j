@@ -143,7 +143,7 @@
         [self hide:nil];
 }
 
-- (IBAction)show:(id)aSender
+- (@action)show:(id)aSender
 {
     if (!_targetView)
         return;
@@ -162,7 +162,7 @@
         [_delegate overlayTextFieldDidShow:self];
 }
 
-- (IBAction)hide:(id)aSender
+- (@action)hide:(id)aSender
 {
     if (!_targetView)
         return;

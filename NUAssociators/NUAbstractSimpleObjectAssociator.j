@@ -23,9 +23,9 @@
 @implementation NUAbstractSimpleObjectAssociator : NUAbstractObjectAssociator
 
 #pragma mark -
-#pragma mark IBAction
+#pragma mark @action
 
-- (IBAction)removeCurrentAssociatedObject:(id)aSender
+- (@action)removeCurrentAssociatedObject:(id)aSender
 {
     [_currentParent setValue:nil forKeyPath:[self keyPathForAssociatedObjectID]];
 

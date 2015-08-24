@@ -169,7 +169,7 @@
     [_table reloadData];
 }
 
-- (IBAction)filterObjects:(id)sender
+- (@action)filterObjects:(id)sender
 {
     if (!_searchField)
         _searchField = sender;

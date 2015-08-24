@@ -138,14 +138,14 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)logIn:(id)aSender
+- (@action)logIn:(id)aSender
 {
     [self setButtonLoginEnabled:NO];
     [self setMessage:@"Connecting..."];
     [[NUKit kit] performLoginWithUserName:[fieldLogin stringValue] organization:[fieldEnterprise stringValue] password:[fieldPassword stringValue] url:[fieldRESTURL stringValue]];
 }
 
-- (IBAction)showWindow:(id)aSender
+- (@action)showWindow:(id)aSender
 {
     if ([[self window] isVisible])
         return;

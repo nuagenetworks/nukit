@@ -330,12 +330,12 @@ var NUInspectorWindowsRegistry = @{},
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)openAnotherInspector:(id)aSender
+- (@action)openAnotherInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForSelectedObject];
 }
 
-- (IBAction)openAPIDocInExternalWindow:(id)aSender
+- (@action)openAPIDocInExternalWindow:(id)aSender
 {
     window.open([self _currentObjectDocumentationURL], "_new");
 }

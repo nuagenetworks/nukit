@@ -355,7 +355,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
         {
             [_bindedControlsCache setObject:control forKey:aName];
 
-            if ([control isKindOfClass:CPTextField] && ![control isEditable])
+            if ([control isKindOfClass:CPTextField] && ![control isEditable] && [control lineBreakMode] == CPLineBreakByClipping)
                 [control setLineBreakMode:CPLineBreakByTruncatingTail];
         }
     }
@@ -460,7 +460,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
                 if ([control placeholderString])
                     [opts setObject:[control placeholderString] forKey:CPNullPlaceholderBindingOption];
 
-                if (![control isEditable])
+                if (![control isEditable] && [control lineBreakMode] == CPLineBreakByClipping)
                     [control setLineBreakMode:CPLineBreakByTruncatingTail];
 
                 [control setSelectable:YES];
@@ -1222,12 +1222,12 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)openHelpWindow:(id)aSender
+- (@action)openHelpWindow:(id)aSender
 {
     window.open([[CPURL URLWithString:@"Resources/Help/popover-" + _identifier + @".html"] absoluteString], "_new", "width=800,height=600");
 }
 
-- (IBAction)createEditedObject:(id)aSender
+- (@action)createEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
 
@@ -1239,7 +1239,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self createRESTObject:_editedObject];
 }
 
-- (IBAction)updateEditedObject:(id)aSender
+- (@action)updateEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
 
@@ -1259,13 +1259,13 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self updateRESTObject:_editedObject];
 }
 
-- (IBAction)deleteSelectedObjects:(id)aSender
+- (@action)deleteSelectedObjects:(id)aSender
 {
     for (var i = [_selectedObjects count] - 1; i >= 0; i--)
         [self deleteRESTObject:_selectedObjects[i]];
 }
 
-- (IBAction)instantiateEditedObject:(id)aSender
+- (@action)instantiateEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
 

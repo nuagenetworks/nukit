@@ -82,13 +82,13 @@ var NUMessageDataViewImageCheckBoxOkStateOn,
     }
 }
 
-- (IBAction)validate:(id)aSender
+- (@action)validate:(id)aSender
 {
     if ([_currentMessage isKindOfClass:NURESTConfirmation])
         [_currentMessage setCurrentChoice:1];
 }
 
-- (IBAction)cancel:(id)aSender
+- (@action)cancel:(id)aSender
 {
     if ([_currentMessage isKindOfClass:NURESTConfirmation])
         [_currentMessage setCurrentChoice:0];

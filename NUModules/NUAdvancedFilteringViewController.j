@@ -99,7 +99,7 @@ var NUAdvancedFilteringViewControllerDefault;
 #pragma mark -
 #pragma mark Action Management
 
-- (IBAction)clickApplyButton:(id)aSender
+- (@action)clickApplyButton:(id)aSender
 {
     [self closePopover];
 

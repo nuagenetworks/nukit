@@ -23,6 +23,7 @@
 @import "NUCategoryDataView.j"
 @import "NUGenealogyDataView.j"
 @import "NUItemizedModuleDataView.j"
+@import "NULibraryItemDataView.j"
 @import "NUMessageDataView.j"
 
 
@@ -33,6 +34,7 @@
     @outlet NUCategoryDataView          categoryDataView        @accessors(readonly);
     @outlet NUGenealogyDataView         genealogyDataView       @accessors(readonly);
     @outlet NUItemizedModuleDataView    itemizedModuleDataView  @accessors(readonly);
+    @outlet NULibraryItemDataView       libraryItemDataView     @accessors(readonly);
     @outlet NUMessageDataView           messageDataView         @accessors(readonly);
 }
 

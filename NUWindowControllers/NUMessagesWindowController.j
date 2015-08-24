@@ -237,7 +237,7 @@ var NUMessagesWindowControllerDefault,
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)showWindow:(id)aSender
+- (@action)showWindow:(id)aSender
 {
     [[self window] setPlatformWindow:[[CPApp keyWindow] platformWindow]];
 
@@ -260,7 +260,7 @@ var NUMessagesWindowControllerDefault,
     [super showWindow:aSender];
 }
 
-- (IBAction)close:(id)aSender
+- (@action)close:(id)aSender
 {
     [_viewBlur removeFromSuperview];
     _numberOfConfirmations = 0;
@@ -271,13 +271,13 @@ var NUMessagesWindowControllerDefault,
     [[NUKit kit] unlockCurrentPopover];
 }
 
-- (IBAction)cancel:(id)aSender
+- (@action)cancel:(id)aSender
 {
     [self setCancelAllNotification:aSender];
     [self sendReply:self];
 }
 
-- (IBAction)sendReply:(id)aSender
+- (@action)sendReply:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
     {
@@ -295,7 +295,7 @@ var NUMessagesWindowControllerDefault,
     [self close:nil];
 }
 
-- (IBAction)setValidateAllNotification:(id)aSender
+- (@action)setValidateAllNotification:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
     {
@@ -305,7 +305,7 @@ var NUMessagesWindowControllerDefault,
     }
 }
 
-- (IBAction)setCancelAllNotification:(id)aSender
+- (@action)setCancelAllNotification:(id)aSender
 {
     for (var i = 0, c = [_dataSourceMessages count]; i < c; i++)
     {

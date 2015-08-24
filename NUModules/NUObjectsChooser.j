@@ -153,7 +153,7 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)selectCurrentObjects:(id)aSender
+- (@action)selectCurrentObjects:(id)aSender
 {
     if ([tableView numberOfSelectedRows] == 0)
         return;

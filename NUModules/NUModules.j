@@ -1,6 +1,7 @@
 @import "NUAdvancedFilteringViewController.j"
 @import "NUDataTransferController.j"
 @import "NUEditorsViewController.j"
+@import "NULibraryViewController.j"
 @import "NUModule.j"
 @import "NUModuleAssignation.j"
 @import "NUModuleContext.j"

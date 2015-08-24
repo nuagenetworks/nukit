@@ -100,7 +100,7 @@
 #pragma mark -
 #pragma mark Overrides
 
-- (IBAction)openInspector:(id)aSender
+- (@action)openInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForObject:_currentParent];
 }

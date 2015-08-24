@@ -210,7 +210,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return nil;
 }
 
-- (IBAction)removeCurrentAssociatedObject:(id)aSender
+- (@action)removeCurrentAssociatedObject:(id)aSender
 {
     throw ("implement me");
 }
@@ -636,7 +636,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)openAssociatedObjectChooser:(id)aSender
+- (@action)openAssociatedObjectChooser:(id)aSender
 {
     if (_currentAssociatedObject)
         [_associatedObjectChooser setIgnoredObjects:[_currentAssociatedObject]];

@@ -186,7 +186,7 @@
 
     [_checkBoxShowName setState:[[CPUserDefaults standardUserDefaults] objectForKey:_itemsVisibilitySaveKey]];
     [self _updateItemTableVisibility:self];
-    [self _showItemTable:([_dataSourceModules count] > 0)];
+    [self _showItemTable:([_dataSourceModules count] > 1)];
 
     if (_lastExpandedRootModule)
         [tableViewItems expandItem:[self _moduleItemForModule:_lastExpandedRootModule]];
@@ -343,7 +343,7 @@
 #pragma mark -
 #pragma mark Actions
 
-- (IBAction)_changeSelection:(id)aSender
+- (@action)_changeSelection:(id)aSender
 {
     var index       = [tableViewItems selectedRow],
         moduleItem  = [tableViewItems itemAtRow:index],
@@ -372,7 +372,7 @@
     }
 }
 
-- (IBAction)_updateItemTableVisibility:(id)aSender
+- (@action)_updateItemTableVisibility:(id)aSender
 {
     [[CPUserDefaults standardUserDefaults] setObject:[_checkBoxShowName state] forKey:_itemsVisibilitySaveKey];
     [self _expandItemTable:([_checkBoxShowName state] == CPOnState)]
