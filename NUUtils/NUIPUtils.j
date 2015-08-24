@@ -59,7 +59,7 @@ function parseIPAddress(aString)
         ret.address = nil;
         ret.CIDR = nil;
         ret.firstIP = nil;
-        ret.firstIP = nil;
+        ret.lastIP = nil;
     }
 
     return ret;
