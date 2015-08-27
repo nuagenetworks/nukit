@@ -1464,7 +1464,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
     else if (_delegate._mode == NUNetworkIPV6Mode)
     {
-        if ((_mask && [currentValue length] > 3 || !isNumber(currentValue) || currentValue === @"")
+        if ((_mask && ([currentValue length] > 3 || !isNumber(currentValue) || currentValue === @""))
             || (!_mask && [currentValue length] > 4 || currentValue === @"" || lastCharacter === @":" || !isHexaCharac(lastCharacter)))
         {
             if (currentValue === @"")
