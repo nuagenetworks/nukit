@@ -209,7 +209,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     _mode = aMode;
     [self didChangeValueForKey:@"mode"];
 
-    [self setSeparatorValue:_mode == NUNetworkMACMode ? @":" : @"."]
+    [self setSeparatorValue:(_mode == NUNetworkMACMode || _mode == NUNetworkIPV6Mode) ? @":" : @"."]
     [self _populateNetworkElementTextFields]
 }
 
@@ -290,6 +290,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     var ips = anObjectValue.split(@"."),
         numberDigits = [ips count];
 
+    // TODO: support IPV6 and which format
     if (_mode === NUNetworkIPV6Mode && numberDigits != 6)
     {
         [self _errorMessage:[CPString stringWithFormat:"ERROR: Invalid ip format IPV6: %@", anObjectValue]];
@@ -324,6 +325,8 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isIPValue:(id)aValue
 {
+    // TODO: isIPValue for ipv6
+
     if (!isNumber(aValue) && [aValue length] > 3 || aValue > 255)
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid ip format : %@", aValue]];
@@ -635,7 +638,9 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     _networkElementTextFields = [];
     _separatorLabels = [];
 
-    if (_mode === NUNetworkIPV6Mode || _mode == NUNetworkMACMode)
+    if (_mode === NUNetworkIPV6Mode)
+        number = 8;
+    else if (_mode == NUNetworkMACMode)
         number = 6;
 
     if (_mask && _mode != NUNetworkMACMode)
@@ -1700,7 +1705,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         if (mode == NUNetworkIPV4Mode)
             key += @"...";
         else if (mode == NUNetworkIPV6Mode)
-            key += @".....";
+            key += @":::::::";
         else if (mode == NUNetworkMACMode)
             key += @":::::";
 
