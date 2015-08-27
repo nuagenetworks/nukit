@@ -235,6 +235,20 @@ function _IPAddress(string, canBeNull, canBeAll)
     return success ? null : "Not a valid address";
 }
 
+function _netmaskBetween(string, minValue, maxValue)
+{
+    if (!string || string.indexOf('/') < 0)
+        return "Invalid netmask"
+
+    var value = string.split("/")[1],
+        netmask = parseInt(value);
+
+    if (netmask < minValue || netmask > maxValue)
+        return "Netmask should be between /" + minValue + " and /" + maxValue;
+
+    return null;
+}
+
 function _virtualIP(string)
 {
     if (string == "0.0.0.0")
