@@ -287,11 +287,10 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (CPArray)_digitsForIPValue:(id)anObjectValue
 {
-    var ips = anObjectValue.split(@"."),
+    var ips = (_mode === NUNetworkIPV6Mode) ? anObjectValue.split(@":") : anObjectValue.split(@"."),
         numberDigits = [ips count];
 
-    // TODO: support IPV6 and which format
-    if (_mode === NUNetworkIPV6Mode && numberDigits != 6)
+    if (_mode === NUNetworkIPV6Mode && numberDigits != 8)
     {
         [self _errorMessage:[CPString stringWithFormat:"ERROR: Invalid ip format IPV6: %@", anObjectValue]];
         return [];
@@ -325,11 +324,15 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isIPValue:(id)aValue
 {
-    // TODO: isIPValue for ipv6
-
-    if (!isNumber(aValue) && [aValue length] > 3 || aValue > 255)
+    if (_mode == NUNetworkIPV6Mode && [aValue length] > 4 && (aValue.search(/^[0-9A-Fa-f]{0,1,2,3,4}$/gi) == -1 || intFromHexa(aValue) > 65535))
     {
-        [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid ip format : %@", aValue]];
+        [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 ip format : %@", aValue]];
+        return NO;
+    }
+
+    if (_mode == NUNetworkIPV4Mode && !isNumber(aValue) && ([aValue length] > 3 || aValue > 255))
+    {
+        [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV4 ip format : %@", aValue]];
         return NO;
     }
 
@@ -341,10 +344,26 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isMaskValue:(id)aValue
 {
-    if (!isNumber(aValue) && [aValue length] > 2 || aValue > 32)
+    if (_mode == NUNetworkIPV6Mode)
     {
-        [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid ip format : %@", aValue]];
-        return NO;
+        if ([aValue length] > 3 || aValue > 128)
+        {
+            [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 mask ip format : %@", aValue]];
+            return NO;
+        }
+
+        return YES
+    }
+
+    if (_mode == NUNetworkIPV4Mode)
+    {
+        if ([aValue length] > 2 || aValue > 32)
+        {
+            [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid mask ip format : %@", aValue]];
+            return NO;
+        }
+
+        return YES;
     }
 
     return YES;
@@ -742,7 +761,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 {
     var number = [_networkElementTextFields count],
         contentInset = [self currentValueForThemeAttribute:@"content-inset"],
-        sizeTextField = _mode == NUNetworkMACMode ? [[CPString stringWithString:@"12 "] sizeWithFont:[self font]] : [[CPString stringWithString:@"123 "] sizeWithFont:[self font]],
+        sizeTextField = _mode == NUNetworkMACMode ? [[CPString stringWithString:@"12 "] sizeWithFont:[self font]] : _mode == NUNetworkIPV6Mode ? [[CPString stringWithString:@"1234 "] sizeWithFont:[self font]] : [[CPString stringWithString:@"123 "] sizeWithFont:[self font]],
         height = ([self frameSize].height - 2) / 2 - sizeTextField.height / 2;
 
     for (var i = 0; i < number; i++)
@@ -803,13 +822,9 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 - (void)_updatePlaceholderState
 {
     if (!_internObjectValue || _internObjectValue.length === 0)
-    {
         [self setThemeState:CPTextFieldStatePlaceholder];
-    }
     else
-    {
         [self unsetThemeState:CPTextFieldStatePlaceholder];
-    }
 }
 
 
@@ -1096,7 +1111,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     {
         // TODO: compute the algo for the mask
         var networkElementTextFields = _delegate._networkElementTextFields,
-            mask = 32,
+            mask = (_delegate._mode == NUNetworkIPV4Mode) ? 32 : 128,
             stopMask = NO;
 
         for (var i = [networkElementTextFields count] - 1; i >= 0; i--)
@@ -1107,7 +1122,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
                 [networkElementTextField setNetworkValue:@"0"];
 
             if (![networkElementTextField isMask] && [networkElementTextField stringValue] == @"0" && !stopMask)
-                mask -= 8;
+                mask -= (_delegate._mode == NUNetworkIPV4Mode) ? 8 : 16;
             else if (parseInt([networkElementTextField stringValue]) > 0)
                 stopMask = YES;
         }
@@ -1262,7 +1277,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         case CPLeftTextMovement:
         case CPRightTextMovement:
 
-            if (!lengthStringValue && !_mask && _delegate._mode != NUNetworkMACMode)
+            if (!lengthStringValue && !_mask && _delegate._mode == NUNetworkIPV4Mode)
             {
                 [self setNetworkValue:@"0"]
                 [_delegate _textDidChange:self];
@@ -1281,7 +1296,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
         case CPBacktabTextMovement:
 
-            if (!lengthStringValue && !_mask && _delegate._mode != NUNetworkMACMode && [_delegate._internObjectValue length] > 0)
+            if (!lengthStringValue && !_mask && _delegate._mode == NUNetworkIPV4Mode && [_delegate._internObjectValue length] > 0)
             {
                 [self setNetworkValue:@"0"]
                 [_delegate _textDidChange:self];
@@ -1299,7 +1314,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
         case CPTabTextMovement:
 
-            if (!lengthStringValue && !_mask && _delegate._mode != NUNetworkMACMode && [_delegate._internObjectValue length] > 0)
+            if (!lengthStringValue && !_mask && _delegate._mode == NUNetworkIPV4Mode && [_delegate._internObjectValue length] > 0)
             {
                 [self setNetworkValue:@"0"]
                 [_delegate _textDidChange:self];
@@ -1321,7 +1336,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
             if ([currentEvent charactersIgnoringModifiers] == CPSpaceFunctionKey)
             {
-                if (!lengthStringValue && !_mask && _delegate._mode != NUNetworkMACMode)
+                if (!lengthStringValue && !_mask && _delegate._mode == NUNetworkIPV4Mode)
                 {
                     [self setNetworkValue:@"0"]
                     [_delegate _textDidChange:self];
@@ -1387,7 +1402,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     if (self != [_delegate._networkElementTextFields lastObject]
         && length > 1
-        && (lastCharacter === @"." && ![_nextTextField isMask]) || (lastCharacter === @"/" && [_delegate hasMask]))
+        && (lastCharacter === _delegate._separatorValue && ![_nextTextField isMask]) || (lastCharacter === @"/" && [_delegate hasMask]))
     {
         if (lastCharacter === @"/")
         {
@@ -1414,7 +1429,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         return;
     }
 
-    if (length == 1 && firstCharacter == @"0" && _delegate && _delegate._mode != NUNetworkMACMode)
+    if (length == 1 && firstCharacter == @"0")
     {
         [self setObjectValue:@"0"];
         [_delegate _textDidChange:self];
@@ -1425,23 +1440,48 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         return;
     }
 
-    if ((_mask && [currentValue length] > 2 || !isNumber(currentValue) || currentValue === @"")
-        || (!_mask && [currentValue length] > 3 || !isNumber(currentValue) || currentValue === @"" || lastCharacter === @"."))
+    if (_delegate._mode == NUNetworkIPV4Mode)
     {
-        if (currentValue === @"")
-            _lastValue = @"";
-        else
-            [self setObjectValue:_lastValue];
-    }
-    else
-    {
-        _lastValue = currentValue;
-
-        if (length == 3 && self != [_delegate._networkElementTextFields lastObject])
+        if ((_mask && [currentValue length] > 2 || !isNumber(currentValue) || currentValue === @"")
+            || (!_mask && [currentValue length] > 3 || !isNumber(currentValue) || currentValue === @"" || lastCharacter === @"."))
         {
-            [_delegate _textDidChange:self];
-            [_delegate selectTextField:_nextTextField];
-            return;
+            if (currentValue === @"")
+                _lastValue = @"";
+            else
+                [self setObjectValue:_lastValue];
+        }
+        else
+        {
+            _lastValue = currentValue;
+
+            if (length == 3 && self != [_delegate._networkElementTextFields lastObject])
+            {
+                [_delegate _textDidChange:self];
+                [_delegate selectTextField:_nextTextField];
+                return;
+            }
+        }
+    }
+    else if (_delegate._mode == NUNetworkIPV6Mode)
+    {
+        if ((_mask && [currentValue length] > 3 || !isNumber(currentValue) || currentValue === @"")
+            || (!_mask && [currentValue length] > 4 || currentValue === @"" || lastCharacter === @":" || !isHexaCharac(lastCharacter)))
+        {
+            if (currentValue === @"")
+                _lastValue = @"";
+            else
+                [self setObjectValue:_lastValue];
+        }
+        else
+        {
+            _lastValue = currentValue;
+
+            if (length == 4 && self != [_delegate._networkElementTextFields lastObject])
+            {
+                [_delegate _textDidChange:self];
+                [_delegate selectTextField:_nextTextField];
+                return;
+            }
         }
     }
 
@@ -1470,10 +1510,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     //Make sure to have an interger
     if (_delegate
         && _delegate._mode != NUNetworkMACMode
-        && [anObjectValue characterAtIndex:(length - 1)] != @"."
+        && [anObjectValue characterAtIndex:(length - 1)] != _delegate._separatorValue
         && [anObjectValue characterAtIndex:(length - 1)] != @"/")
         {
-            anObjectValue = anObjectValue ? parseInt(anObjectValue) : anObjectValue;
+            anObjectValue = (anObjectValue && _delegate._mode == NUNetworkIPV4Mode) ? parseInt(anObjectValue) : anObjectValue;
         }
 
     [super setObjectValue:anObjectValue];
@@ -1688,7 +1728,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         return;
 
     if (keyCode >= CPZeroKeyCode && keyCode <= CPNineKeyCode
-        || (mode == NUNetworkMACMode && ((keyCode >= CPZeroKeyCode && keyCode <= CPNineKeyCode) || (keyCode >= CPAKeyCode && keyCode <= CPFKeyCode))))
+        || ((mode == NUNetworkMACMode || mode == NUNetworkIPV6Mode) && ((keyCode >= CPZeroKeyCode && keyCode <= CPNineKeyCode) || (keyCode >= CPAKeyCode && keyCode <= CPFKeyCode))))
     {
         for (var i = [_networkTextField._networkElementTextFields count] - 1; i >= 0; i--)
         {
@@ -1838,4 +1878,18 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 function isNumber(n) {
   return !isNaN(parseInt(n)) && isFinite(n) && n % 1 === 0;
+}
+
+function intFromHexa(hexa){
+    return parseInt(hexa, 16);
+}
+
+function isHexaCharac(hexa)
+{
+    var isOk = hexa.search(/^[0-9A-Fa-f]{1}$/gi);
+
+    if (isOk == -1)
+        return NO;
+
+    return YES;
 }
