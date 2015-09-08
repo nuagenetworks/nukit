@@ -169,7 +169,9 @@ var NUMainWindowControllerDefault,
     {
         [toolBar setHidden:YES];
         [viewTooSmallWindowSize setFrame:[[self window] frame]];
-        [[[self window] contentView] addSubview:viewTooSmallWindowSize]
+        [[[self window] contentView] addSubview:viewTooSmallWindowSize];
+        [_coreModule closeAllPopovers];
+        [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
     }
     else
     {
