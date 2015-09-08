@@ -166,6 +166,8 @@ NUModuleTabViewModeIcon = 2;
     CPButton                        _buttonEditObject;
     CPButton                        _buttonFirstCreate
     CPButton                        _buttonFirstImport;
+    CPButton                        _buttonImportObject;
+    CPButton                        _buttonExportObject;
     CPButton                        _buttonInstantiateObject;
     CPDictionary                    _contextRegistry;
     CPDictionary                    _controlsForActionRegistry;
@@ -352,6 +354,22 @@ NUModuleTabViewModeIcon = 2;
         [_buttonAddObject setAction:@selector(openNewObjectPopover:)];
         [self registerControl:_buttonAddObject forAction:NUModuleActionAdd];
 
+        _buttonImportObject = [CPButtonBar plusButton];
+        [_buttonImportObject setImage:NUSkinImageButtonImport];
+        [_buttonImportObject setAlternateImage:NUSkinImageButtonImportAlt];
+        [_buttonImportObject setButtonType:CPMomentaryChangeButton];
+        [_buttonImportObject setTarget:self];
+        [_buttonImportObject setAction:@selector(import:)];
+        [self registerControl:_buttonImportObject forAction:NUModuleActionImport];
+
+        _buttonExportObject = [CPButtonBar plusButton];
+        [_buttonExportObject setImage:NUSkinImageButtonExport];
+        [_buttonExportObject setAlternateImage:NUSkinImageButtonExportAlt];
+        [_buttonExportObject setButtonType:CPMomentaryChangeButton];
+        [_buttonExportObject setTarget:self];
+        [_buttonExportObject setAction:@selector(import:)];
+        [self registerControl:_buttonExportObject forAction:NUModuleActionExport];
+
         _buttonInstantiateObject = [CPButtonBar plusButton];
         [_buttonInstantiateObject setImage:NUSkinImageButtonInstantiate];
         [_buttonInstantiateObject setAlternateImage:NUSkinImageButtonInstantiateAlt];
@@ -376,7 +394,7 @@ NUModuleTabViewModeIcon = 2;
         [_buttonDeleteObject setAction:@selector(openDeleteObjectPopover:)];
         [self registerControl:_buttonDeleteObject forAction:NUModuleActionDelete];
 
-        [buttonBarMain setButtons:[_buttonAddObject, _buttonDeleteObject, _buttonEditObject, _buttonInstantiateObject]];
+        [buttonBarMain setButtons:[_buttonAddObject, _buttonDeleteObject, _buttonEditObject, _buttonInstantiateObject, _buttonImportObject, _buttonExportObject]];
     }
 
     if (viewGettingStarted)
@@ -2366,6 +2384,8 @@ NUModuleTabViewModeIcon = 2;
     _cucappID(_buttonEditObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionEdit] + @"_" + [aContext identifier]);
     _cucappID(_buttonDeleteObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionDelete] + @"_" + [aContext identifier]);
     _cucappID(_buttonInstantiateObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionInstantiate] + @"_" + [aContext identifier]);
+    _cucappID(_buttonImportObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionImport] + @"_" + [aContext identifier]);
+    _cucappID(_buttonExportObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionExport] + @"_" + [aContext identifier]);
 }
 
 
