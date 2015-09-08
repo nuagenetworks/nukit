@@ -121,6 +121,7 @@
     [tableViewItems setTarget:self];
     [tableViewItems setAction:@selector(_changeSelection:)];
     [tableViewItems setAllowsEmptySelection:NO];
+    [tableViewItems setAllowsMultipleSelection:NO];
     [tableViewItems setIndentationPerLevel:0];
     [tableViewItems setAutoresizingMask:CPViewHeightSizable];
 
