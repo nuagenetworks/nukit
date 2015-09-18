@@ -18,22 +18,38 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPTextField.j>
 
-@global isNumber
+@global floatValue
+@global isFloatNumber
+@global isIntegerNumber
 
 
 @implementation NUNumericTextField : CPTextField
+{
+    BOOL     _float         @accessors(getter=isFloat, setter=setIsFloat:);
+    int      _nbDecimals    @accessors(property=nbDecimals);
+}
 
 - (BOOL)_setStringValue:(CPString)aValue isNewValue:(BOOL)isNewValue errorDescription:(CPStringRef)anError
 {
-    if (!(isNumber(aValue)) || [aValue rangeOfString:@"."].length > 0 || (aValue.length > 1 && [self stringValue] == @"0"))
+    var value = [aValue length] ? [self objectValue] : @"";
+
+    if (!value)
+        value = @"";
+
+    if ([self isFloat] > 0)
     {
-        var value = [aValue length] ? [self objectValue] : @"";
+        if (!(isFloatNumber(aValue)))
+        {
+            [self _inputElement].value = value.toString();
+            return [super _setStringValue:value.toString() isNewValue:isNewValue errorDescription:anError];
+        }
 
-        if (!value)
-            value = @"";
+        return [super _setStringValue:floatValue(aValue, [self nbDecimals]) isNewValue:isNewValue errorDescription:anError];
+    }
 
+    if (!(isIntegerNumber(aValue)) || [aValue rangeOfString:@"."].length > 0 || (aValue.length > 1 && [self stringValue] == @"0"))
+    {
         [self _inputElement].value = value.toString();
-
         return [super _setStringValue:value.toString() isNewValue:isNewValue errorDescription:anError];
     }
 

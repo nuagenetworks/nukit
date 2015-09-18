@@ -26,7 +26,9 @@
 @class _NUFakeTextField
 
 @global CPApp
-
+@global intFromHexa
+@global isHexaCharac
+@global isIntegerNumber
 
 var CPZeroKeyCode = 48,
     CPNineKeyCode = 57,
@@ -330,7 +332,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
         return NO;
     }
 
-    if (_mode == NUNetworkIPV4Mode && !isNumber(aValue) && ([aValue length] > 3 || aValue > 255))
+    if (_mode == NUNetworkIPV4Mode && !isIntegerNumber(aValue) && ([aValue length] > 3 || aValue > 255))
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV4 ip format : %@", aValue]];
         return NO;
@@ -1442,8 +1444,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     if (_delegate._mode == NUNetworkIPV4Mode)
     {
-        if ((_mask && [currentValue length] > 2 || !isNumber(currentValue) || currentValue === @"")
-            || (!_mask && [currentValue length] > 3 || !isNumber(currentValue) || currentValue === @"" || lastCharacter === @"."))
+        if ((_mask && [currentValue length] > 2 || !isIntegerNumber(currentValue) || currentValue === @"")
+            || (!_mask && [currentValue length] > 3 || !isIntegerNumber(currentValue) || currentValue === @"" || lastCharacter === @"."))
         {
             if (currentValue === @"")
                 _lastValue = @"";
@@ -1464,7 +1466,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
     else if (_delegate._mode == NUNetworkIPV6Mode)
     {
-        if ((_mask && ([currentValue length] > 3 || !isNumber(currentValue) || currentValue === @""))
+        if ((_mask && ([currentValue length] > 3 || !isIntegerNumber(currentValue) || currentValue === @""))
             || (!_mask && [currentValue length] > 4 || currentValue === @"" || lastCharacter === @":" || !isHexaCharac(lastCharacter)))
         {
             if (currentValue === @"")
@@ -1874,22 +1876,3 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
-
-
-function isNumber(n) {
-  return !isNaN(parseInt(n)) && isFinite(n) && n % 1 === 0;
-}
-
-function intFromHexa(hexa){
-    return parseInt(hexa, 16);
-}
-
-function isHexaCharac(hexa)
-{
-    var isOk = hexa.search(/^[0-9A-Fa-f]{1}$/gi);
-
-    if (isOk == -1)
-        return NO;
-
-    return YES;
-}

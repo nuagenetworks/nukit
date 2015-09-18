@@ -323,8 +323,34 @@ function _emailAddress(email)
 
 function _number(string)
 {
-    var success = !isNaN(parseFloat(string)) && isFinite(string);
+    var success = isFloatNumber(string) || isIntegerNumber(string);
     return success ? null : "Not a valid number";
+}
+
+function isIntegerNumber(n) {
+  return !isNaN(parseInt(n)) && isFinite(n) && n % 1 === 0;
+}
+
+function floatValue(n, decimals) {
+    return parseFloat(n).toFixed(decimals);
+}
+
+function isFloatNumber(n) {
+  return !isNaN(parseFloat(n));
+}
+
+function intFromHexa(hexa){
+    return parseInt(hexa, 16);
+}
+
+function isHexaCharac(hexa)
+{
+    var isOk = hexa.search(/^[0-9A-Fa-f]{1}$/gi);
+
+    if (isOk == -1)
+        return NO;
+
+    return YES;
 }
 
 function _positiveNumber(string, canBeNull, canBeZero)
