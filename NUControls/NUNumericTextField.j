@@ -25,35 +25,28 @@
 
 @implementation NUNumericTextField : CPTextField
 {
-    BOOL     _float         @accessors(getter=isFloat, setter=setIsFloat:);
-    int      _nbDecimals    @accessors(property=nbDecimals);
+    BOOL     _allowDecimals     @accessors(property=allowDecimals);
 }
 
 - (BOOL)_setStringValue:(CPString)aValue isNewValue:(BOOL)isNewValue errorDescription:(CPStringRef)anError
 {
-    var value = [aValue length] ? [self objectValue] : @"";
+    var value = [aValue length] && [self objectValue] ? [self objectValue] : @"";
 
-    if (!value)
-        value = @"";
-
-    if ([self isFloat] > 0)
+    if ([self allowDecimals])
     {
         if (!(isFloatNumber(aValue)))
         {
             [self _inputElement].value = value.toString();
-            return [super _setStringValue:value.toString() isNewValue:isNewValue errorDescription:anError];
+            return [super _setStringValue:value isNewValue:isNewValue errorDescription:anError];
         }
-
-        return [super _setStringValue:floatValue(aValue, [self nbDecimals]) isNewValue:isNewValue errorDescription:anError];
     }
-
-    if (!(isIntegerNumber(aValue)) || [aValue rangeOfString:@"."].length > 0 || (aValue.length > 1 && [self stringValue] == @"0"))
+    else if (!(isIntegerNumber(aValue)) || [aValue rangeOfString:@"."].length > 0 || (aValue.length > 1 && [self stringValue] == @"0"))
     {
         [self _inputElement].value = value.toString();
-        return [super _setStringValue:value.toString() isNewValue:isNewValue errorDescription:anError];
+        return [super _setStringValue:value isNewValue:isNewValue errorDescription:anError];
     }
 
-    return [super _setStringValue:[aValue intValue].toString() isNewValue:isNewValue errorDescription:anError];
+    return [super _setStringValue:aValue isNewValue:isNewValue errorDescription:anError];
 }
 
 @end
