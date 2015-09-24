@@ -81,6 +81,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     {
         [[_focusedTableView window] makeFirstResponder:nil];
         _focusedTableView._unfocusedSelectionHighlightColor = nil;
+        [_focusedTableView setNeedsDisplay:YES];
     }
 
     _focusedTableView = aTableView
@@ -89,9 +90,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     {
         [[_focusedTableView window] makeFirstResponder:_focusedTableView];
         _focusedTableView._unfocusedSelectionHighlightColor = [_focusedTableView selectionHighlightColor];
+        [_focusedTableView setNeedsDisplay:YES];
     }
-
-    [_focusedTableView setNeedsDisplay:YES];
 }
 
 - (void)setImage:(CPImage)anImage
