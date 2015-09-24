@@ -68,6 +68,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [self _showController:nil forEditedObject:nil];
 }
 
+
 #pragma mark -
 #pragma mark Custom Getter / Setter
 
@@ -80,16 +81,17 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     {
         [[_focusedTableView window] makeFirstResponder:nil];
         _focusedTableView._unfocusedSelectionHighlightColor = nil;
-        [_focusedTableView setNeedsDisplay:YES];
     }
 
     _focusedTableView = aTableView
 
     if (_focusedTableView)
     {
+        [[_focusedTableView window] makeFirstResponder:_focusedTableView];
         _focusedTableView._unfocusedSelectionHighlightColor = [_focusedTableView selectionHighlightColor];
-        [_focusedTableView setNeedsDisplay:YES];
     }
+
+    [_focusedTableView setNeedsDisplay:YES];
 }
 
 - (void)setImage:(CPImage)anImage
