@@ -34,7 +34,7 @@
 
 @implementation NUAbstractDataView : CPView
 {
-    BOOL            _highlighted      @accessors(property=highlighted);
+    BOOL            _highlighted        @accessors(property=highlighted);
     BOOL            _enableAutoColor    @accessors(property=enableAutoColor);
     BOOL            _relatedDataView    @accessors(property=relatedDataView);
     id              _objectValue        @accessors(property=objectValue);
@@ -49,7 +49,7 @@
 
 - (void)_init
 {
-    _highlighted            = NO;
+    _highlighted          = NO;
     _enableAutoColor      = YES;
     _innerTextFieldsCache = [];
 
