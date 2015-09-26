@@ -530,7 +530,7 @@ NUModuleTabViewModeIcon = 2;
         [self configureEditor:editorController];
 
         if ([self isTableBasedModule])
-            [tableView setAction:@selector(sharedEditorTableAction:)];
+            [tableView setAction:@selector(tableViewDidClick:)];
 
         if (![editorController parentModule])
         {
@@ -1827,6 +1827,8 @@ NUModuleTabViewModeIcon = 2;
         if ([module isVisible])
             return module;
     }
+
+    return nil;
 }
 
 - (void)refreshActiveSubModules
@@ -3052,6 +3054,9 @@ NUModuleTabViewModeIcon = 2;
     }
 
     [tableView selectRowIndexes:selectionIndexes byExtendingSelection:NO];
+
+    if ([self editorController])
+        [self updateEditorControllerWithObjects:_currentSelectedObjects];
 }
 
 - (void)_continueTabChange:(CPTabViewItem)aTabViewItem
@@ -3078,6 +3083,26 @@ NUModuleTabViewModeIcon = 2;
 - (CPView)_dataViewForObject:(id)anObject
 {
     return [self registeredDataViewForClass:[anObject class]];
+}
+
+- (void)setDataViewForObject:(id)anObject highlighted:(BOOL)shouldHighlight
+{
+    switch ([tableView className])
+    {
+        case @"CPTableView":
+            var index = [_dataSource indexOfObject:anObject];
+            break;
+
+        case @"CPOutlineView":
+            var index = [tableView rowForItem:anObject];
+            break;
+    }
+
+    if (index == CPNotFound)
+        return;
+
+    var dataView = [tableView viewAtColumn:0 row:index makeIfNecessary:NO];
+    [dataView setHighlighted:shouldHighlight];
 }
 
 #pragma mark Data View Internal API
@@ -3153,7 +3178,6 @@ NUModuleTabViewModeIcon = 2;
         editorTitleTransformer  = [self moduleEditorTitleTransformer],
         editorImage             = singleSelection ? [self moduleEditorImageTitleForObject:firstObject] : nil;
 
-    [editorController setFocusedTableView:tableView]
     [editorController setCurrentParent:firstObject];
     [editorController setTitleFromKeyPath:editorTitleKeyPath ofObject:firstObject transformer:editorTitleTransformer];
     [editorController setImage:editorImage];
@@ -3163,9 +3187,9 @@ NUModuleTabViewModeIcon = 2;
     [self showModuleEditor:_stickyEditor || singleSelection || multipleSelection];
 }
 
-- (@action)sharedEditorTableAction:(id)aSender
+- (@action)tableViewDidClick:(id)aSender
 {
-    if (!_selectionDidChanged && [self moduleShouldChangeSelection])
+    if (!_selectionDidChanged && [self editorController] && [[self editorController] currentParent] != [_currentSelectedObjects firstObject] && [self _standardShouldSelectRowIndexes:[tableView selectedRowIndexes]])
         [self updateEditorControllerWithObjects:_currentSelectedObjects];
 }
 
