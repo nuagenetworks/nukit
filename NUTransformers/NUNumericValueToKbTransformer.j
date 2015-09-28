@@ -31,7 +31,7 @@
 
 - (id)transformedValue:(id)value
 {
-    return !value || value == @"INFINITY" ? @"No limit" : value + @" Kb";
+    return !value || value == @"INFINITY" ? @"No limit" : value + @" kB";
 }
 
 @end
