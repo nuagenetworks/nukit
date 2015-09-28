@@ -336,7 +336,9 @@ function floatValue(n, decimals) {
 }
 
 function isFloatNumber(n) {
-  return !isNaN(parseFloat(n));
+    // @CS: 0 + n is a fix to enable QOS rates with float value
+    // to be edited. Otherwise, .55 will be stuck on .5
+    return !isNaN(parseFloat(0 + n));
 }
 
 function intFromHexa(hexa){
