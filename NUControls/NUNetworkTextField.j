@@ -982,6 +982,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
+    [self setSubviews:[]];
+
     [super encodeWithCoder:aCoder];
 
     [aCoder encodeBool:_mask forKey:NUNetworkMaskKey];

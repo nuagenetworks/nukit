@@ -122,8 +122,9 @@ var NUMessagesWindowControllerDefault,
     [_viewBlur setAlphaValue:0.5];
     [_viewBlur setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
-    [_viewBlur setInAnimation:@"fadeInHalf" duration:0.5];
-    [_viewBlur setOutAnimation:@"fadeOutHalf" duration:0.5];
+    // TODO: uncomment this lines in few weeks once chrome has been fixed - 24/09/15
+    //[_viewBlur setInAnimation:@"fadeInHalf" duration:0.5];
+    //[_viewBlur setOutAnimation:@"fadeOutHalf" duration:0.5];
     _viewBlur._DOMElement.style.WebkitBackdropFilter = @"blur(10px)";
 
     [self window]._windowView._DOMElement.style.borderRadius =  "3px";
