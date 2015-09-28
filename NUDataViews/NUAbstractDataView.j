@@ -156,7 +156,7 @@
 - (void)setHighlighted:(BOOL)shouldHighlight
 {
     _highlighted = shouldHighlight;
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 }
 
 
@@ -170,13 +170,13 @@
 
     _enableAutoColor = shouldEnable;
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 
     if (!_enableAutoColor)
         [_innerTextFieldsCache makeObjectsPerformSelector:@selector(unsetThemeState:) withObject:CPThemeStateSelectedDataView];
 }
 
-- (void)_updateCachedControlsTheming
+- (void)_updateTheming
 {
     if (!_enableAutoColor)
         return;
@@ -260,7 +260,7 @@
 
     [super setThemeState:aThemeState];
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 }
 
 - (BOOL)unsetThemeState:(ThemeState)aThemeState
@@ -272,7 +272,7 @@
 
     [super unsetThemeState:aThemeState];
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 }
 
 - (void)_showExternalObjectMarker
