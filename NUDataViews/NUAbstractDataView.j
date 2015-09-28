@@ -34,6 +34,7 @@
 
 @implementation NUAbstractDataView : CPView
 {
+    BOOL            _highlighted        @accessors(property=highlighted);
     BOOL            _enableAutoColor    @accessors(property=enableAutoColor);
     BOOL            _relatedDataView    @accessors(property=relatedDataView);
     id              _objectValue        @accessors(property=objectValue);
@@ -48,6 +49,7 @@
 
 - (void)_init
 {
+    _highlighted          = NO;
     _enableAutoColor      = YES;
     _innerTextFieldsCache = [];
 
@@ -123,6 +125,8 @@
 
         superclass = [superclass superclass];
     }
+
+    [self resetBackgroundColor];
 }
 
 
@@ -149,6 +153,12 @@
 {
 }
 
+- (void)setHighlighted:(BOOL)shouldHighlight
+{
+    _highlighted = shouldHighlight;
+    [self _updateTheming];
+}
+
 
 #pragma mark -
 #pragma mark Auto Coloring
@@ -160,20 +170,24 @@
 
     _enableAutoColor = shouldEnable;
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 
     if (!_enableAutoColor)
         [_innerTextFieldsCache makeObjectsPerformSelector:@selector(unsetThemeState:) withObject:CPThemeStateSelectedDataView];
 }
 
-- (void)_updateCachedControlsTheming
+- (void)_updateTheming
 {
     if (!_enableAutoColor)
         return;
 
     if ([self hasThemeState:CPThemeStateSelectedDataView])
     {
-        [self resetBackgroundColor];
+        if (_highlighted)
+            [self setBackgroundColor:NUSkinColorBlue];
+        else
+            [self resetBackgroundColor];
+
         [_innerTextFieldsCache makeObjectsPerformSelector:@selector(setThemeState:) withObject:CPThemeStateSelectedDataView];
     }
     else
@@ -246,7 +260,7 @@
 
     [super setThemeState:aThemeState];
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 }
 
 - (BOOL)unsetThemeState:(ThemeState)aThemeState
@@ -258,7 +272,7 @@
 
     [super unsetThemeState:aThemeState];
 
-    [self _updateCachedControlsTheming];
+    [self _updateTheming];
 }
 
 - (void)_showExternalObjectMarker
@@ -290,22 +304,23 @@
 }
 
 
-#pragma mark -
-#pragma mark Supports for being in a menu
-
-- (void)highlight:(BOOL)shouldHighlight
-{
-    if (shouldHighlight)
-    {
-        [self setBackgroundColor:NUSkinColorBlue];
-        [self setThemeState:CPThemeStateSelectedDataView];
-    }
-    else
-    {
-        [self resetBackgroundColor];
-        [self unsetThemeState:CPThemeStateSelectedDataView];
-    }
-}
+// Antoine says 8 / 10 it's not used... we'll see in a couple of months (9/25/2015)
+// #pragma mark -
+// #pragma mark Supports for being in a menu
+//
+// - (void)highlight:(BOOL)shouldHighlight
+// {
+//     if (shouldHighlight)
+//     {
+//         [self setBackgroundColor:NUSkinColorBlue];
+//         [self setThemeState:CPThemeStateSelectedDataView];
+//     }
+//     else
+//     {
+//         [self resetBackgroundColor];
+//         [self unsetThemeState:CPThemeStateSelectedDataView];
+//     }
+// }
 
 
 #pragma mark -

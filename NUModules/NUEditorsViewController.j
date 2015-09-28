@@ -39,7 +39,6 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     @outlet CPView          viewLabel;
 
     BOOL                    _isLocked                       @accessors(property=isLocked);
-    CPTableView             _focusedTableView               @accessors(property=focusedTableView);
     id                      _delegate                       @accessors(getter=delegate);
     NUModule                _currentController              @accessors(getter=currentController);
     NUModule                _parentModule                   @accessors(property=parentModule);
@@ -71,28 +70,6 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
 #pragma mark -
 #pragma mark Custom Getter / Setter
-
-- (void)setFocusedTableView:(CPTableView)aTableView
-{
-    if (_isLocked || _focusedTableView == aTableView)
-        return;
-
-    if (_focusedTableView)
-    {
-        [[_focusedTableView window] makeFirstResponder:nil];
-        _focusedTableView._unfocusedSelectionHighlightColor = nil;
-        [_focusedTableView setNeedsDisplay:YES];
-    }
-
-    _focusedTableView = aTableView
-
-    if (_focusedTableView)
-    {
-        [[_focusedTableView window] makeFirstResponder:_focusedTableView];
-        _focusedTableView._unfocusedSelectionHighlightColor = [_focusedTableView selectionHighlightColor];
-        [_focusedTableView setNeedsDisplay:YES];
-    }
-}
 
 - (void)setImage:(CPImage)anImage
 {
@@ -176,6 +153,7 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 
     if (_currentController)
     {
+        [self setDataViewForObject:[_currentController currentParent] highlighted:NO];
         [_currentController willHide];
         [[_currentController view] removeFromSuperview];
     }
@@ -197,7 +175,24 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [_currentController setCurrentParent:anObject];
     [_currentController willShow];
 
+    [self setDataViewForObject:anObject highlighted:YES];
+
     [[self view] addSubview:[_currentController view]];
+}
+
+- (void)setDataViewForObject:(id)anObject highlighted:(BOOL)shouldHighlight
+{
+    var module = [self parentModule];
+
+    while (module)
+    {
+        if ([module contextWithIdentifier:[anObject RESTName]])
+        {
+            [module setDataViewForObject:anObject highlighted:shouldHighlight];
+            return;
+        }
+        module = [module visibleSubModule];
+    }
 }
 
 - (void)showNoSelectionView:(BOOL)shouldShow
