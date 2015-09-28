@@ -370,6 +370,22 @@ function _positiveNumber(string, canBeNull, canBeZero)
     return success ? null : "Not a valid positive number";
 }
 
+function _floatingNumber(string, canBeNull, canBeZero)
+{
+    if (canBeNull && !string)
+        return;
+
+    var success;
+
+    if (canBeZero)
+        success = isFloatNumber(string) && parseInt(string) >= 0;
+    else
+        success = isFloatNumber(string) && parseInt(string) > 0;
+
+    return success ? null : "Not a valid floating number";
+}
+
+
 function _floatingIPQuota(string)
 {
     var success = !_number(string) && parseInt(string) >= 0;
