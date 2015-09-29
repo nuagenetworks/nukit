@@ -1,4 +1,5 @@
 @import "CPArray+MoveIndexes.j"
+@import "CPArrayController+Description.j"
 @import "CPButton+Colors.j"
 @import "CPComboBox+CaseInsensiteComplete.j"
 @import "CPDate+format.j"
