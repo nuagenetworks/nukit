@@ -104,6 +104,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
 - (void)_init
 {
+    _stringValue = @"";
     _internObjectValue = @"";
     _separatorValue = @".";
     _separatorMaskValue = @"/";
@@ -197,6 +198,22 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
         _comesFromPrevious = NO;
 
     return [self isEnabled];
+}
+
+- (BOOL)isFirstResponder
+{
+    var firstResponder = [[self window] firstResponder];
+
+    if (firstResponder == self || firstResponder == _fakeTextField)
+        return YES;
+
+    for (var i = [_networkElementTextFields count] - 1; i >= 0; i--)
+    {
+        if (_networkElementTextFields[i] == firstResponder)
+            return YES;
+    }
+
+    return NO;
 }
 
 #pragma mark -
@@ -326,13 +343,22 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isIPValue:(id)aValue
 {
+    if (aValue === null || aValue === undefined || [aValue length] == 0)
+        return YES;
+
     if (_mode == NUNetworkIPV6Mode && [aValue length] > 4 && (aValue.search(/^[0-9A-Fa-f]{0,1,2,3,4}$/gi) == -1 || intFromHexa(aValue) > 65535))
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 ip format : %@", aValue]];
         return NO;
     }
 
-    if (_mode == NUNetworkIPV4Mode && !isIntegerNumber(aValue) && ([aValue length] > 3 || aValue > 255))
+    if (_mode == NUNetworkIPV4Mode && !isIntegerNumber(aValue))
+    {
+        [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV4 ip format : %@", aValue]];
+        return NO;
+    }
+
+    if (_mode == NUNetworkIPV4Mode && ([aValue length] > 3 || aValue > 255))
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV4 ip format : %@", aValue]];
         return NO;
@@ -593,7 +619,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     var contentView = [self layoutEphemeralSubviewNamed:@"content-view"
                                                  positioned:CPWindowAbove
                             relativeToEphemeralSubviewNamed:@"bezel-view"],
-        showPlaceHolder = !(_internObjectValue && _internObjectValue.length > 0),
+        showPlaceHolder = !(_internObjectValue && _internObjectValue.length > 0) && ![self isFirstResponder],
         firstNetWorkTextField = [_networkElementTextFields firstObject];
 
     [contentView setHidden:!showPlaceHolder];
@@ -823,12 +849,16 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
 - (void)_updatePlaceholderState
 {
-    if (!_internObjectValue || _internObjectValue.length === 0)
+    if ([self _showPlaceHolder])
         [self setThemeState:CPTextFieldStatePlaceholder];
     else
         [self unsetThemeState:CPTextFieldStatePlaceholder];
 }
 
+- (void)_showPlaceHolder
+{
+    return (!_internObjectValue || _internObjectValue.length === 0) && ![self isFirstResponder];
+}
 
 #pragma mark -
 #pragma mark Private delegate
@@ -864,6 +894,11 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 - (void)_networkTextFieldAction:(id)sender
 {
     [self sendAction:[self action] to:[self target]];
+}
+
+- (void)selectText:(id)sender
+{
+    [self selectAll];
 }
 
 - (void)selectAll
@@ -1044,6 +1079,9 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (BOOL)acceptsFirstResponder
 {
+    if (![_delegate isEditable] || ![_delegate isEnabled])
+        return NO;
+
     var firstResponder = [[self window] firstResponder];
 
     if (![firstResponder isKindOfClass:_NUNetworkElementTextField] || [firstResponder delegate] != [self delegate])
@@ -1153,7 +1191,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (BOOL)acceptsFirstResponder
 {
-    return [super acceptsFirstResponder];
+    return [_delegate acceptsFirstResponder];
 }
 
 /*!
@@ -1560,8 +1598,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (void)mouseDown:(CPEvent)anEvent
 {
-    if (_delegate._doubleClick)
+    if (_delegate._doubleClick && [_delegate isSelectable])
         [_delegate selectAll];
+    else if (![_delegate isEditable] && ![_delegate isEnabled] && ![_delegate isSelectable])
+        [[self nextResponder] mouseDown:anEvent];
     else
         [super mouseDown:anEvent];
 
@@ -1702,7 +1742,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [self _selectFirstTextField];
 }
 
-- (void)deleteForward:(id)sender
+- (void)deleteBackward:(id)sender
 {
     if (![_networkTextField isEnabled])
         return;
