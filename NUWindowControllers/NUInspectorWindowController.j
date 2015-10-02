@@ -323,7 +323,8 @@ var NUInspectorWindowsRegistry = @{},
 
 - (void)makeKeyInspector
 {
-    [[self window] platformWindow]._DOMWindow.focus();
+    if ([[[self window] platformWindow] isVisible])
+        [[self window] platformWindow]._DOMWindow.focus();
 }
 
 
