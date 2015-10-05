@@ -343,7 +343,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isIPValue:(id)aValue
 {
-    if (aValue === null || aValue === undefined || [aValue length] == 0)
+    if (aValue === null || aValue === undefined || ![aValue length])
         return YES;
 
     if (_mode == NUNetworkIPV6Mode && [aValue length] > 4 && (aValue.search(/^[0-9A-Fa-f]{0,1,2,3,4}$/gi) == -1 || intFromHexa(aValue) > 65535))
@@ -849,15 +849,15 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
 - (void)_updatePlaceholderState
 {
-    if ([self _showPlaceHolder])
+    if ([self _shouldShowPlaceHolder])
         [self setThemeState:CPTextFieldStatePlaceholder];
     else
         [self unsetThemeState:CPTextFieldStatePlaceholder];
 }
 
-- (void)_showPlaceHolder
+- (BOOL)_shouldShowPlaceHolder
 {
-    return (!_internObjectValue || _internObjectValue.length === 0) && ![self isFirstResponder];
+    return (!_internObjectValue || !_internObjectValue.length) && ![self isFirstResponder];
 }
 
 #pragma mark -

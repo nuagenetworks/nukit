@@ -23,6 +23,8 @@
 @implementation NUNetworkTextFieldDataView : NUAbstractDataView
 {
     @outlet NUNetworkTextField  fieldNetwork;
+
+    BOOL _isObservedFirstResponder;
 }
 
 
@@ -50,12 +52,19 @@
 
 - (void)_startObservingFirstResponderForWindow:(CPWindow)aWindow
 {
+    _isObservedFirstResponder = YES;
     [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_firstResponderDidChange:) name:_CPWindowDidChangeFirstResponderNotification object:aWindow];
 }
 
 - (void)_stopObservingFirstResponderForWindow:(CPWindow)aWindow
 {
+    _isObservedFirstResponder = NO;
     [[CPNotificationCenter defaultCenter] removeObserver:self name:_CPWindowDidChangeFirstResponderNotification object:aWindow];
+}
+
+- (void)viewWillMoveToWindow:(CPWindow)aWindow
+{
+    [self _stopObservingFirstResponderForWindow:[self window]];
 }
 
 - (void)_firstResponderDidChange:(CPNotification)aNotification
@@ -75,8 +84,8 @@
 {
     var window = [self window];
 
-    [self _stopObservingFirstResponderForWindow:window];
-    [self _startObservingFirstResponderForWindow:window];
+    if (!_isObservedFirstResponder)
+        [self _startObservingFirstResponderForWindow:window];
 
     if ([anEvent clickCount] == 2 && ![fieldNetwork isFirstResponder])
     {
