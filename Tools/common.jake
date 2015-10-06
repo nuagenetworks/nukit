@@ -253,7 +253,7 @@ BUILDER ("BUILDER", function(task)
     task.setAuthor(BUILD_INFO["PROJECT_AUTHOR"]);
     task.setBuildIntermediatesPath(FILE.join(ENV["CAPP_BUILD"], BUILD_INFO["PROJECT_NAME"] + ".build", CONFIGURATION));
     task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], CONFIGURATION));
-    task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O");
+    task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O2");
     task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
     task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"]);
     task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
