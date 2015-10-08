@@ -83,11 +83,11 @@
         return;
 
     if (anObject === nil)
-    {
         [self unbindDataView];
-    }
 
     _objectValue = anObject;
+
+    [self resetBackgroundColor];
 
     if (_objectValue)
     {
@@ -125,8 +125,6 @@
 
         superclass = [superclass superclass];
     }
-
-    [self resetBackgroundColor];
 }
 
 
