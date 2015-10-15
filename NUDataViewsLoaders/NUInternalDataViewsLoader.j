@@ -25,17 +25,19 @@
 @import "NUItemizedModuleDataView.j"
 @import "NULibraryItemDataView.j"
 @import "NUMessageDataView.j"
+@import "NUNetworkTextFieldDataView.j"
 
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
-    @outlet CPPopover                   popoverConfirmation     @accessors(readonly);
-    @outlet CPView                      viewInvalidInput        @accessors(readonly);
-    @outlet NUCategoryDataView          categoryDataView        @accessors(readonly);
-    @outlet NUGenealogyDataView         genealogyDataView       @accessors(readonly);
-    @outlet NUItemizedModuleDataView    itemizedModuleDataView  @accessors(readonly);
-    @outlet NULibraryItemDataView       libraryItemDataView     @accessors(readonly);
-    @outlet NUMessageDataView           messageDataView         @accessors(readonly);
+    @outlet CPPopover                   popoverConfirmation         @accessors(readonly);
+    @outlet CPView                      viewInvalidInput            @accessors(readonly);
+    @outlet NUCategoryDataView          categoryDataView            @accessors(readonly);
+    @outlet NUGenealogyDataView         genealogyDataView           @accessors(readonly);
+    @outlet NUItemizedModuleDataView    itemizedModuleDataView      @accessors(readonly);
+    @outlet NULibraryItemDataView       libraryItemDataView         @accessors(readonly);
+    @outlet NUMessageDataView           messageDataView             @accessors(readonly);
+    @outlet NUNetworkTextFieldDataView  networkTextFieldDataView    @accessors(readonly);
 }
 
 - (void)viewDidLoad

@@ -6,4 +6,5 @@
 @import "NUItemizedModuleDataView.j"
 @import "NULibraryItemDataView.j"
 @import "NUMessageDataView.j"
+@import "NUNetworkTextFieldDataView.j"
 @import "NUTemplatableObjectDataView.j"
