@@ -404,20 +404,34 @@ var _isCPArrayControllerKind = function(object, keyPath)
                 var addButton = [self _controlForProperty:keyPath + @"_add:"];
                 if (addButton)
                 {
+                    var image    = [NUSkinImageButtonPlus duplicate],
+                        altImage = [NUSkinImageButtonPlusAlt duplicate],
+                        size     = [addButton frameSize];
+
+                    [image setSize:size];
+                    [altImage setSize:size];
+
                     [addButton setTarget:value];
                     [addButton setAction:@selector(add:)];
-                    [addButton setImage:NUSkinImageButtonPlus];
-                    [addButton setAlternateImage:NUSkinImageButtonPlusAlt];
+                    [addButton setImage:image];
+                    [addButton setAlternateImage:altImage];
                     [addButton setButtonType:CPMomentaryChangeButton];
                 }
 
                 var deleteButton = [self _controlForProperty:keyPath + @"_remove:"];
                 if (deleteButton)
                 {
+                    var image    = [NUSkinImageButtonMinus duplicate],
+                        altImage = [NUSkinImageButtonMinusAlt duplicate],
+                        size     = [addButton frameSize];
+
+                    [image setSize:size];
+                    [altImage setSize:size];
+
                     [deleteButton setTarget:value];
                     [deleteButton setAction:@selector(remove:)];
-                    [deleteButton setImage:NUSkinImageButtonMinus];
-                    [deleteButton setAlternateImage:NUSkinImageButtonMinusAlt];
+                    [deleteButton setImage:image];
+                    [deleteButton setAlternateImage:altImage];
                     [deleteButton setButtonType:CPMomentaryChangeButton];
                 }
             }
