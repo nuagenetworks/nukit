@@ -341,20 +341,6 @@ function isFloatNumber(n) {
     return !isNaN(parseFloat(0 + n));
 }
 
-function intFromHexa(hexa){
-    return parseInt(hexa, 16);
-}
-
-function isHexaCharac(hexa)
-{
-    var isOk = hexa.search(/^[0-9A-Fa-f]{1}$/gi);
-
-    if (isOk == -1)
-        return NO;
-
-    return YES;
-}
-
 function _positiveNumber(string, canBeNull, canBeZero)
 {
     if (canBeNull && !string)

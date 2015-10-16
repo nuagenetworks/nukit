@@ -26,8 +26,6 @@
 @class _NUFakeTextField
 
 @global CPApp
-@global intFromHexa
-@global isHexaCharac
 @global isIntegerNumber
 
 var CPZeroKeyCode = 48,
@@ -136,7 +134,10 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     var tmpSearchField = [CPSearchField new];
 
     _cancelButton = [[CPButton alloc] initWithFrame:[self cancelButtonRectForBounds:[self bounds]]];
+
+#if PLATFORM(DOM)
     _cancelButton._DOMElement.style.cursor = "default";
+#endif
 
     [_cancelButton setBordered:NO];
     [_cancelButton setImageScaling:CPImageScaleAxesIndependently];
@@ -321,6 +322,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
         return [];
     }
 
+    // TODO: we should handle mask here. Last element here could be 10/32.
     return ips;
 }
 
@@ -343,10 +345,15 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isIPValue:(id)aValue
 {
-    if (aValue === null || aValue === undefined || ![aValue length])
+    if (aValue === null || aValue === undefined)
         return YES;
 
-    if (_mode == NUNetworkIPV6Mode && [aValue length] > 4 && (aValue.search(/^[0-9A-Fa-f]{0,1,2,3,4}$/gi) == -1 || intFromHexa(aValue) > 65535))
+    aValue = aValue.toString();
+
+    if (![aValue length])
+        return YES;
+
+    if (_mode == NUNetworkIPV6Mode && ([aValue length] > 4 || aValue.search(/^[0-9A-Fa-f]{0,4}$/gi) == -1 || intFromHexa(aValue) > 65535 || aValue < 0))
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 ip format : %@", aValue]];
         return NO;
@@ -358,7 +365,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
         return NO;
     }
 
-    if (_mode == NUNetworkIPV4Mode && ([aValue length] > 3 || aValue > 255))
+    if (_mode == NUNetworkIPV4Mode && ([aValue length] > 3 || aValue > 255 || aValue < 0))
     {
         [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV4 ip format : %@", aValue]];
         return NO;
@@ -372,9 +379,14 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 */
 - (BOOL)_isMaskValue:(id)aValue
 {
+    if (aValue === null || aValue === undefined)
+        return YES;
+
+    aValue = aValue.toString();
+
     if (_mode == NUNetworkIPV6Mode)
     {
-        if ([aValue length] > 3 || aValue > 128)
+        if ([aValue length] > 3 || aValue > 128 || aValue < 0)
         {
             [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 mask ip format : %@", aValue]];
             return NO;
@@ -385,7 +397,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
     if (_mode == NUNetworkIPV4Mode)
     {
-        if ([aValue length] > 2 || aValue > 32)
+        if ([aValue length] > 2 || aValue > 32 || aValue < 0)
         {
             [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid mask ip format : %@", aValue]];
             return NO;
@@ -549,6 +561,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 {
     var networkTextField = _networkElementTextFields[anIndex];
 
+    // TODO: refactor...horrible things here
     if (_mode != NUNetworkMACMode && anIndex == ([_networkElementTextFields count] - 2) && _mask)
     {
         var elements = anObjectValue.split(@"/"),
@@ -634,15 +647,19 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     {
         [firstNetWorkTextField setAlignment:CPLeftTextAlignment];
 
+#if PLATFORM(DOM)
         if ([[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "left";
+#endif
     }
     else
     {
         [firstNetWorkTextField setAlignment:CPCenterTextAlignment];
 
+#if PLATFORM(DOM)
         if ([[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "center";
+#endif
     }
 
     // Trick to select the firstElement when nothing is set
@@ -1222,9 +1239,14 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (void)moveLeft:(id)sender
 {
+    var lastPosition;
+
+#if PLATFORM(DOM)
     var inputElement = [self _inputElement],
-        value = inputElement.value,
-        lastPosition = value.slice(0, inputElement.selectionStart).length;
+        value = inputElement.value;
+
+    lastPosition = value.slice(0, inputElement.selectionStart).length;
+#endif
 
     if (lastPosition === 0 && _delegate._internObjectValue != @"")
     {
@@ -1235,10 +1257,15 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (void)moveRight:(id)sender
 {
-    var inputElement = [self _inputElement],
-        value = inputElement.value,
-        lastPosition = value.slice(0, inputElement.selectionStart).length,
+    var lastPosition,
         length = [[self stringValue] length];
+
+#if PLATFORM(DOM)
+    var inputElement = [self _inputElement],
+        value = inputElement.value;
+
+    lastPosition = value.slice(0, inputElement.selectionStart).length,
+#endif
 
     if (lastPosition === length && _delegate._internObjectValue != @"")
     {
@@ -1284,7 +1311,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     else
     {
         _isPast = NO;
+
+#if PLATFORM(DOM)
         [_delegate pasteString:[self _inputElement].value];
+#endif
 
         var textField;
 
@@ -1672,7 +1702,9 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [super layoutSubviews];
 
     // This is the trick to not display the textField, only way otherwise we can't catch up the events
+#if PLATFORM(DOM)
     self._DOMElement.style.opacity = '0';
+#endif
 }
 
 - (BOOL)performKeyEquivalent:(CPEvent)anEvent
@@ -1811,7 +1843,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     {
         _isPast = NO;
         _cursorToLastPosition = YES;
+
+#if PLATFORM(DOM)
         [_networkTextField pasteString:[self _inputElement].value];
+#endif
     }
 }
 
@@ -1918,3 +1953,22 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
+
+// Here because flat files in NUKit, because Antoine and not possible to make test with that...
+function intFromHexa(hexa){
+    return parseInt(hexa, 16);
+}
+
+function isHexaCharac(hexa)
+{
+    var isOk = hexa.search(/^[0-9A-Fa-f]{1}$/gi);
+
+    if (isOk == -1)
+        return NO;
+
+    return YES;
+}
+
+function isIntegerNumber(n) {
+  return !isNaN(parseInt(n)) && isFinite(n) && n % 1 === 0;
+}
