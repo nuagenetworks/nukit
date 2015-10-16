@@ -57,6 +57,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     CPBundle                        _bundle                         @accessors(getter=bundle);
     CPImage                         _applicationLogo                @accessors(property=applicationLogo);
     CPImage                         _companyLogo                    @accessors(property=companyLogo);
+    CPString                        _APIPrefix                      @accessors(property=APIPrefix);
     CPString                        _applicationName                @accessors(property=applicationName);
     CPString                        _companyName                    @accessors(property=companyName);
     CPString                        _copyright                      @accessors(property=copyright);
@@ -72,6 +73,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     CPView                          _lockedPopoverView;
     id                              _delegate;
     unsigned                        _implementedDelegateMethods;
+
 }
 
 
@@ -98,6 +100,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
         [self installStyleSheetOnDocument:document];
 
+        _APIPrefix                   = @"nuage/api/";
         _sharedModules               = @{};
 
         _loginWindowController       = [NULoginWindowController new];
@@ -430,7 +433,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     if (baseURL == @"auto/")
         baseURL = [CPURL URLWithString:[self _computeBrowserLocationOrigin] + @"/"];
 
-    finalRESTURL = [CPURL URLWithString:("nuage/api/" + APIVersion + "/") relativeToURL:baseURL];
+    finalRESTURL = [CPURL URLWithString:(_APIPrefix + APIVersion + "/") relativeToURL:baseURL];
 
     CPLog.info("REST URL base is set to %@", finalRESTURL);
 

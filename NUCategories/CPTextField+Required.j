@@ -39,7 +39,7 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
     if (isRequired)
     {
         if (!CPTextFieldImageRequired)
-            CPTextFieldImageRequired = CPImageInBundle(@"required.png", CGSizeMake(8, 8));
+            CPTextFieldImageRequired = NUImageInKit(@"required.png", CGSizeMake(8, 8));
 
         self.__requiredImageView = [[CPImageView alloc] initWithFrame:CGRectMake(0, 0, 8, 8)];
         [self.__requiredImageView setAutoresizingMask:CPViewMinXMargin];
