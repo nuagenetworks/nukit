@@ -292,3 +292,22 @@ TASK ("predeploy", ["release"], function()
     cleanup_app(BUILD_INFO["PROJECT_NAME"], BUILD_INFO["PROJECT_FRAMEWORKS"]);
     compress_app(BUILD_INFO["PROJECT_NAME"]);
 });
+
+TASK("test", ["test-only"]);
+
+TASK("test-only", function()
+{
+    ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
+
+    OS.system("capp gen -fl -F RESTCappuccino -F TNKit . --force");
+
+    var tests = new FILELIST('Test/*Test.j'),
+        cmd = ["ojtest"].concat(tests.items()),
+        cmdString = cmd.map(OS.enquote).join(" "),
+        code = OS.system(cmdString);
+
+    OS.system("rm -rf Frameworks");
+
+    if (code !== 0)
+        OS.exit(code);
+});
