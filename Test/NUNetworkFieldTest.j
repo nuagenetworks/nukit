@@ -52,7 +52,67 @@
 
 - (void)testCreate
 {
+    [_networkTextField setNeedsLayout];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+}
 
+- (void)testSelection
+{
+    [_window makeFirstResponder:_networkTextField];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[0];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[1];
+    [_networkTextField _selectNextTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[2];
+    [_networkTextField _selectNextTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[3];
+    [_networkTextField _selectNextTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[4];
+    [_networkTextField _selectNextTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[4];
+    [_networkTextField _selectNextTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[3];
+    [_networkTextField _selectPreviousTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[2];
+    [_networkTextField _selectPreviousTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[1];
+    [_networkTextField _selectPreviousTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[0];
+    [_networkTextField _selectPreviousTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    var expectedFirstResponder = _networkTextField._networkElementTextFields[0];
+    [_networkTextField _selectPreviousTextField];
+    [self assert:[_window firstResponder] equals:expectedFirstResponder];
+
+    [_window makeFirstResponder:nil];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+}
+
+- (void)testSelectAll
+{
+    [_networkTextField setMode:NUNetworkIPV4Mode];
+    [_networkTextField setStringValue:@"192.168.1.1/32"];
+    [_networkTextField selectAll];
 }
 
 - (void)testSetStringValueWithMask_IPV4
@@ -256,12 +316,6 @@
     [self assert:@":::::" equals:[_networkTextField stringValue]];
 }
 
-- (void)testFirstResponder
-{
-    [_window makeFirstResponder:_networkTextField];
-    [_window makeFirstResponder:nil];
-}
-
 - (void)testMethod__digitsForIPValue_IPV4
 {
     [_networkTextField setMask:NO];
@@ -382,6 +436,32 @@
     [self assert:[_networkTextField _isMACValue:"99"] equals:YES];
     [self assert:[_networkTextField _isMACValue:"999"] equals:NO];
     [self assert:[_networkTextField _isMACValue:"aaa"] equals:NO];
+}
+
+- (void)testNetworkTextFields
+{
+    [_networkTextField setMask:NO];
+    [_networkTextField setMode:NUNetworkIPV4Mode];
+    [self assert:[_networkTextField._networkElementTextFields count] equals:4];
+    [self assert:[_networkTextField._separatorLabels count] equals:3];
+
+    [_networkTextField setMask:YES];
+    [self assert:[_networkTextField._networkElementTextFields count] equals:5];
+    [self assert:[_networkTextField._separatorLabels count] equals:4];
+
+    [_networkTextField setMask:NO];
+    [_networkTextField setMode:NUNetworkIPV6Mode];
+    [self assert:[_networkTextField._networkElementTextFields count] equals:8];
+    [self assert:[_networkTextField._separatorLabels count] equals:7];
+
+    [_networkTextField setMask:YES];
+    [self assert:[_networkTextField._networkElementTextFields count] equals:9];
+    [self assert:[_networkTextField._separatorLabels count] equals:8];
+
+    [_networkTextField setMask:NO];
+    [_networkTextField setMode:NUNetworkMACMode];
+    [self assert:[_networkTextField._networkElementTextFields count] equals:6];
+    [self assert:[_networkTextField._separatorLabels count] equals:5];
 }
 
 @end

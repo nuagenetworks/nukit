@@ -1417,7 +1417,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
                 break;
             }
 
-            var lastClickPoint = [[CPApp currentEvent] locationInWindow],
+            var lastClickPoint = [[CPApp currentEvent] locationInWindow] || CGPointMakeZero(),
                 frame = [[_delegate superview] convertRectToBase:[_delegate frame]];
 
             if (!CGRectContainsPoint(frame, lastClickPoint))
