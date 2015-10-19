@@ -37,12 +37,17 @@
     @outlet CPButton            buttonLogin;
     @outlet CPImageView         imageViewLogo;
     @outlet CPSecureTextField   fieldPassword;
+    @outlet CPTextField         labelEnterprise;
+    @outlet CPTextField         labelRESTURL
     @outlet CPTextField         fieldEnterprise;
     @outlet CPTextField         fieldLogin;
     @outlet CPTextField         fieldRESTURL;
     @outlet CPTextField         labelCopyright;
     @outlet CPTextField         labelInfo;
     @outlet CPView              viewContainer;
+
+    BOOL                        _organizationFieldHidden @accessors(property=organizationFieldHidden);
+    BOOL                        _serverFieldHidden       @accessors(property=serverFieldHidden);
 }
 
 #pragma mark -
@@ -98,7 +103,29 @@
     _cucappID(fieldEnterprise, "field-enterprise");
     _cucappID(fieldRESTURL, "field-restaddress");
     _cucappID(buttonLogin, "button-login");
+
+    var frame = [viewContainer frame],
+        h = 26;
+
+    if (_organizationFieldHidden)
+    {
+        [labelEnterprise setHidden:YES];
+        [fieldEnterprise setHidden:YES];
+        frame.origin.y += h /2;
+        frame.size.height -= h;
+    }
+
+    if (_serverFieldHidden)
+    {
+        [labelRESTURL setHidden:YES];
+        [fieldRESTURL setHidden:YES];
+        frame.origin.y += h / 2;
+        frame.size.height -= h;
+    }
+
+    [viewContainer setFrame:frame];
 }
+
 
 
 #pragma mark -

@@ -24,7 +24,7 @@
 @import "NUSkin.j"
 
 @global CPApp
-
+@class NUImageInKit
 
 NUHoverViewTriggerWidth = 10;
 
@@ -78,7 +78,7 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 
     _handleView = [[CPImageView alloc] initWithFrame:CGRectMake(0, 0, 3, 13)];
     [_handleView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin];
-    [_handleView setImage:CPImageInBundle(@"hoover-view-handle.png", 3, 13)];
+    [_handleView setImage:NUImageInKit(@"hoover-view-handle.png", 3, 13)];
     [_handleView setCenter:CGPointMake(CGRectGetMidX([_triggerView bounds]), CGRectGetMidY([_triggerView bounds]))];
     [_triggerView addSubview:_handleView];
 

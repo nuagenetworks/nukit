@@ -55,6 +55,8 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 @implementation NUKit : CPObject
 {
     CPBundle                        _bundle                         @accessors(getter=bundle);
+    CPColor                         _toolbarBackgroundColor         @accessors(property=toolbarBackgroundColor);
+    CPColor                         _toolbarForegroundColor         @accessors(property=toolbarForegroundColor);
     CPImage                         _applicationLogo                @accessors(property=applicationLogo);
     CPImage                         _companyLogo                    @accessors(property=companyLogo);
     CPString                        _APIPrefix                      @accessors(property=APIPrefix);
@@ -103,6 +105,8 @@ var NUKitDelegate_didLogin_             = 1 << 1,
         _APIPrefix                   = @"nuage/api/";
         _sharedModules               = @{};
 
+        _toolbarBackgroundColor      = NUSkinColorGreyLight;
+        _toolbarForegroundColor      = NUSkinColorBlack;
         _loginWindowController       = [NULoginWindowController new];
         _mainWindowController        = [NUMainWindowController new];
         _messagesWindowController    = [NUMessagesWindowController new];

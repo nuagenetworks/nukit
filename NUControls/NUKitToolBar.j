@@ -73,6 +73,8 @@ var NUKitToolBarDefault;
 {
     _buttonsRegistry = @{};
 
+    NUKitToolBarDefault = self;
+
     _buttonLogout = [[CPButton alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
     [_buttonLogout setBordered:NO];
     [_buttonLogout setButtonType:CPMomentaryChangeButton];
@@ -85,18 +87,18 @@ var NUKitToolBarDefault;
 
     _viewSeparator = [[CPView alloc] initWithFrame:CGRectMake(0, 0, 1, 32)];
     [_viewSeparator setBackgroundColor:NUSkinColorGrey];
-
-    NUKitToolBarDefault = self;
 }
 
 - (void)awakeFromCib
 {
     [stackViewButtons setMode:NUStackViewModeHorizontal];
     [stackViewButtons setMargin:CGInsetMake(0, 5, 0, 5)];
-    [self setBackgroundColor:NUSkinColorGreyLight];
+
+    [self setBackgroundColor:[[NUKit kit] toolbarBackgroundColor]];
 
     [fieldApplicationName setStringValue:[[NUKit kit] companyName]];
     [imageApplicationIcon setImage:[[NUKit kit] companyLogo]];
+    [fieldApplicationName setTextColor:[[NUKit kit] toolbarForegroundColor]]
 
     _cucappID(fieldApplicationName, @"toolbar-application-name");
 
