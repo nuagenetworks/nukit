@@ -1965,9 +1965,6 @@ NUModuleTabViewModeIcon = 2;
 
     _isProcessingPush = YES;
 
-    if (_timerReloadLatestPage)
-        [_timerReloadLatestPage invalidate];
-
     // we save the current selection in case of modification
     // later on, if table needs to be reloded, we will restore the
     // selection using that save
@@ -1987,6 +1984,9 @@ NUModuleTabViewModeIcon = 2;
         {
             pushManaged = YES;
             [self performPrePushOperation];
+
+            if (_timerReloadLatestPage)
+                [_timerReloadLatestPage invalidate];
         }
 
         switch (eventType)
