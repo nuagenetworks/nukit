@@ -307,23 +307,16 @@ TASK("test-only", function()
         cmdString = cmd.map(OS.enquote).join(" "),
         code = OS.system(cmdString);
 
+    OS.system("rm -rf Frameworks");
+
     if (code !== 0)
-    {
         OS.exit(code);
-        OS.system("rm -rf Frameworks");
-    }
 
     manualTests.forEach(function(manualTest)
     {
-        code = OS.system("cd Test/Manual/" + manualTest + "; jake cucumber-test")
+        code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force; jake cucumber-test")
 
         if (code !== 0)
-        {
-            OS.system("rm -rf Frameworks");
             OS.exit(code);
-        }
     });
-
-    OS.system("rm -rf Frameworks");
-
 });
