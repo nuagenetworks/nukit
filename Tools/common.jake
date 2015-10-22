@@ -299,9 +299,10 @@ TASK("test-only", function()
 {
     ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
 
-    OS.system("capp gen -fl -F RESTCappuccino -F TNKit . --force");
+    OS.system("capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force");
 
     var tests = new FILELIST('Test/*Test.j'),
+        manualTests = FILE.list('Test/Manual'),
         cmd = ["ojtest"].concat(tests.items()),
         cmdString = cmd.map(OS.enquote).join(" "),
         code = OS.system(cmdString);
@@ -310,4 +311,12 @@ TASK("test-only", function()
 
     if (code !== 0)
         OS.exit(code);
+
+    manualTests.forEach(function(manualTest)
+    {
+        code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force; jake cucumber-test")
+
+        if (code !== 0)
+            OS.exit(code);
+    });
 });
