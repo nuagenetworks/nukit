@@ -1264,7 +1264,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     var inputElement = [self _inputElement],
         value = inputElement.value;
 
-    lastPosition = value.slice(0, inputElement.selectionStart).length,
+    lastPosition = value.slice(0, inputElement.selectionStart).length;
 #endif
 
     if (lastPosition === length && _delegate._internObjectValue != @"")
@@ -1953,7 +1953,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
-
+//
 // Here because flat files in NUKit, because Antoine and not possible to make test with that...
 function intFromHexa(hexa){
     return parseInt(hexa, 16);

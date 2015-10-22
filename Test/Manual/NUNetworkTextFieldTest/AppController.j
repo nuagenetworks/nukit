@@ -28,6 +28,8 @@
     [networkTextField2 setNextKeyView:networkTextField];
     [networkTextField setNextKeyView:networkTextField2];
 
+    [networkTextField2 setMask:NO];
+
     [networkTextField setCucappIdentifier:@"first-networkTextField"];
     [networkTextField2 setCucappIdentifier:@"second-networkTextField"];
 

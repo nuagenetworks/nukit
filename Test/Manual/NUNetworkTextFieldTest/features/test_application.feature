@@ -1,6 +1,49 @@
-Feature: Test the launching of the application
-This test is used to make sure that we can launch the application
+Feature: Test the NUNetworkTextField control
+Test the NUNetworkTextField control
 
-  Scenario: Check if the application is launched
+Background:
     Given the application is launched
-    #Then I should see the label "Hello World!"
+
+  Scenario: Fill a NUNetworkTextField IV4 and check its value
+      When I click on the control first-networkTextField
+        Then the control first-networkTextField should be first responder
+      When I hit the keys 192.168.0.4/32
+        Then the control first-networkTextField should have the value 192.168.0.4/32
+
+      When I click on the control second-networkTextField
+        Then the control second-networkTextField should be first responder
+      When I hit the keys 192.168.0.43
+        Then the control second-networkTextField should have the value 192.168.0.43
+
+    Scenario: Fill a NUNetworkTextField IV4 with wrong character and check its value
+        When I click on the control first-networkTextField
+        When I hit the keys 1edz92.16dz8.0.k4/32
+          Then the control first-networkTextField should have the value 192.168.0.4/32
+
+        When I click on the control second-networkTextField
+        When I hit the keys 5551680.3
+          Then the control second-networkTextField should have the value 55.168.0.3
+
+    Scenario: Fill a NUNetworkTextField and delete its content
+      When I click on the control first-networkTextField
+      When I hit the keys 192.168.0.4/32
+      When I hit select all
+      When I hit delete
+        Then the control first-networkTextField should have the value ""
+
+    Scenario: Fill a NUNetworkTextField with tab
+      When I click on the control first-networkTextField
+      When I hit the keys 123
+      When I hit tab
+      When I hit the keys 21
+      When I hit tab
+      When I hit tab
+        Then the control first-networkTextField should have the value 123.0.21.0/24
+
+    Scenario: Test key view with tab and shift-tab
+      When I click on the control first-networkTextField
+        Then the control first-networkTextField should be first responder
+      When I hit tab
+        Then the control second-networkTextField should be first responder
+      When I hit shift tab
+        Then the control first-networkTextField should be first responder
