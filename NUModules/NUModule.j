@@ -367,7 +367,7 @@ NUModuleTabViewModeIcon = 2;
         [_buttonExportObject setAlternateImage:NUSkinImageButtonExportAlt];
         [_buttonExportObject setButtonType:CPMomentaryChangeButton];
         [_buttonExportObject setTarget:self];
-        [_buttonExportObject setAction:@selector(import:)];
+        [_buttonExportObject setAction:@selector(exportSelectedObjects:)];
         [self registerControl:_buttonExportObject forAction:NUModuleActionExport];
 
         _buttonInstantiateObject = [CPButtonBar plusButton];
