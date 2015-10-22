@@ -22,6 +22,8 @@
         networkTextField = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 100, 200, 30)],
         networkTextField2 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 150, 200, 30)];
 
+    [networkTextField2 setMask:NO];
+
     [contentView addSubview:networkTextField];
     [contentView addSubview:networkTextField2];
 

@@ -15,27 +15,13 @@
 *
 */
 
-@import "Resources/iplib.js"
+@import "Resources/ipaddr.js"
 
-/*! Test given string is a valid IP / netmask
-*/
-function validateIPAddress(ipaddr)
+function validateIPAddress(aString)
 {
-    // var regex = new RegExp("^(([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))\.){3}([01]?[0-9]?[0-9]|2([0-4][0-9]|5[0-5]))/$");
-    //
-    // if (!regex.test(ipaddr))
-    //     return false;
-
-    try
-    {
-        var IP = new IPLib.IPv4Address(ipaddr);
-        return true;
-    }
-    catch(e)
-    {
-        return false;
-    }
+    return ipaddr.IPv4.isValid(aString)
 }
+
 
 function parseIPAddress(aString)
 {
@@ -43,52 +29,56 @@ function parseIPAddress(aString)
 
     try
     {
-        ret.representedObject = new IPLib.CIDR(aString);
-        ret.netmask = ret.representedObject.nm.getDot(),
-        ret.gateway = ret.representedObject.getFirstIp().ip,
-        ret.address = ret.representedObject.ip.getDot();
-        ret.CIDR  = ret.representedObject.nm.getBits();
-        ret.firstIP = ret.representedObject.getFirstIp().ip;
-        ret.lastIP = ret.representedObject.getLastIp().ip;
+        ret.representedObject   = ipaddr.parseCIDR(aString);
+        ret.netmask             = ret.representedObject.netmask.ip;
+        ret.gateway             = ret.representedObject.address.firstIP;
+        ret.address             = ret.representedObject.address.ip;
+        ret.CIDR                = ret.representedObject.netmask.bits;
+        ret.firstIP             = ret.representedObject.address.firstIP;
+        ret.lastIP              = ret.representedObject.address.lastIP;
     }
     catch (e)
     {
-        ret.representedObject = nil;
-        ret.netmask = nil;
-        ret.gateway = nil;
-        ret.address = nil;
-        ret.CIDR = nil;
-        ret.firstIP = nil;
-        ret.lastIP = nil;
+        ret.representedObject   = nil;
+        ret.netmask             = nil;
+        ret.gateway             = nil;
+        ret.address             = nil;
+        ret.CIDR                = nil;
+        ret.firstIP             = nil;
+        ret.lastIP              = nil;
     }
 
     return ret;
 }
 
+
 function isNetworkContainedInNetwork(IP, network)
 {
-    var network = new IPLib.CIDR(network);
+    var addr = ipaddr.parse(IP),
+        CIDR = ipaddr.parseCIDR(network);
 
-    return network.isValidIp(IP);
+    return addr.match(CIDR);
 }
+
 
 function pullRandomIPFromNetwork(network)
 {
-    var network = new IPLib.CIDR(network),
-        ipNum = network.getIpNumber(),
-        randomValue = Math.floor(Math.random() * ipNum),
-        randomIP = network.ip.getDec() + randomValue;
+    var CIDR        = ipaddr.parseCIDR(network),
+        randomValue = Math.floor(Math.random() * CIDR.IPNumber),
+        randomIP    = CIDR.address.decimals + randomValue;
 
-    return new IPLib.IPv4Address(randomIP, IPLib.IP_DEC);
+    return ipaddr.parse(randomIP);
 }
+
 
 function areNetworksOverlapping(CIDR1, CIDR2)
 {
-    var net1 = new IPLib.CIDR(CIDR1),
-        net2 = new IPLib.CIDR(CIDR2);
+    var CIDR1 = ipaddr.parseCIDR(CIDR1),
+        CIDR2 = ipaddr.parseCIDR(CIDR2);
 
-    return net1.isValidIp(net2);
+    return CIDR1.address.match(CIDR2);
 }
+
 
 function _randomCIDRFromBase(base)
 {
@@ -97,6 +87,7 @@ function _randomCIDRFromBase(base)
 
     return base + @"." + digit2 + @"." + digit3 + @".0/24"
 }
+
 
 function _isNetworkOverlapsAny(existingCIDRs, candidateCIDR)
 {
@@ -110,6 +101,7 @@ function _isNetworkOverlapsAny(existingCIDRs, candidateCIDR)
 
     return false;
 }
+
 
 function firstValidCIDRFrom(existingCIDRs)
 {
@@ -142,12 +134,13 @@ function firstValidCIDRFrom(existingCIDRs)
 
 function firstIPInNetwork(network)
 {
-    var net = new IPLib.CIDR(network);
-    return net.getFirstIp().getDot();
+    var CIDR = ipaddr.parseCIDR(network);
+    return CIDR.netmask.firstIP;
 }
+
 
 function lastIPInNetwork(network)
 {
-    var net = new IPLib.CIDR(network);
-    return net.getLastIp().getDot();
+    var CIDR = ipaddr.parseCIDR(network);
+    return CIDR.netmask.lastIP;
 }

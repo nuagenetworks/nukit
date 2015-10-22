@@ -250,10 +250,15 @@ BUILDER ("BUILDER", function(task)
             ENV["OBJJ_INCLUDE_PATHS"] = FILE.join(ENV["OBJJ_INCLUDE_PATHS"], CONFIGURATION);
     }
 
+    var compilerFlags = CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O2";
+
+    if (BUILD_INFO["PROJECT_INCLUDE_COMPILER_FLAGS"])
+        compilerFlags += " " + BUILD_INFO["PROJECT_INCLUDE_COMPILER_FLAGS"];
+
     task.setAuthor(BUILD_INFO["PROJECT_AUTHOR"]);
     task.setBuildIntermediatesPath(FILE.join(ENV["CAPP_BUILD"], BUILD_INFO["PROJECT_NAME"] + ".build", CONFIGURATION));
     task.setBuildPath(FILE.join(ENV["CAPP_BUILD"], CONFIGURATION));
-    task.setCompilerFlags(CONFIGURATION === "Debug" ? "-DDEBUG -g" : "-O2");
+    task.setCompilerFlags(compilerFlags);
     task.setEmail(BUILD_INFO["PROJECT_CONTACT"]);
     task.setFlattensSources(BUILD_INFO["PROJECT_FLATTEN_SOURCES"]);
     task.setIdentifier(BUILD_INFO["PROJECT_IDENTIFIER"]);
@@ -304,7 +309,7 @@ TASK("test-only", function()
     var tests = new FILELIST('Test/*Test.j'),
         manualTests = FILE.list('Test/Manual'),
         cmd = ["ojtest"].concat(tests.items()),
-        cmdString = cmd.map(OS.enquote).join(" "),
+        cmdString = cmd.map(OS.enquote).join(" ");
         code = OS.system(cmdString);
 
     OS.system("rm -rf Frameworks");
@@ -314,9 +319,12 @@ TASK("test-only", function()
 
     manualTests.forEach(function(manualTest)
     {
-        code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force; jake cucumber-test")
+        if (manualTest.indexOf("Test") != -1)
+        {
+            code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force; jake cucumber-test")
 
-        if (code !== 0)
-            OS.exit(code);
+            if (code !== 0)
+                OS.exit(code);
+        }
     });
 });
