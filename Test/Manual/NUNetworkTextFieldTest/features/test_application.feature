@@ -31,6 +31,12 @@ Background:
       When I hit delete
         Then the control first-networkTextField should have the value ""
 
+      When I click on the control first-networkTextField
+      When I hit the keys 192.168.0.4
+      When I double click on the control first-networkTextField
+      When I hit delete
+        Then the control first-networkTextField should have the value ""
+
     Scenario: Fill a NUNetworkTextField with tab
       When I click on the control first-networkTextField
       When I hit the keys 123

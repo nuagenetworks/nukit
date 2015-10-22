@@ -22,13 +22,13 @@
         networkTextField = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 100, 200, 30)],
         networkTextField2 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 150, 200, 30)];
 
+    [networkTextField2 setMask:NO];
+
     [contentView addSubview:networkTextField];
     [contentView addSubview:networkTextField2];
 
     [networkTextField2 setNextKeyView:networkTextField];
     [networkTextField setNextKeyView:networkTextField2];
-
-    [networkTextField2 setMask:NO];
 
     [networkTextField setCucappIdentifier:@"first-networkTextField"];
     [networkTextField2 setCucappIdentifier:@"second-networkTextField"];

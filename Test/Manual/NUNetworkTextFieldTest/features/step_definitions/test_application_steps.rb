@@ -12,6 +12,12 @@ When /^I click on the control (.*)$/ do |cucappIdentifier|
   sleep(0.1)
 end
 
+When /^I double click on the control (.*)$/ do |cucappIdentifier|
+  app.gui.wait_for                    "//NUNetworkTextField[cucappIdentifier='#{cucappIdentifier}']"
+  app.gui.simulate_double_click       "//NUNetworkTextField[cucappIdentifier='#{cucappIdentifier}']", []
+  sleep(0.1)
+end
+
 When /^I hit the keys (.*)$/ do |value|
   app.gui.simulate_keyboard_events    value, []
 end

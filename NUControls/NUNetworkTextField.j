@@ -56,6 +56,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     int                                         _verticalOffset                 @accessors(property=_verticalOffset);
 
     BOOL                                        _doubleClick;
+    BOOL                                        _isTableViewNetworktextField;
     BOOL                                        _selectAll;
     BOOL                                        _comesFromPrevious;
     CPButton                                    _cancelButton;
@@ -1628,9 +1629,9 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (void)mouseDown:(CPEvent)anEvent
 {
-    if (_delegate._doubleClick && [_delegate isSelectable])
+    if (_delegate._doubleClick && ((_delegate._isTableViewNetworktextField && [_delegate isSelectable]) || !_delegate._isTableViewNetworktextField))
         [_delegate selectAll];
-    else if (![_delegate isEditable] && ![_delegate isEnabled] && ![_delegate isSelectable])
+    else if (_delegate._isTableViewNetworktextField && ![_delegate isEditable] && ![_delegate isEnabled] && ![_delegate isSelectable])
         [[self nextResponder] mouseDown:anEvent];
     else
         [super mouseDown:anEvent];

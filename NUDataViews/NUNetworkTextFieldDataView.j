@@ -146,6 +146,7 @@
         [fieldNetwork setEnabled:NO];
         [fieldNetwork setSelectable:NO];
         [fieldNetwork setEditable:NO];
+        fieldNetwork._isTableViewNetworktextField = YES;
     }
 
     return self;
