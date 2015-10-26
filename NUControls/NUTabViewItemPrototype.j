@@ -98,9 +98,6 @@
 
 - (BOOL)setThemeState:(ThemeState)aThemeState
 {
-    if (aThemeState && aThemeState.isa && [aThemeState isKindOfClass:CPArray])
-        aThemeState = CPThemeState.apply(null, aThemeState);
-
     if (aThemeState.hasThemeState(TNTabItemPrototypeThemeStateSelected))
         [_button setValue:_imageSelected forThemeAttribute:@"image" inState:CPThemeStateNormal];
 
@@ -114,9 +111,6 @@
 */
 - (BOOL)unsetThemeState:(ThemeState)aThemeState
 {
-    if (aThemeState && aThemeState.isa && [aThemeState isKindOfClass:CPArray])
-        aThemeState = CPThemeState.apply(null, aThemeState);
-
     if (aThemeState.hasThemeState(TNTabItemPrototypeThemeStateSelected))
         [_button setValue:_image forThemeAttribute:@"image" inState:CPThemeStateNormal];
 
