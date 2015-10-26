@@ -862,7 +862,7 @@ NUModuleTabViewModeIcon = 2;
     [self updatePermittedActions];
 
     if (splitViewEditor)
-        setTimeout(function(){[splitViewEditor setPosition:([splitViewEditor frameSize].width - NUModuleSplitViewEditorMaxSize) ofDividerAtIndex:0];}, 0);
+        [[CPRunLoop mainRunLoop] performBlock:function(){[splitViewEditor setPosition:([splitViewEditor frameSize].width - NUModuleSplitViewEditorMaxSize) ofDividerAtIndex:0];} argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 
     [self moduleDidShow];
 
@@ -1675,12 +1675,12 @@ NUModuleTabViewModeIcon = 2;
     [externalizedModule willShow];
 
     // Wait that the platform is well opened
-    setTimeout(function()
+    [[CPRunLoop mainRunLoop] performBlock:function()
     {
         // send the callback message both for the parent module and for the clone
         [externalizedModule didOpenAsCloneOfModule:self];
         [self didOpenCloneModule:externalizedModule];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (void)closeModuleExternalWindow
@@ -3283,10 +3283,11 @@ NUModuleTabViewModeIcon = 2;
 - (void)outlineViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
-    setTimeout(function(){
+    [[CPRunLoop mainRunLoop] performBlock:function()
+    {
         [self _updateCurrentSelection];
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (int)outlineView:(CPOutlineView)anOutlineView heightOfRowByItem:(id)anItem
@@ -3386,10 +3387,10 @@ NUModuleTabViewModeIcon = 2;
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
-    setTimeout(function(){
+    [[CPRunLoop mainRunLoop] performBlock:function(){
         [self _updateCurrentSelection];
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (int)tableView:(CPTableView)aTableView heightOfRow:(int)aRow
