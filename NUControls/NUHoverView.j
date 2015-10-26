@@ -199,6 +199,7 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 
     _documentView = aView;
 
+    [_documentView setFrame:[_contentView bounds]];
     [_contentView addSubview:_documentView];
 }
 

@@ -111,7 +111,7 @@
     {
         [labelEnterprise setHidden:YES];
         [fieldEnterprise setHidden:YES];
-        frame.origin.y += h /2;
+        frame.origin.y += h / 2;
         frame.size.height -= h;
     }
 
