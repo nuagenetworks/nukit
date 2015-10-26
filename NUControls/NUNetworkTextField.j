@@ -26,6 +26,7 @@
 @class _NUFakeTextField
 
 @global CPApp
+@global CPPostASAP
 @global isIntegerNumber
 
 var CPZeroKeyCode = 48,
@@ -42,6 +43,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     NUNetworkTextField_mathWithRegex_forValue_   = 1 << 2,
     NUNetworkTextField_errorMessage_forValue_    = 1 << 3;
 
+var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
 @implementation NUNetworkTextField : CPTextField
 {
@@ -161,30 +163,36 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 {
     if (!_currentNetworkTextField)
     {
+        var queue = [CPNotificationQueue defaultQueue],
+            notification;
+
         if (_comesFromPrevious)
             _currentNetworkTextField = [_networkElementTextFields lastObject];
         else
             _currentNetworkTextField = [_networkElementTextFields firstObject];
 
         if (_doubleClick)
-        {
-            setTimeout(function(){
-                [[self window] makeFirstResponder:_currentNetworkTextField];
-                [self selectAll];
-            },0);
-        }
+            notification = [[CPNotification alloc] initWithName:NUNextFirstResponderNotification object:self userInfo:@{"realNextFirstResponder" : _currentNetworkTextField, "shouldSelectAll" : YES}];
         else
-        {
-            setTimeout(function(){
-                [[self window] makeFirstResponder:_currentNetworkTextField];
-            },0);
-        }
+            notification = [[CPNotification alloc] initWithName:NUNextFirstResponderNotification object:self userInfo:@{"realNextFirstResponder" : _currentNetworkTextField, "shouldSelectAll" : NO}];
+
+        [queue enqueueNotification:notification postingStyle:CPPostASAP];
     }
 
     [super becomeFirstResponder];
     [self setNeedsLayout];
 
     return NO;
+}
+
+- (void)_asyncMakeFirstResponder:(CPNotification)aNotification
+{
+    var userInfo = [aNotification userInfo];
+
+    [[self window] makeFirstResponder:[userInfo valueForKey:"realNextFirstResponder"]];
+
+    if ([userInfo valueForKey:"shouldSelectAll"])
+        [self selectAll];
 }
 
 - (BOOL)acceptsFirstResponder
@@ -981,7 +989,7 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
     _doubleClick = YES;
 
-    setTimeout(function(){_doubleClick = NO;}, 300);
+    window.setTimeout(function(){_doubleClick = NO;}, 300);
 }
 
 #pragma mark -
@@ -1004,6 +1012,28 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
     [self selectTextField:textField];
     [textField setSelectedRange:CPMakeRange([[textField stringValue] length], 0)];
     [self textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:self userInfo:nil]];
+}
+
+#pragma mark -
+#pragma mark Overriding
+
+
+- (void)_removeObservers
+{
+    if (!_isObserving)
+        return;
+
+    [super _removeObservers];
+    [[CPNotificationCenter defaultCenter] removeObserver:self name:NUNextFirstResponderNotification object:self];
+}
+
+- (void)_addObservers
+{
+    if (_isObserving)
+        return;
+
+    [super _addObservers];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_asyncMakeFirstResponder:) name:NUNextFirstResponderNotification object:self];
 }
 
 @end
@@ -1106,11 +1136,10 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     {
         var parent = [self delegate],
             index = [parent._separatorLabels indexOfObject:self],
-            textField = parent._networkElementTextFields[index];
+            textField = parent._networkElementTextFields[index],
+            notification = [[CPNotification alloc] initWithName:NUNextFirstResponderNotification object:_delegate userInfo:@{"realNextFirstResponder" : textField, "shouldSelectAll" : NO}];
 
-        setTimeout(function(){
-            [[self window] makeFirstResponder:textField];
-        }, 0);
+        [[CPNotificationQueue defaultQueue] enqueueNotification:notification postingStyle:CPPostASAP];
     }
 
     return [super acceptsFirstResponder];
@@ -1638,7 +1667,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     _delegate._doubleClick = YES;
 
-    setTimeout(function(){_delegate._doubleClick = NO;}, 300);
+    window.setTimeout(function(){_delegate._doubleClick = NO;}, 300);
 }
 
 
@@ -1715,7 +1744,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     if ([[self window] firstResponder] == self && key == @"x" && (modifierFlags & (CPCommandKeyMask | CPControlKeyMask)))
     {
-        setTimeout(function(){
+        window.setTimeout(function(){
             var textField = [_networkTextField._networkElementTextFields firstObject];
             [self _selectTextField:textField range:CPMakeRange(0,0)];
 

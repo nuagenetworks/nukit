@@ -20,18 +20,22 @@
     var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMakeZero() styleMask:CPBorderlessBridgeWindowMask],
         contentView = [theWindow contentView],
         networkTextField = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 100, 200, 30)],
-        networkTextField2 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 150, 200, 30)];
+        networkTextField2 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 150, 200, 30)],
+        networkTextField3 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 200, 200, 30)];
 
     [networkTextField2 setMask:NO];
+    [networkTextField3 setMode:NUNetworkMACMode];
 
     [contentView addSubview:networkTextField];
     [contentView addSubview:networkTextField2];
+    [contentView addSubview:networkTextField3];
 
-    [networkTextField2 setNextKeyView:networkTextField];
+    [networkTextField2 setNextKeyView:networkTextField3];
     [networkTextField setNextKeyView:networkTextField2];
 
     [networkTextField setCucappIdentifier:@"first-networkTextField"];
     [networkTextField2 setCucappIdentifier:@"second-networkTextField"];
+    [networkTextField3 setCucappIdentifier:@"third-networkTextField"];
 
     [theWindow orderFront:self];
 

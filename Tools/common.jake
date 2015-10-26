@@ -309,7 +309,7 @@ TASK("test-only", function()
     var tests = new FILELIST('Test/*Test.j'),
         manualTests = FILE.list('Test/Manual'),
         cmd = ["ojtest"].concat(tests.items()),
-        cmdString = cmd.map(OS.enquote).join(" ");
+        cmdString = cmd.map(OS.enquote).join(" "),
         code = OS.system(cmdString);
 
     OS.system("rm -rf Frameworks");
