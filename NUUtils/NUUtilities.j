@@ -568,3 +568,57 @@ function _validateArray(array, validation_function, additional_validation_parame
 
     return !errors.length ? null : errors.join(", ");
 }
+
+function _tabViewItemtabViewItem(tabView, propertyName)
+{
+    var itemObjects = tabView._itemObjects;
+
+    for (var i = 0; i < [itemObjects count]; i++)
+    {
+        var tabViewPrototype    = itemObjects[i],
+            tabViewItem         = [tabViewPrototype tabViewItem],
+            control             = [[tabViewItem view] subviewWithTag:propertyName recursive:YES];
+
+        if (control)
+            return tabViewPrototype;
+    }
+
+    return nil;
+}
+
+function _showErrorsOnTabView(tabView, validation, cacheProperties)
+{
+    var errors      = [[validation errors] allKeys],
+        counter     = @{};
+
+    for (var i = 0; i < [errors count] ; i++)
+    {
+        var propertyName    = errors[i],
+            countValue      = 0,
+            tabViewItem     = nil;
+
+        if ([cacheProperties containsKey:propertyName])
+            tabViewItem = [cacheProperties objectForKey:propertyName];
+        else
+        {
+            tabViewItem = _tabViewItemtabViewItem(tabView, propertyName);
+            [cacheProperties setObject:tabViewItem forKey:propertyName];
+        }
+
+        if ([counter containsKey:tabViewItem])
+            countValue = [counter objectForKey:tabViewItem];
+
+        [counter setObject:countValue + 1 forKey:tabViewItem];
+    }
+
+    var tabItems = [counter allKeys];
+
+    for (var i = 0; i < [tabItems count] ; i++)
+    {
+        var tabItem     = tabItems[i],
+            countValue  = [counter objectForKey:tabItem];
+
+        [tabItem setErrorColor:NUSkinColorRed];
+        [tabItem setErrorsNumber:countValue];
+    }
+}
