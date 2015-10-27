@@ -2382,6 +2382,9 @@ NUModuleTabViewModeIcon = 2;
         else
         {
             tabViewItem = [self _tabViewItemForProperty:propertyName tabView:aTabView];
+            if (!tabViewItem)
+                return;
+
             [tabViewPropertiesCache setObject:tabViewItem forKey:propertyName];
         }
 
