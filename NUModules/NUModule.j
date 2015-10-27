@@ -169,7 +169,7 @@ NUModuleTabViewModeIcon = 2;
     CPButton                        _buttonImportObject;
     CPButton                        _buttonExportObject;
     CPButton                        _buttonInstantiateObject;
-    CPDictionary                    _cacheTabViewProperties;
+    CPDictionary                    tabViewPropertiesCache;
     CPDictionary                    _contextRegistry;
     CPDictionary                    _controlsForActionRegistry;
     CPDictionary                    _parentModuleHierarchyCache;
@@ -258,7 +258,7 @@ NUModuleTabViewModeIcon = 2;
     _activeSubModules                                   = [];
     _activeTransactionsIDs                              = [];
     _autoResizeSplitViewSize                            = 265;
-    _cacheTabViewProperties                             = @{};
+    tabViewPropertiesCache                             = @{};
     _categories                                         = [];
     _contextRegistry                                    = @{};
     _contextualMenuItemRegistry                         = @{};
@@ -2366,7 +2366,7 @@ NUModuleTabViewModeIcon = 2;
     return nil;
 }
 
-- (void)showErrorsOnTabView:(CPTabView)aTabView validation:(NUValidation)aValidation
+- (void)showValidationErrors:(NUValidation)aValidation OnTabView:(CPTabView)aTabView
 {
     var errors      = [[aValidation errors] allKeys],
         counter     = @{};
@@ -2377,12 +2377,12 @@ NUModuleTabViewModeIcon = 2;
             countValue      = 0,
             tabViewItem     = nil;
 
-        if ([_cacheTabViewProperties containsKey:propertyName])
-            tabViewItem = [_cacheTabViewProperties objectForKey:propertyName];
+        if ([tabViewPropertiesCache containsKey:propertyName])
+            tabViewItem = [tabViewPropertiesCache objectForKey:propertyName];
         else
         {
             tabViewItem = [self _tabViewItemForProperty:propertyName tabView:aTabView];
-            [_cacheTabViewProperties setObject:tabViewItem forKey:propertyName];
+            [tabViewPropertiesCache setObject:tabViewItem forKey:propertyName];
         }
 
         if ([counter containsKey:tabViewItem])
@@ -2403,7 +2403,7 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
-- (void)hideErrorsOnTabView:(CPTabView)aTabView
+- (void)hideValidationErrorsForTabView:(CPTabView)aTabView
 {
     var itemObjects = aTabView._itemObjects;
 
