@@ -169,6 +169,7 @@ NUModuleTabViewModeIcon = 2;
     CPButton                        _buttonImportObject;
     CPButton                        _buttonExportObject;
     CPButton                        _buttonInstantiateObject;
+    CPDictionary                    _cacheTabViewProperties;
     CPDictionary                    _contextRegistry;
     CPDictionary                    _controlsForActionRegistry;
     CPDictionary                    _parentModuleHierarchyCache;
@@ -257,6 +258,7 @@ NUModuleTabViewModeIcon = 2;
     _activeSubModules                                   = [];
     _activeTransactionsIDs                              = [];
     _autoResizeSplitViewSize                            = 265;
+    _cacheTabViewProperties                             = @{};
     _categories                                         = [];
     _contextRegistry                                    = @{};
     _contextualMenuItemRegistry                         = @{};
@@ -2346,6 +2348,69 @@ NUModuleTabViewModeIcon = 2;
 
     return ret;
 }
+
+- (CPTabViewItem)_tabViewItemForProperty:(CPString)aPropertyName tabView:(CPTabView)aTabView
+{
+    var itemObjects = aTabView._itemObjects;
+
+    for (var i = 0; i < [itemObjects count]; i++)
+    {
+        var tabViewPrototype    = itemObjects[i],
+            tabViewItem         = [tabViewPrototype tabViewItem],
+            control             = [[tabViewItem view] subviewWithTag:aPropertyName recursive:YES];
+
+        if (control)
+            return tabViewPrototype;
+    }
+
+    return nil;
+}
+
+- (void)showErrorsOnTabView:(CPTabView)aTabView validation:(NUValidation)aValidation
+{
+    var errors      = [[aValidation errors] allKeys],
+        counter     = @{};
+
+    for (var i = 0; i < [errors count] ; i++)
+    {
+        var propertyName    = errors[i],
+            countValue      = 0,
+            tabViewItem     = nil;
+
+        if ([_cacheTabViewProperties containsKey:propertyName])
+            tabViewItem = [_cacheTabViewProperties objectForKey:propertyName];
+        else
+        {
+            tabViewItem = [self _tabViewItemForProperty:propertyName tabView:aTabView];
+            [_cacheTabViewProperties setObject:tabViewItem forKey:propertyName];
+        }
+
+        if ([counter containsKey:tabViewItem])
+            countValue = [counter objectForKey:tabViewItem];
+
+        [counter setObject:countValue + 1 forKey:tabViewItem];
+    }
+
+    var tabItems = [counter allKeys];
+
+    for (var i = 0; i < [tabItems count] ; i++)
+    {
+        var tabItem     = tabItems[i],
+            countValue  = [counter objectForKey:tabItem];
+
+        [tabItem setErrorColor:NUSkinColorRed];
+        [tabItem setErrorsNumber:countValue];
+    }
+}
+
+- (void)hideErrorsOnTabView:(CPTabView)aTabView
+{
+    var itemObjects = aTabView._itemObjects;
+
+    for (var i = 0; i < [itemObjects count] ; i++)
+        [itemObjects[i] setErrorsNumber:0];
+}
+
 
 
 #pragma mark -
