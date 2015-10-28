@@ -1744,13 +1744,14 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     if ([[self window] firstResponder] == self && key == @"x" && (modifierFlags & (CPCommandKeyMask | CPControlKeyMask)))
     {
-        window.setTimeout(function(){
+        [[CPRunLoop mainRunLoop] performBlock:function()
+        {
             var textField = [_networkTextField._networkElementTextFields firstObject];
             [self _selectTextField:textField range:CPMakeRange(0,0)];
 
             [_networkTextField setStringValue:@""];
             [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
-        },0);
+        } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 
         return [super performKeyEquivalent:anEvent];
     }
