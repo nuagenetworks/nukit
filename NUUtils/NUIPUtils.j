@@ -19,7 +19,14 @@
 
 function validateIPAddress(aString)
 {
-    return ipaddr.IPv4.isValid(aString)
+    try {
+        var CIDR = ipaddr.parseCIDR(aString);
+        return ipaddr.IPv4.isValid(CIDR.address.ip);
+    }
+    catch (e)
+    {
+        return ipaddr.IPv4.isValid(aString)
+    }
 }
 
 
@@ -31,11 +38,11 @@ function parseIPAddress(aString)
     {
         ret.representedObject   = ipaddr.parseCIDR(aString);
         ret.netmask             = ret.representedObject.netmask.ip;
-        ret.gateway             = ret.representedObject.address.firstIP;
+        ret.gateway             = ret.representedObject.firstIP;
         ret.address             = ret.representedObject.address.ip;
         ret.CIDR                = ret.representedObject.netmask.bits;
-        ret.firstIP             = ret.representedObject.address.firstIP;
-        ret.lastIP              = ret.representedObject.address.lastIP;
+        ret.firstIP             = ret.representedObject.firstIP;
+        ret.lastIP              = ret.representedObject.lastIP;
     }
     catch (e)
     {
