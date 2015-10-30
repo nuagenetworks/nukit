@@ -41,7 +41,7 @@
     [[CPApplication alloc] init];
     _window = [[CPWindow alloc] initWithContentRect:CGRectMake(0.0, 0.0, 1000.0, 1000.0) styleMask:CPWindowNotSizable];
 
-    _numericTextField = [[NUNumericTextField alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
+    _numericTextField = [NUNumericTextField textFieldWithStringValue:"" placeholder:"" width:200];
 
     [[_window contentView] addSubview:_numericTextField];
 }
@@ -58,20 +58,35 @@
 
 - (void)testStringValue
 {
-    // [_numericTextField setStringValue:@"diehrir"];
-    // [self assert:@"" equals:[_numericTextField stringValue]];
-    //
-    // [_numericTextField setStringValue:1];
-    // [self assert:@"1" equals:[_numericTextField stringValue]];
-    //
-    // [_numericTextField setStringValue:""];
-    // [self assert:@"" equals:[_numericTextField stringValue]];
-    //
-    // [_numericTextField setStringValue:2];
-    // [self assert:@"2" equals:[_numericTextField stringValue]];
-    //
-    // [_numericTextField setStringValue:nil];
-    // [self assert:"" equals:[_numericTextField stringValue]];
+    [_numericTextField setStringValue:@"diehrir"];
+    [self assert:@"" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:1];
+    [self assert:@"1" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:""];
+    [self assert:@"" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:2];
+    [self assert:@"2" equals:[_numericTextField stringValue]];
 }
+
+- (void)testStringValueWithDecimal
+{
+    [_numericTextField setAllowDecimals:YES];
+
+    [_numericTextField setStringValue:@"diehrir"];
+    [self assert:@"" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:1.4];
+    [self assert:@"1.4" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:""];
+    [self assert:@"" equals:[_numericTextField stringValue]];
+
+    [_numericTextField setStringValue:2434.123];
+    [self assert:@"2434.123" equals:[_numericTextField stringValue]];
+}
+
 
 @end
