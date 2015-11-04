@@ -56,9 +56,9 @@
         return NO;
 
     if ([self allowDecimals])
-        return isNaN(parseFloat(value))
+        return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.+$/);
 
-    return !isIntegerNumber(value) || [value rangeOfString:@"."].length > 0 || (value.length > 1 && [self stringValue] == @"0")
+    return !value.match(/^\d+$/);
 }
 
 @end
