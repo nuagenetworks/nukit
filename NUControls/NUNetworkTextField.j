@@ -672,7 +672,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     }
 
     // Trick to select the firstElement when nothing is set
-    if (_currentNetworkTextField && _internObjectValue == @"")
+    if (_currentNetworkTextField && _internObjectValue == @"" && _mode != NUNetworkIPV6Mode)
     {
         var currentResponder = [[self window] firstResponder];
         _currentNetworkTextField = [_networkElementTextFields firstObject];
@@ -1635,7 +1635,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (CPView)nextKeyView
 {
-    if (_delegate._internObjectValue == @"")
+    if (_delegate._mode != NUNetworkIPV6Mode && _delegate._internObjectValue == @"")
         return [_delegate nextKeyView];
 
     return [super nextKeyView];
