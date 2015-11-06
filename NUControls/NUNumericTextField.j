@@ -50,6 +50,9 @@
 
 - (BOOL)_shouldNotAcceptValue:(CPString)aValue
 {
+    if (!aValue)
+        return NO;
+
     var value = aValue.toString();
 
     if (value.length == 0)
