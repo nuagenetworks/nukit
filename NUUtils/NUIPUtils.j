@@ -21,11 +21,11 @@ function validateIPAddress(aString)
 {
     try {
         var CIDR = ipaddr.parseCIDR(aString);
-        return ipaddr.IPv4.isValid(CIDR.address.ip);
+        return ipaddr.isValid(CIDR.address.ip);
     }
     catch (e)
     {
-        return ipaddr.IPv4.isValid(aString)
+        return ipaddr.isValid(aString)
     }
 }
 
@@ -141,13 +141,27 @@ function firstValidCIDRFrom(existingCIDRs)
 
 function firstIPInNetwork(network)
 {
-    var CIDR = ipaddr.parseCIDR(network);
-    return CIDR.netmask.firstIP;
+    try
+    {
+        var CIDR = ipaddr.parseCIDR(network);
+        return CIDR.firstIP;
+    }
+    catch (e)
+    {
+        return nil;
+    }
 }
 
 
 function lastIPInNetwork(network)
 {
-    var CIDR = ipaddr.parseCIDR(network);
-    return CIDR.netmask.lastIP;
+    try
+    {
+        var CIDR = ipaddr.parseCIDR(network);
+        return CIDR.lastIP;
+    }
+    catch (e)
+    {
+        return nil;
+    }
 }
