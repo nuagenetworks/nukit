@@ -656,19 +656,15 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     {
         [firstNetWorkTextField setAlignment:CPLeftTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "left";
-#endif
     }
     else
     {
         [firstNetWorkTextField setAlignment:CPCenterTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "center";
-#endif
     }
 
     // Trick to select the firstElement when nothing is set
@@ -1984,7 +1980,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
-//
+
 // Here because flat files in NUKit, because Antoine and not possible to make test with that...
 function intFromHexa(hexa){
     return parseInt(hexa, 16);
