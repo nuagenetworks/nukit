@@ -121,7 +121,7 @@
 
   ipaddr.IPv4Netmask = (function() {
     function IPv4Netmask(bits) {
-      var first, fourth, netmasks, second, third;
+      var netmasks;
       this.bits = parseInt(bits);
       netmasks = {
         0: 0,
@@ -159,12 +159,17 @@
         32: 4294967295
       };
       this.decimals = netmasks[this.bits];
-      first = (this.decimals >>> 24) & 255;
-      second = (this.decimals >>> 16) & 255;
-      third = (this.decimals >>> 8) & 255;
-      fourth = this.decimals & 255;
-      this.ip = first + "." + second + "." + third + "." + fourth;
+      this.ip = this.decimalToString(this.decimals);
     }
+
+    IPv4Netmask.prototype.decimalToString = function(netIpDec) {
+      var first, fourth, second, third;
+      first = (netIpDec >>> 24) & 255;
+      second = (netIpDec >>> 16) & 255;
+      third = (netIpDec >>> 8) & 255;
+      fourth = netIpDec & 255;
+      return first + "." + second + "." + third + "." + fourth;
+    };
 
     return IPv4Netmask;
 
@@ -221,7 +226,7 @@
 
   ipaddr.IPv6 = (function() {
     function IPv6(parts) {
-      var i, len, part;
+      var i, len, part, tmp;
       if (parts.length !== 8) {
         throw new Error("ipaddr: ipv6 part count should be 8");
       }
@@ -233,6 +238,16 @@
       }
       this.parts = parts;
       this.ip = this.toString();
+      tmp = 0;
+      tmp |= parseInt(this.parts[0]) << 112;
+      tmp |= parseInt(this.parts[1]) << 96;
+      tmp |= parseInt(this.parts[2]) << 80;
+      tmp |= parseInt(this.parts[3]) << 64;
+      tmp |= parseInt(this.parts[4]) << 48;
+      tmp |= parseInt(this.parts[5]) << 32;
+      tmp |= parseInt(this.parts[6]) << 16;
+      tmp |= parseInt(this.parts[7]);
+      this.decimals = tmp >>> 0;
     }
 
     IPv6.prototype.kind = function() {
@@ -619,12 +634,17 @@
   };
 
   ipaddr.parseCIDR = function(string) {
-    var e, error;
+    var e, error, error1;
     try {
       return ipaddr.IPv6.parseCIDR(string);
     } catch (error) {
       e = error;
-      return ipaddr.IPv4.parseCIDR(string);
+      try {
+        return ipaddr.IPv4.parseCIDR(string);
+      } catch (error1) {
+        e = error1;
+        throw new Error("ipaddr: the address has neither IPv6 nor IPv4 CIDR");
+      }
     }
   };
 
@@ -639,4 +659,3 @@
   };
 
 }).call(this);
-
