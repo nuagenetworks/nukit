@@ -656,23 +656,19 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     {
         [firstNetWorkTextField setAlignment:CPLeftTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "left";
-#endif
     }
     else
     {
         [firstNetWorkTextField setAlignment:CPCenterTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "center";
-#endif
     }
 
     // Trick to select the firstElement when nothing is set
-    if (_currentNetworkTextField && _internObjectValue == @"")
+    if (_currentNetworkTextField && _internObjectValue == @"" && _mode != NUNetworkIPV6Mode)
     {
         var currentResponder = [[self window] firstResponder];
         _currentNetworkTextField = [_networkElementTextFields firstObject];
@@ -1635,7 +1631,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 - (CPView)nextKeyView
 {
-    if (_delegate._internObjectValue == @"")
+    if (_delegate._mode != NUNetworkIPV6Mode && _delegate._internObjectValue == @"")
         return [_delegate nextKeyView];
 
     return [super nextKeyView];
@@ -1744,13 +1740,14 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
     if ([[self window] firstResponder] == self && key == @"x" && (modifierFlags & (CPCommandKeyMask | CPControlKeyMask)))
     {
-        window.setTimeout(function(){
+        [[CPRunLoop mainRunLoop] performBlock:function()
+        {
             var textField = [_networkTextField._networkElementTextFields firstObject];
             [self _selectTextField:textField range:CPMakeRange(0,0)];
 
             [_networkTextField setStringValue:@""];
             [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
-        },0);
+        } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 
         return [super performKeyEquivalent:anEvent];
     }
@@ -1983,7 +1980,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
-//
+
 // Here because flat files in NUKit, because Antoine and not possible to make test with that...
 function intFromHexa(hexa){
     return parseInt(hexa, 16);

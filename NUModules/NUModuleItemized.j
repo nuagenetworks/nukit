@@ -431,10 +431,11 @@
 
     if (character == CPUpArrowFunctionKey || character == CPDownArrowFunctionKey)
     {
-        setTimeout(function(){
+        [[CPRunLoop mainRunLoop] performBlock:function()
+        {
             [self _changeSelection:[aNotification object]];
             [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-        }, 0);
+        } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
     }
 }
 

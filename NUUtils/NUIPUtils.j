@@ -19,7 +19,14 @@
 
 function validateIPAddress(aString)
 {
-    return ipaddr.IPv4.isValid(aString)
+    try {
+        var CIDR = ipaddr.parseCIDR(aString);
+        return ipaddr.isValid(CIDR.address.ip);
+    }
+    catch (e)
+    {
+        return ipaddr.isValid(aString)
+    }
 }
 
 
@@ -31,11 +38,11 @@ function parseIPAddress(aString)
     {
         ret.representedObject   = ipaddr.parseCIDR(aString);
         ret.netmask             = ret.representedObject.netmask.ip;
-        ret.gateway             = ret.representedObject.address.firstIP;
+        ret.gateway             = ret.representedObject.firstIP;
         ret.address             = ret.representedObject.address.ip;
         ret.CIDR                = ret.representedObject.netmask.bits;
-        ret.firstIP             = ret.representedObject.address.firstIP;
-        ret.lastIP              = ret.representedObject.address.lastIP;
+        ret.firstIP             = ret.representedObject.firstIP;
+        ret.lastIP              = ret.representedObject.lastIP;
     }
     catch (e)
     {
@@ -134,13 +141,27 @@ function firstValidCIDRFrom(existingCIDRs)
 
 function firstIPInNetwork(network)
 {
-    var CIDR = ipaddr.parseCIDR(network);
-    return CIDR.netmask.firstIP;
+    try
+    {
+        var CIDR = ipaddr.parseCIDR(network);
+        return CIDR.firstIP;
+    }
+    catch (e)
+    {
+        return nil;
+    }
 }
 
 
 function lastIPInNetwork(network)
 {
-    var CIDR = ipaddr.parseCIDR(network);
-    return CIDR.netmask.lastIP;
+    try
+    {
+        var CIDR = ipaddr.parseCIDR(network);
+        return CIDR.lastIP;
+    }
+    catch (e)
+    {
+        return nil;
+    }
 }

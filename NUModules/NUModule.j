@@ -169,6 +169,7 @@ NUModuleTabViewModeIcon = 2;
     CPButton                        _buttonImportObject;
     CPButton                        _buttonExportObject;
     CPButton                        _buttonInstantiateObject;
+    CPDictionary                    tabViewPropertiesCache;
     CPDictionary                    _contextRegistry;
     CPDictionary                    _controlsForActionRegistry;
     CPDictionary                    _parentModuleHierarchyCache;
@@ -257,6 +258,7 @@ NUModuleTabViewModeIcon = 2;
     _activeSubModules                                   = [];
     _activeTransactionsIDs                              = [];
     _autoResizeSplitViewSize                            = 265;
+    tabViewPropertiesCache                             = @{};
     _categories                                         = [];
     _contextRegistry                                    = @{};
     _contextualMenuItemRegistry                         = @{};
@@ -862,7 +864,7 @@ NUModuleTabViewModeIcon = 2;
     [self updatePermittedActions];
 
     if (splitViewEditor)
-        setTimeout(function(){[splitViewEditor setPosition:([splitViewEditor frameSize].width - NUModuleSplitViewEditorMaxSize) ofDividerAtIndex:0];}, 0);
+        [[CPRunLoop mainRunLoop] performBlock:function(){[splitViewEditor setPosition:([splitViewEditor frameSize].width - NUModuleSplitViewEditorMaxSize) ofDividerAtIndex:0];} argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 
     [self moduleDidShow];
 
@@ -1675,12 +1677,12 @@ NUModuleTabViewModeIcon = 2;
     [externalizedModule willShow];
 
     // Wait that the platform is well opened
-    setTimeout(function()
+    [[CPRunLoop mainRunLoop] performBlock:function()
     {
         // send the callback message both for the parent module and for the clone
         [externalizedModule didOpenAsCloneOfModule:self];
         [self didOpenCloneModule:externalizedModule];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (void)closeModuleExternalWindow
@@ -2346,6 +2348,72 @@ NUModuleTabViewModeIcon = 2;
 
     return ret;
 }
+
+- (CPTabViewItem)_tabViewItemForProperty:(CPString)aPropertyName tabView:(CPTabView)aTabView
+{
+    var itemObjects = aTabView._itemObjects;
+
+    for (var i = 0; i < [itemObjects count]; i++)
+    {
+        var tabViewPrototype    = itemObjects[i],
+            tabViewItem         = [tabViewPrototype tabViewItem],
+            control             = [[tabViewItem view] subviewWithTag:aPropertyName recursive:YES];
+
+        if (control)
+            return tabViewPrototype;
+    }
+
+    return nil;
+}
+
+- (void)showValidationErrors:(NUValidation)aValidation OnTabView:(CPTabView)aTabView
+{
+    var errors      = [[aValidation errors] allKeys],
+        counter     = @{};
+
+    for (var i = 0; i < [errors count] ; i++)
+    {
+        var propertyName    = errors[i],
+            countValue      = 0,
+            tabViewItem     = nil;
+
+        if ([tabViewPropertiesCache containsKey:propertyName])
+            tabViewItem = [tabViewPropertiesCache objectForKey:propertyName];
+        else
+        {
+            tabViewItem = [self _tabViewItemForProperty:propertyName tabView:aTabView];
+            if (!tabViewItem)
+                return;
+
+            [tabViewPropertiesCache setObject:tabViewItem forKey:propertyName];
+        }
+
+        if ([counter containsKey:tabViewItem])
+            countValue = [counter objectForKey:tabViewItem];
+
+        [counter setObject:countValue + 1 forKey:tabViewItem];
+    }
+
+    var tabItems = [counter allKeys];
+
+    for (var i = 0; i < [tabItems count] ; i++)
+    {
+        var tabItem     = tabItems[i],
+            countValue  = [counter objectForKey:tabItem];
+
+        [tabItem setErrorColor:NUSkinColorRed];
+        [tabItem setErrorsNumber:countValue];
+    }
+}
+
+- (void)hideValidationErrorsForTabView:(CPTabView)aTabView
+{
+    var itemObjects = aTabView._itemObjects;
+
+    for (var i = 0; i < [itemObjects count] ; i++)
+        [itemObjects[i] setErrorsNumber:0];
+}
+
 
 
 #pragma mark -
@@ -3283,10 +3351,11 @@ NUModuleTabViewModeIcon = 2;
 - (void)outlineViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
-    setTimeout(function(){
+    [[CPRunLoop mainRunLoop] performBlock:function()
+    {
         [self _updateCurrentSelection];
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (int)outlineView:(CPOutlineView)anOutlineView heightOfRowByItem:(id)anItem
@@ -3386,10 +3455,10 @@ NUModuleTabViewModeIcon = 2;
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
-    setTimeout(function(){
+    [[CPRunLoop mainRunLoop] performBlock:function(){
         [self _updateCurrentSelection];
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    }, 0);
+    } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
 - (int)tableView:(CPTableView)aTableView heightOfRow:(int)aRow

@@ -255,23 +255,25 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     if (_currentParent == aParent)
         return;
 
+    if (_currentParent)
+    {
+        [self _unregisterFromPushNotification];
+        [self _unregisterFromAssociationKeyChanges]
+        [self closePopover];
+    }
+
     _currentParent = aParent;
 
     [self setModified:NO];
 
-    [self setCurrentAssociatedObject:nil];
-    [self _updateDataViewWithAssociatedObject:nil];
+    // CS (11/04/2015) This looks unnecessary as we now unregister from binding earlier
+    // [self setCurrentAssociatedObject:nil];
+    // [self _updateDataViewWithAssociatedObject:nil];
 
     if (_currentParent)
     {
         [self _registerForPushNotification];
         [self _registerForAssociationKeyChanges];
-    }
-    else
-    {
-        [self _unregisterFromPushNotification];
-        [self _unregisterFromAssociationKeyChanges];
-        [self closePopover];
     }
 }
 
@@ -724,6 +726,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 {
     if (!_currentParent)
         return;
+
     [_currentParent addObserver:self forKeyPath:[self keyPathForAssociatedObjectID] options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
 }
 

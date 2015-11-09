@@ -20,7 +20,7 @@
 
 @import "../NUControls/NUNetworkTextField.j"
 
-@implementation NUNetworkFieldTest : OJTestCase
+@implementation NUNetworkTextFieldTest : OJTestCase
 {
     CPWindow            _window;
     NUNetworkTextField  _networkTextField;

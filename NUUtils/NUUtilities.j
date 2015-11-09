@@ -225,7 +225,9 @@ function _IPAddress(string, canBeNull, canBeAll)
     if (!string)
         return "Not a valid address";
 
-    if (canBeAll && (string == "0.0.0.0/0" || string == "0.0.0.0"))
+    var specialIPs = ["0.0.0.0/0", "0.0.0.0", "0:0:0:0:0:0:0:0/0", "0:0:0:0:0:0:0:0", "::", "::/0"];
+
+    if (canBeAll && specialIPs.indexOf(string) >= 0)
         return nil;
 
     if (string.indexOf("0.") == 0)

@@ -10,6 +10,7 @@
 @import "NUCompoundTransformer.j"
 @import "NUInfinityTransformer.j"
 @import "NUIPToDefaultStringTransformer.j"
+@import "NUIPv6ToStringTransformer.j"
 @import "NUMillisecondsToDateTransformer.j"
 @import "NUMillisecondsToDaysHoursMinutesTransformer.j"
 @import "NUModuleTitleTransformers.j"

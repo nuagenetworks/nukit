@@ -22,7 +22,6 @@
 @global isFloatNumber
 @global isIntegerNumber
 
-
 @implementation NUNumericTextField : CPTextField
 {
     BOOL     _allowDecimals     @accessors(property=allowDecimals);
@@ -32,21 +31,37 @@
 {
     var value = [aValue length] && [self objectValue] ? [self objectValue] : @"";
 
-    if ([self allowDecimals])
-    {
-        if (!(isFloatNumber(aValue)))
-        {
-            [self _inputElement].value = value.toString();
-            return [super _setStringValue:value isNewValue:isNewValue errorDescription:anError];
-        }
-    }
-    else if (!(isIntegerNumber(aValue)) || [aValue rangeOfString:@"."].length > 0 || (aValue.length > 1 && [self stringValue] == @"0"))
+    if ([self _shouldNotAcceptValue:aValue])
     {
         [self _inputElement].value = value.toString();
         return [super _setStringValue:value isNewValue:isNewValue errorDescription:anError];
     }
 
     return [super _setStringValue:aValue isNewValue:isNewValue errorDescription:anError];
+}
+
+- (void)_setObjectValue:(id)aValue useFormatter:(BOOL)useFormatter
+{
+    if ([self _shouldNotAcceptValue:aValue])
+        return;
+
+    [super _setObjectValue:aValue useFormatter:useFormatter];
+}
+
+- (BOOL)_shouldNotAcceptValue:(CPString)aValue
+{
+    if (!aValue)
+        return NO;
+
+    var value = aValue.toString();
+
+    if (value.length == 0)
+        return NO;
+
+    if ([self allowDecimals])
+        return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.+$/);
+
+    return !value.match(/^\d+$/);
 }
 
 @end

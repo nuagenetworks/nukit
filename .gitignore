@@ -13,3 +13,4 @@ debug.txt
 *Build/*
 *.xcodeproj
 *.cib
+Frameworks/

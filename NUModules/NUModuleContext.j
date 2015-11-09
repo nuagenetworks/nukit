@@ -80,7 +80,10 @@ var NUModuleContextDelegate_moduleContext_willManageObject_                     
     NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectInstantiate_  = 1 << 23,
 
     NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_       = 1 << 24,
-    NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_     = 1 << 25;
+    NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_     = 1 << 25,
+
+    NUModuleContextDelegate_moduleContext_didFailWithValidationErrors_              = 1 << 26,
+    NUModuleContextDelegate_moduleContext_didClearAllValidationErrors_              = 1 << 27;
 
 
 computeRelativeRectOfSelectedRow = function(tableView)
@@ -646,6 +649,12 @@ var _isCPArrayControllerKind = function(object, keyPath)
 
     if ([_delegate respondsToSelector:@selector(moduleContext:unbindTableView:forProperty:ofObject:)])
         _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContext:didFailWithValidationErrors:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_didFailWithValidationErrors_;
+
+    if ([_delegate respondsToSelector:@selector(moduleContextDidClearAllValidationErrors:)])
+        _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_didClearAllValidationErrors_;
 }
 
 - (void)_sendDelegateWillSaveObject
@@ -808,6 +817,18 @@ var _isCPArrayControllerKind = function(object, keyPath)
     // the 2 following lines is a workaround for a bug in the binding of the CPTableColumn bindings
     [aTableView unbind:@"content"];
     [aTableView reloadData];
+}
+
+- (void)_sendDelegateDidFailWithValidationErrors:(NUValidation)aValidation
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailWithValidationErrors_)
+        [_delegate moduleContext:self didFailWithValidationErrors:aValidation];
+}
+
+- (void)_sendDelegateDidClearAllValidationErrors
+{
+    if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didClearAllValidationErrors_)
+        [_delegate moduleContextDidClearAllValidationErrors:self];
 }
 
 
@@ -1002,6 +1023,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
             [fieldView setInvalid:YES reason:toolTip];
         }
     }
+
+    [self _sendDelegateDidFailWithValidationErrors:_currentValidation];
 }
 
 - (void)clearAllValidationFields
@@ -1020,6 +1043,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
         if (relatedField && [relatedField isKindOfClass:CPTextField])
             [relatedField setInvalid:NO reason:nil];
     }
+
+    [self _sendDelegateDidClearAllValidationErrors];
 }
 
 

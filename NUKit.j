@@ -614,6 +614,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     [[self serverFaultWindowController] close];
     [[self mainWindowController] close];
     [[self loginWindowController] showWindow:self];
+    [self unlockCurrentPopover];
     [self closeExternalWindows];
 
     [[NURESTLoginController defaultController] reset];
