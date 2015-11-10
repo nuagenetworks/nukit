@@ -1527,7 +1527,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         return;
     }
 
-    if (length == 1 && firstCharacter == @"0")
+    if (length == 1 && firstCharacter == @"0" && _delegate._mode == NUNetworkIPV4Mode)
     {
         [self setObjectValue:@"0"];
         [_delegate _textDidChange:self];
