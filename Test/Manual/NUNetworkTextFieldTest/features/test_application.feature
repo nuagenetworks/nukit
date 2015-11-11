@@ -138,3 +138,22 @@ Background:
         Then the control third-networkTextField should be first responder
       When I hit tab
         Then the control fourth-networkTextField should be first responder
+
+    Scenario: Test textfield with scrollview
+      When I click on the control fifth-networkTextField
+        Then the control fifth-networkTextField should be first responder
+      When I hit the keys aaaabb
+        Then the control fifth-networkTextField should have the value :aaaa:bb:::::/
+      When I hit tab
+      When I hit tab
+      When I hit tab
+      When I click on the control first-networkTextField
+      When I click on the control fifth-networkTextField
+        Then the control fifth-networkTextField should be first responder
+      When I hit the keys 11
+        Then the control fifth-networkTextField should have the value :aaaa:bb::11:::/
+      When I hit select all
+      When I hit delete
+        Then the control fifth-networkTextField should have the value ""
+      When I hit the keys bb
+        Then the control fifth-networkTextField should have the value bb:::::::/

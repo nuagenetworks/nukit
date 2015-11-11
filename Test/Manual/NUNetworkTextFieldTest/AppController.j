@@ -22,17 +22,20 @@
         networkTextField = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 100, 400, 30)],
         networkTextField2 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 150, 400, 30)],
         networkTextField3 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 200, 400, 30)],
-        networkTextField4 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 250, 400, 30)];
+        networkTextField4 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 250, 400, 30)],
+        networkTextField5 = [[NUNetworkTextField alloc] initWithFrame:CGRectMake(100, 300, 100, 30)];
 
     [networkTextField2 setMask:NO];
     [networkTextField3 setMode:NUNetworkMACMode];
 
     [networkTextField4 setMode:NUNetworkIPV6Mode]
+    [networkTextField5 setMode:NUNetworkIPV6Mode]
 
     [contentView addSubview:networkTextField];
     [contentView addSubview:networkTextField2];
     [contentView addSubview:networkTextField3];
     [contentView addSubview:networkTextField4];
+    [contentView addSubview:networkTextField5];
 
     [networkTextField2 setNextKeyView:networkTextField3];
     [networkTextField setNextKeyView:networkTextField2];
@@ -42,6 +45,7 @@
     [networkTextField2 setCucappIdentifier:@"second-networkTextField"];
     [networkTextField3 setCucappIdentifier:@"third-networkTextField"];
     [networkTextField4 setCucappIdentifier:@"fourth-networkTextField"];
+    [networkTextField5 setCucappIdentifier:@"fifth-networkTextField"];
 
     [theWindow orderFront:self];
 
