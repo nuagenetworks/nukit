@@ -19,6 +19,7 @@
 @import <AppKit/CPButton.j>
 @import <AppKit/CPControl.j>
 @import <AppKit/CPTextField.j>
+@import <AppKit/CPScrollView.j>
 @import <AppKit/CPSearchField.j>
 @import <AppKit/CPPasteboard.j>
 
@@ -66,8 +67,10 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     CPMutableArray                              _MACDigits;
     CPMutableArray                              _separatorLabels;
     CPMutableArray                              _networkElementTextFields;
+    CPScrollView                                _scrollView;
     CPString                                    _internObjectValue;
     CPTextField                                 _maskSeparatorLabesl;
+    CPView                                      _container;
     int                                         _maskValue;
     _NUNetworkElementTextField                  _currentNetworkTextField;
     _NUFakeTextField                            _fakeTextField;
@@ -120,6 +123,12 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     _selectAll = NO;
     _showCancelButton = NO;
 
+    _container = [[CPView alloc] initWithFrame:CGRectMakeZero()];
+    _scrollView = [[CPScrollView alloc] initWithFrame:CGRectMakeZero()];
+
+    [_scrollView setHasVerticalScroller:NO];
+    [_scrollView setHasHorizontalScroller:NO];
+
     [self setTheme:[CPTheme defaultTheme]];
     [self setBordered:YES];
     [self setBezeled:YES];
@@ -152,7 +161,16 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [_cancelButton setAction:@selector(_cancelOperation:)];
 
     [self _updateCancelButtonVisibility];
-    [self addSubview:_cancelButton];
+    [_container addSubview:_cancelButton];
+
+    [self setPostsBoundsChangedNotifications:YES];
+    [self setPostsFrameChangedNotifications:YES];
+
+    [self _updateContainerFrame];
+    [self _updateScrollViewFrame];
+
+    [_scrollView setDocumentView:_container];
+    [self addSubview:_scrollView];
 }
 
 
@@ -656,19 +674,15 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     {
         [firstNetWorkTextField setAlignment:CPLeftTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "left";
-#endif
     }
     else
     {
         [firstNetWorkTextField setAlignment:CPCenterTextAlignment];
 
-#if PLATFORM(DOM)
-        if ([[self window] firstResponder] == firstNetWorkTextField)
+        if ([firstNetWorkTextField respondsToSelector:@selector(_inputElement)] && [[self window] firstResponder] == firstNetWorkTextField)
             [firstNetWorkTextField _inputElement].style.textAlign = "center";
-#endif
     }
 
     // Trick to select the firstElement when nothing is set
@@ -695,6 +709,9 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
             [textField setStringValue:@""];
         }
     }
+
+    [self _updateContainerFrame];
+    [self _updateScrollViewFrame];
 }
 
 /*!
@@ -732,7 +749,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
             [textField setMask:YES];
 
         [_networkElementTextFields addObject:textField];
-        [self addSubview:textField];
+        [_container addSubview:textField];
 
         if (i > 0)
         {
@@ -761,7 +778,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
         [separator setFrameSize:CGSizeMake([separator frameSize].width, size.height)];
         [separator setDelegate:self];
         [_separatorLabels addObject:separator];
-        [self addSubview:separator];
+        [_container addSubview:separator];
     }
 
     [self setNeedsLayout];
@@ -814,7 +831,6 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 - (void)_updatePositionTextFields
 {
     var number = [_networkElementTextFields count],
-        contentInset = [self currentValueForThemeAttribute:@"content-inset"],
         sizeTextField = _mode == NUNetworkMACMode ? [[CPString stringWithString:@"12 "] sizeWithFont:[self font]] : _mode == NUNetworkIPV6Mode ? [[CPString stringWithString:@"1234 "] sizeWithFont:[self font]] : [[CPString stringWithString:@"123 "] sizeWithFont:[self font]],
         height = ([self frameSize].height - 2) / 2 - sizeTextField.height / 2;
 
@@ -822,7 +838,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     {
         var textField = _networkElementTextFields[i],
             separator = _separatorLabels[i],
-            x = i == 0 ? 0 + contentInset.left : CGRectGetMaxX([_separatorLabels[i - 1] frame]);
+            x = i == 0 ? 0 : CGRectGetMaxX([_separatorLabels[i - 1] frame]);
 
         [textField setFrame:CGRectMake(x, height, sizeTextField.width, [textField frameSize].height)];
 
@@ -1025,6 +1041,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
     [super _removeObservers];
     [[CPNotificationCenter defaultCenter] removeObserver:self name:NUNextFirstResponderNotification object:self];
+    [[CPNotificationCenter defaultCenter] removeObserver:self name:CPViewBoundsDidChangeNotification object:nil];
+    [[CPNotificationCenter defaultCenter] removeObserver:self name:CPViewFrameDidChangeNotification object:nil];
 }
 
 - (void)_addObservers
@@ -1034,7 +1052,54 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
     [super _addObservers];
     [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_asyncMakeFirstResponder:) name:NUNextFirstResponderNotification object:self];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(boundsDidChangeNotification:) name:CPViewBoundsDidChangeNotification object:nil];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(frameDidChangeNotification:) name:CPViewFrameDidChangeNotification object:nil];
 }
+
+
+#pragma mark -
+#pragma mark Bounds and frame notifications
+
+- (void)boundsDidChangeNotification:(CPNotification)aNotification
+{
+    [self _updateContainerFrame];
+    [self _updateScrollViewFrame];
+}
+
+- (void)frameDidChangeNotification:(CPNotification)aNotification
+{
+    [self _updateContainerFrame];
+    [self _updateScrollViewFrame];
+}
+
+
+#pragma mark -
+#pragma mark Container methods
+
+- (void)_updateContainerFrame
+{
+    var frame = CGRectMakeCopy([self bounds]);
+    frame.size.width = CGRectGetMaxX([[_networkElementTextFields lastObject] frame]);
+
+    [_container setFrame:CGRectMakeCopy(frame)];
+}
+
+- (void)_updateScrollViewFrame
+{
+    var frame = CGRectMakeCopy([self bounds]);
+
+    frame.origin.x = [self currentValueForThemeAttribute:@"content-inset"].left;
+    frame.size.width = CGRectGetMaxX([[_networkElementTextFields lastObject] frame]);
+
+    if (frame.size.width > [self bounds].size.width)
+    {
+        var contentInset = [self currentValueForThemeAttribute:@"content-inset"];
+        frame.size.width = [self bounds].size.width - contentInset.left - contentInset.right;
+    }
+
+    [_scrollView setFrame:frame];
+}
+
 
 @end
 
@@ -1231,13 +1296,24 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 - (BOOL)resignFirstResponder
 {
     _delegate._currentNetworkTextField = nil;
-    [_delegate setNeedsLayout];
+
+    window.setTimeout(function(){[_delegate setNeedsLayout];}, 0);
 
     return [super resignFirstResponder];
 }
 
 - (BOOL)acceptsFirstResponder
 {
+    var bounds = CGRectMakeCopy([[_delegate._scrollView contentView] bounds]);
+
+    // Small hakc to be sure that the height of the scrollview is bigger than the textField
+    bounds.size.height = 60;
+
+    var shouldScroll = !CGRectContainsRect(bounds, [self frame]);
+
+    if ([_delegate acceptsFirstResponder] && shouldScroll)
+        [self scrollRectToVisible:[self bounds]];
+
     return [_delegate acceptsFirstResponder];
 }
 
@@ -1531,7 +1607,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         return;
     }
 
-    if (length == 1 && firstCharacter == @"0")
+    if (length == 1 && firstCharacter == @"0" && _delegate._mode == NUNetworkIPV4Mode)
     {
         [self setObjectValue:@"0"];
         [_delegate _textDidChange:self];
@@ -1984,7 +2060,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 }
 
 @end
-//
+
 // Here because flat files in NUKit, because Antoine and not possible to make test with that...
 function intFromHexa(hexa){
     return parseInt(hexa, 16);
