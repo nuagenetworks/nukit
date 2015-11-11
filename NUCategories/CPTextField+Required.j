@@ -53,14 +53,14 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
         [self.__requiredImageView setFrameOrigin:CGPointMake(CGRectGetWidth(currentFrame) - 16, CGRectGetMidY(currentFrame) - 4)];
         [self addSubview:self.__requiredImageView];
         [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
-        [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:[CPThemeStateBezeled, CPThemeStateEditing]];
+        [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inStates:[CPThemeStateBezeled, CPThemeStateEditing]];
     }
     else
     {
         if (self.__requiredImageView)
             [self.__requiredImageView removeFromSuperview];
         [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
-        [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:[CPThemeStateBezeled, CPThemeStateEditing]];
+        [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inStates:[CPThemeStateBezeled, CPThemeStateEditing]];
     }
 }
 
@@ -94,7 +94,7 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
         [self.__errorView setFrameOrigin:CGPointMake(CGRectGetWidth(currentFrame) - currentSize.width - bezelInset.right - 1,
                                          CGRectGetMidY(currentFrame) - (currentSize.height / 2))];
         [self setValue:CGInsetMake(4.0, currentSize.width + 5, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
-        [self setValue:CGInsetMake(4.0, currentSize.width + 5, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:[CPThemeStateBezeled, CPThemeStateEditing]];
+        [self setValue:CGInsetMake(4.0, currentSize.width + 5, 0.0, 6.0) forThemeAttribute:@"content-inset" inStates:[CPThemeStateBezeled, CPThemeStateEditing]];
 
         [self addSubview:self.__errorView positioned:CPWindowAbove relativeTo:nil];
 
@@ -112,12 +112,12 @@ NUThemeStateError = CPThemeState("NUThemeStateError");
         if (!self.__required)
         {
             [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
-            [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:[CPThemeStateBezeled, CPThemeStateEditing]];
+            [self setValue:CGInsetMake(4.0, 6.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inStates:[CPThemeStateBezeled, CPThemeStateEditing]];
         }
         else
         {
             [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
-            [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inState:[CPThemeStateBezeled, CPThemeStateEditing]];
+            [self setValue:CGInsetMake(4.0, 20.0, 0.0, 6.0) forThemeAttribute:@"content-inset" inStates:[CPThemeStateBezeled, CPThemeStateEditing]];
         }
     }
 
