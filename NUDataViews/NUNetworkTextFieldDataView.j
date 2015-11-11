@@ -115,7 +115,7 @@
     {
         var inset = [fieldNetwork valueForThemeAttribute:@"content-inset" inState:CPThemeStateBezeled];
 
-        if ([fieldNetwork _showPlaceHolder])
+        if ([fieldNetwork _shouldShowPlaceHolder])
             [fieldNetwork setFrameOrigin:CGPointMake(inset.left - 1, inset.top)];
         else
             [fieldNetwork setFrameOrigin:CGPointMake(inset.left - 1, -1)];
