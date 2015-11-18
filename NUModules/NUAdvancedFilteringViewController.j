@@ -217,6 +217,7 @@ var NUAdvancedFilteringViewControllerDefault;
             {
                 case "CPString":
                 case "CPArray":
+                case "CPArrayController":
                     attributeType = CPStringAttributeType
                     operators = _stringOperators;
                     break;
