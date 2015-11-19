@@ -1579,7 +1579,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 
     if (self != [_delegate._networkElementTextFields lastObject]
-        && length > 1
+        && (length > 1 || _delegate._mode == NUNetworkIPV6Mode)
         && (lastCharacter === _delegate._separatorValue && ![_nextTextField isMask]) || (lastCharacter === @"/" && [_delegate hasMask]))
     {
         if (lastCharacter === @"/")
