@@ -506,14 +506,14 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 }
 
 - (void)_didFetchObject:(id)anObject connection:(NURESTConnection)aConnection
-    {
-        if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
-            return;
+{
+    if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
+        return;
 
-        [self showLoading:NO];
-        [self _updateDataViewWithAssociatedObject:anObject];
-        [self didFetchAssociatedObject:anObject];
-        [self _sendDelegateDidAssociatorFetchAssociatedObject];
+    [self showLoading:NO];
+    [self _updateDataViewWithAssociatedObject:anObject];
+    [self didFetchAssociatedObject:anObject];
+    [self _sendDelegateDidAssociatorFetchAssociatedObject];
 }
 
 - (void)_fetcher:(id)aFetcher ofObject:(NURESTObject)anObject didFetchContent:(CPArray)someContents
