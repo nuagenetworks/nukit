@@ -8,7 +8,7 @@ module Encumber
       end
 
       result = command 'valueIsEqual', id_for_element(xpath), value
-      raise "Value #{value} not found" if result["result"] != "OK"
+      raise "Value #{value} not found.\nError message : #{result}" if result["result"] != "OK"
     end
 
     def is_control_focused(xpath)
