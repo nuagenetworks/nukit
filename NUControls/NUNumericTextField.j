@@ -64,4 +64,17 @@
     return !value.match(/^\d+$/);
 }
 
+- (id)objectValue
+{
+    if ([super objectValue] === nil || [super objectValue] == @"")
+        return nil;
+
+    return [self floatValue];
+}
+
+- (CPString)stringValue
+{
+    return @"" + [super stringValue];
+}
+
 @end
