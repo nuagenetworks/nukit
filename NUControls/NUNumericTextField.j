@@ -59,22 +59,9 @@
         return NO;
 
     if ([self allowDecimals])
-        return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.+$/);
+        return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.$/);
 
     return !value.match(/^\d+$/);
-}
-
-- (id)objectValue
-{
-    if ([super objectValue] === nil || [super objectValue] == @"")
-        return nil;
-
-    return [self floatValue];
-}
-
-- (CPString)stringValue
-{
-    return @"" + [super stringValue];
 }
 
 @end
