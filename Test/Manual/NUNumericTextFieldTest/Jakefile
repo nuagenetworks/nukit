@@ -182,7 +182,6 @@ function addBundleFileSizes(bundlePath, totalBytes)
             totalBytes.mhtml += filePath.size();
     }
 }
-
 task ("cucumber-test", function()
 {
     var SYSTEM = require("system");
