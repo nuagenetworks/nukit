@@ -20,10 +20,15 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPImageView.j>
 @import <AppKit/CPViewAnimation.j>
+@import <AppKit/CPTrackingArea.j>
 
 @import "NUSkin.j"
 
 @global CPApp
+@global CPTrackingMouseEnteredAndExited
+@global CPTrackingActiveInKeyWindow
+@global CPTrackingInVisibleRect
+
 @class NUImageInKit
 
 NUHoverViewTriggerWidth = 10;
@@ -91,6 +96,13 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     [_animation setDuration:0.1];
 
     [self hideWithAnimation:NO];
+
+    var trackingArea = [[CPTrackingArea alloc] initWithRect:CGRectMakeZero()
+                                            options:CPTrackingMouseEnteredAndExited | CPTrackingActiveInKeyWindow | CPTrackingInVisibleRect
+                                              owner:self
+                                           userInfo:nil];
+
+    [self addTrackingArea:trackingArea];
 }
 
 

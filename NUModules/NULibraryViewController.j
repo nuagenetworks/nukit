@@ -18,6 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPSplitView.j>
+@import <AppKit/CPTrackingArea.j>
 @import <TNKit/TNTableViewDataSource.j>
 @import "NUUtilities.j"
 @import "NUNumericTextField.j"
@@ -26,6 +27,11 @@
 @class NULibraryTableView
 
 @global CPApp
+
+@global CPTrackingMouseEnteredAndExited
+@global CPTrackingActiveInKeyWindow
+@global CPTrackingInVisibleRect
+@global CPTrackingMouseMoved
 
 var NULibraryViewControllerDelegate_libraryController_addLibraryObject_count_  = 1 << 1;
 
@@ -96,6 +102,13 @@ var NULibraryViewControllerImageCollapseShow,
     _dataSourceLibrary = [[TNTableViewDataSource alloc] init];
     [_dataSourceLibrary setTable:tableViewLibrary];
     [_dataSourceLibrary setDelegate:self];
+
+    var trackingArea = [[CPTrackingArea alloc] initWithRect:CGRectMakeZero()
+                                                options:CPTrackingMouseEnteredAndExited | CPTrackingActiveInKeyWindow | CPTrackingMouseMoved | CPTrackingInVisibleRect
+                                                  owner:tableViewLibrary
+                                               userInfo:nil];
+
+    [tableViewLibrary addTrackingArea:trackingArea];
 
     [tableViewLibrary setDataSource:_dataSourceLibrary];
     [tableViewLibrary setDelegate:self];
@@ -278,7 +291,7 @@ var NULibraryViewControllerImageCollapseShow,
     [aPasteboard declareTypes:[NULibraryItemDraggingType] owner:nil];
     [aPasteboard setData:draggedObject forType:NULibraryItemDraggingType];
 
-    [[CPCursor closedHandCursor] set];
+    [[CPCursor arrowCursor] set];
     return CPDragOperationCopy;
 }
 
@@ -316,6 +329,18 @@ var NULibraryViewControllerImageCollapseShow,
 - (void)mouseEntered:(CPEvent)anEvent
 {
     [[CPCursor closedHandCursor] set];
+    [super mouseEntered:anEvent];
+}
+
+- (void)mouseMoved:(CPEvent)anEvent
+{
+    [[CPCursor closedHandCursor] set];
+    [super mouseEntered:anEvent];
+}
+
+- (void)mouseExited:(CPEvent)anEvent
+{
+    [[CPCursor arrowCursor] set];
     [super mouseEntered:anEvent];
 }
 
