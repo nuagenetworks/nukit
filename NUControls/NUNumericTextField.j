@@ -34,7 +34,7 @@
     if ([self _shouldNotAcceptValue:aValue])
     {
         [self _inputElement].value = value.toString();
-        return [super _setStringValue:value isNewValue:isNewValue errorDescription:anError];
+        return [super _setStringValue:value isNewValue:NO errorDescription:anError];
     }
 
     return [super _setStringValue:aValue isNewValue:isNewValue errorDescription:anError];
