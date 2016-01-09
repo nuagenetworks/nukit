@@ -15,8 +15,8 @@ function save_record(fileName)
     if (!fileName)
         fileName = @"record"
 
-    var eventRecords =  [CPWindow eventRecords],
-        JSONEvents = [];
+    var eventRecords = [CPWindow eventRecords],
+        JSONEvents   = [];
 
     for (var i = 0; i < [eventRecords count]; i++)
     {
@@ -93,31 +93,33 @@ function _load_javascript_file(file_name)
 
 function _simulate_drag_event(event1, event2)
 {
-    var keyView1 = event1["keyView"],
-        valueView1 = event1["valueView"],
-        keyView2 = event2["keyView"],
-        valueView2 = event2["valueView"],
-        locationInWindow1 = CGPointMake(event1["event"]["locationInWindow"]["x"], event1["event"]["locationInWindow"]["y"]);
+    var keyView1          = event1["keyView"],
+        valueView1        = event1["valueView"],
+        keyView2          = event2["keyView"],
+        valueView2        = event2["valueView"],
+        locationInWindow1 = CGPointMake(event1["event"]["locationInWindow"]["x"], event1["event"]["locationInWindow"]["y"]),
         locationInWindow2 = CGPointMake(event2["event"]["locationInWindow"]["x"], event2["event"]["locationInWindow"]["y"]);
 
-        if (keyView1 && valueView1 && keyView2 && valueView2)
-            simulate_dragged_click_view_to_view(keyView1, valueView1, keyView2, valueView2);
-        else if (keyView1 && valueView1)
-            simulate_dragged_click_view_to_point(keyView1, valueView1, locationInWindow1.x, locationInWindow1.y);
-        else
-            simulate_dragged_click_point_to_point(locationInWindow1.x, locationInWindow1.y, locationInWindow2.x, locationInWindow2.y);
+    if (keyView1 && valueView1 && keyView2 && valueView2)
+        simulate_dragged_click_view_to_view(keyView1, valueView1, keyView2, valueView2);
+
+    else if (keyView1 && valueView1)
+        simulate_dragged_click_view_to_point(keyView1, valueView1, locationInWindow1.x, locationInWindow1.y);
+
+    else
+        simulate_dragged_click_point_to_point(locationInWindow1.x, locationInWindow1.y, locationInWindow2.x, locationInWindow2.y);
 }
 
 function _simulate_event(event)
 {
-    var type = event["event"]["type"],
-        keyView = event["keyView"],
-        valueView = event["valueView"],
-        characters = event["event"]["characters"],
-        deltaX = event["event"]["deltaX"],
-        deltaY = event["event"]["deltaY"],
-        deltaZ = event["event"]["deltaZ"],
-        deltaZ = event["event"]["deltaZ"],
+    var type             = event["event"]["type"],
+        keyView          = event["keyView"],
+        valueView        = event["valueView"],
+        characters       = event["event"]["characters"],
+        deltaX           = event["event"]["deltaX"],
+        deltaY           = event["event"]["deltaY"],
+        deltaZ           = event["event"]["deltaZ"],
+        deltaZ           = event["event"]["deltaZ"],
         locationInWindow = CGPointMake(event["event"]["locationInWindow"]["x"], event["event"]["locationInWindow"]["y"]);
 
     switch (type)
@@ -181,8 +183,8 @@ var eventRecords,
 */
 - (void)sendEvent:(CPEvent)anEvent
 {
-    var type = [anEvent type],
-        sheet = [self attachedSheet],
+    var type           = [anEvent type],
+        sheet          = [self attachedSheet],
         recordingEvent = [[RecordingEvent alloc] initWithEvent:anEvent];
 
     if (recordingEvent && type != CPFlagsChanged && type != CPMouseMoved)
@@ -429,10 +431,10 @@ var eventRecords,
 {
     if (self = [super init])
     {
-        _event = anEvent;
+        _event      = anEvent;
         _offsetView = CGPointMakeZero();
-        _keyView = @"";
-        _valueView = @"";
+        _keyView    = @"";
+        _valueView  = @"";
     }
 
     return self;
@@ -442,46 +444,46 @@ var eventRecords,
 {
     if ([aView respondsToSelector:@selector(cucappIdentifier)])
     {
-        _keyView = @"cucappIdentifier";
+        _keyView   = @"cucappIdentifier";
         _valueView = [aView cucappIdentifier];
     }
     else if ([aView respondsToSelector:@selector(identifier)])
     {
-        _keyView = @"identifier";
+        _keyView   = @"identifier";
         _valueView = [aView identifier];
     }
     else if ([aView respondsToSelector:@selector(title)])
     {
-        _keyView = @"title";
+        _keyView   = @"title";
         _valueView = [aView title];
     }
     else if ([aView respondsToSelector:@selector(placeholderString)])
     {
-        _keyView = @"placeholderString";
+        _keyView   = @"placeholderString";
         _valueView = [aView placeholderString];
     }
     else if ([aView respondsToSelector:@selector(text)])
     {
-        _keyView = @"text";
+        _keyView   = @"text";
         _valueView = [aView text];
     }
     else if ([aView respondsToSelector:@selector(tag)])
     {
-        _keyView = @"tag";
+        _keyView   = @"tag";
         _valueView = [aView tag];
     }
     else if ([aView respondsToSelector:@selector(label)])
     {
-        _keyView = @"label";
+        _keyView   = @"label";
         _valueView = [aView label];
     }
     else if ([aView respondsToSelector:@selector(objectValue)])
     {
-        _keyView = @"objectValue";
+        _keyView   = @"objectValue";
         _valueView = [aView objectValue];
     }
 
-    var globalPoint = [[aView superview] convertPointToBase:[aView frameOrigin]],
+    var globalPoint      = [[aView superview] convertPointToBase:[aView frameOrigin]],
         globalEventPoint = [_event locationInWindow];
 
     _offsetView = CGPointMake(globalEventPoint.x - globalPoint.x, globalEventPoint.y - globalPoint.y);
@@ -494,24 +496,24 @@ var eventRecords,
 {
     var json = {};
 
-    json["keyView"] = _keyView;
-    json["valueView"] = _valueView;
+    json["keyView"]           = _keyView;
+    json["valueView"]         = _valueView;
     json["offsetXPercentage"] = _offsetXPercentage;
     json["offsetYPercentage"] = _offsetYPercentage;
-    json["offsetView"] = {"x" : _offsetView.x, "y" : _offsetView.y};
+    json["offsetView"]        = {"x" : _offsetView.x, "y" : _offsetView.y};
 
-    var event = {};
-    event["type"] = [_event type];
-    event["deltaX"] = [_event deltaX];
-    event["deltaY"] = [_event deltaY];
-    event["deltaZ"] = [_event deltaZ];
-    event["characters"] = [_event characters];
+    var event                            = {};
+    event["type"]                        = [_event type];
+    event["deltaX"]                      = [_event deltaX];
+    event["deltaY"]                      = [_event deltaY];
+    event["deltaZ"]                      = [_event deltaZ];
+    event["characters"]                  = [_event characters];
     event["charactersIgnoringModifiers"] = [_event charactersIgnoringModifiers];
-    event["clickCount"] = [_event clickCount];
-    event["modifierFlags"] = [_event modifierFlags];
-    event["locationInWindow"] = {"x" : [_event locationInWindow].x, "y" : [_event locationInWindow].y};
-    event["keyCode"] = [_event keyCode];
-    event["timestamp"] = [_event timestamp];
+    event["clickCount"]                  = [_event clickCount];
+    event["modifierFlags"]               = [_event modifierFlags];
+    event["locationInWindow"]            = {"x" : [_event locationInWindow].x, "y" : [_event locationInWindow].y};
+    event["keyCode"]                     = [_event keyCode];
+    event["timestamp"]                   = [_event timestamp];
 
     json["event"] = event;
 
@@ -529,7 +531,7 @@ var eventRecords,
 */
 - (void)sendEvent:(CPEvent)anEvent
 {
-    _currentEvent = anEvent;
+    _currentEvent        = anEvent;
     CPEventModifierFlags = [anEvent modifierFlags];
 
     var theWindow = [anEvent window];
