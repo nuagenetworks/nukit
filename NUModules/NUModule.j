@@ -1070,11 +1070,16 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)loadNextPage
 {
-    var fetcherKeyPath = [_currentContext fetcherKeyPath],
-        fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
+    // CS 01/11/2016: For now, we don't deal with pagination when using categories...
+    // Meaning that if we deal with pagination, we have only one context!
+    var contexts       = [self moduleCurrentActiveContexts],
+        fetcherKeyPath = [[contexts firstObject] fetcherKeyPath],
+        fetcher        = [_currentParent valueForKeyPath:fetcherKeyPath];
 
     if (fetcher)
         [self loadNextPageUsingFetcher:fetcher];
+    else
+        [CPException raise:CPInternalInconsistencyException reason:"Cannot find fetcher to load next page in module " + self];
 }
 
 - (void)reloadLatestPage
