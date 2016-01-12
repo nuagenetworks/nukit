@@ -2641,7 +2641,7 @@ NUModuleTabViewModeIcon = 2;
 
 - (void)adjustSplitViewSize
 {
-    if (splitViewMain && _autoResizeSplitViewSize)
+    if (splitViewMain && [[splitViewMain subviews] count] > 1 && _autoResizeSplitViewSize)
     {
         [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
         [splitViewMain setPosition:_autoResizeSplitViewSize ofDividerAtIndex:0];
@@ -3610,7 +3610,8 @@ NUModuleTabViewModeIcon = 2;
     if (aSplitView != splitViewMain)
         return;
 
-    [aSplitView setPosition:[[[aSplitView subviews] firstObject] frameSize].width ofDividerAtIndex:0];
+    if ([[aSplitView subviews] count] > 1)
+        [aSplitView setPosition:[[[aSplitView subviews] firstObject] frameSize].width ofDividerAtIndex:0];
 }
 
 
