@@ -31,6 +31,9 @@
 
 - (id)transformedValue:(id)value
 {
+    if (!value)
+        return @"N/A"
+
     return value + @"s";
 }
 
