@@ -36,14 +36,15 @@
 {
     @outlet CPButton            buttonLogin;
     @outlet CPImageView         imageViewLogo;
+    @outlet CPImageView         imageViewPoweredBy;
     @outlet CPSecureTextField   fieldPassword;
-    @outlet CPTextField         labelEnterprise;
-    @outlet CPTextField         labelRESTURL
     @outlet CPTextField         fieldEnterprise;
     @outlet CPTextField         fieldLogin;
     @outlet CPTextField         fieldRESTURL;
     @outlet CPTextField         labelCopyright;
+    @outlet CPTextField         labelEnterprise;
     @outlet CPTextField         labelInfo;
+    @outlet CPTextField         labelRESTURL
     @outlet CPView              viewContainer;
 
     BOOL                        _organizationFieldHidden @accessors(property=organizationFieldHidden);
@@ -124,8 +125,9 @@
     }
 
     [viewContainer setFrame:frame];
-}
 
+    [imageViewPoweredBy setHidden:![[NUKit kit] usesPoweredBy]];
+}
 
 
 #pragma mark -

@@ -34,6 +34,7 @@ var NUMainWindowControllerDefault,
 @implementation NUMainWindowController : CPWindowController
 {
     @outlet CPImageView                         imageViewCurrentUserAvatar;
+    @outlet CPImageView                         imageViewPoweredBy;
     @outlet CPTextField                         fieldAboutBuildVersion;
     @outlet CPTextField                         fieldCurrentUser;
     @outlet CPView                              viewFooter;
@@ -105,6 +106,8 @@ var NUMainWindowControllerDefault,
     // view too small
     [viewTooSmallWindowSize setBackgroundColor:NUSkinColorGreyLight];
     [viewTooSmallWindowSize setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+    [imageViewPoweredBy setHidden:![[NUKit kit] usesPoweredBy]];
 }
 
 

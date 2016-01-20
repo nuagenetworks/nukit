@@ -54,6 +54,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
 @implementation NUKit : CPObject
 {
+    BOOL                            _usesPoweredBy                  @accessors(property=usesPoweredBy);
     CPBundle                        _bundle                         @accessors(getter=bundle);
     CPColor                         _toolbarBackgroundColor         @accessors(property=toolbarBackgroundColor);
     CPColor                         _toolbarForegroundColor         @accessors(property=toolbarForegroundColor);
