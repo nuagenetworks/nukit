@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15E27e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NUMainWindowController">
@@ -9,6 +9,7 @@
                 <outlet property="fieldAboutBuildVersion" destination="67" id="292"/>
                 <outlet property="fieldCurrentUser" destination="341" id="346"/>
                 <outlet property="imageViewCurrentUserAvatar" destination="520" id="522"/>
+                <outlet property="imageViewPoweredBy" destination="rgQ-ju-Y4X" id="Foa-FP-TeL"/>
                 <outlet property="toolBar" destination="b8G-W0-DP3" id="aEb-YB-Rsf"/>
                 <outlet property="viewFooter" destination="48" id="291"/>
                 <outlet property="viewMainContainer" destination="PNL-QV-jLr" id="z5S-C1-OYZ"/>
@@ -96,6 +97,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="521"/>
                             </imageView>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="rgQ-ju-Y4X">
+                                <rect key="frame" x="564" y="-1" width="123" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="powered-by" id="bK0-ta-Qbe"/>
+                            </imageView>
                         </subviews>
                     </customView>
                     <customView id="PNL-QV-jLr">
@@ -107,7 +113,7 @@
             <connections>
                 <outlet property="initialFirstResponder" destination="341" id="484"/>
             </connections>
-            <point key="canvasLocation" x="236.5" y="352"/>
+            <point key="canvasLocation" x="236.5" y="358"/>
         </window>
         <customView id="Jq0-fb-wNi" userLabel="View Too Small">
             <rect key="frame" x="0.0" y="0.0" width="362" height="285"/>
@@ -149,4 +155,7 @@
             </subviews>
         </customView>
     </objects>
+    <resources>
+        <image name="powered-by" width="247" height="34"/>
+    </resources>
 </document>

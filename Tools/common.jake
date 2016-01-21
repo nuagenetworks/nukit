@@ -328,3 +328,13 @@ TASK("test-only", function()
         }
     });
 });
+
+TASK ("cucumber-test", function()
+{
+    var SYSTEM = require("system");
+
+    OS.system("ln -s " + SYSTEM.prefix + "/packages/cucapp/Cucapp Cucapp")
+    var code = OS.system("cucumber");
+    OS.system("rm -f Cucapp; rm -f cucumber.html")
+    OS.exit(code);
+});
