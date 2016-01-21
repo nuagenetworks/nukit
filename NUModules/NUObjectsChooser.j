@@ -123,6 +123,11 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     [tableView setAllowsMultipleSelection:isMultipleSelections];
 }
 
+- (void)setButtonTitle:(CPString)aTitle
+{
+    [buttonSelect setTitle:aTitle];
+}
+
 
 #pragma mark -
 #pragma mark NUObjectsChooser API
