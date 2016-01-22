@@ -39,10 +39,10 @@
 @global NUModuleActionEdit
 @global NUModuleActionInstantiate
 
-NUModuleContextCommonControlTagsAsFirstResponder = nil;
-
 var NUValidationActive = nil,
     NUModuleContextAutoValidation = NO,
+
+    NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"minAddress", @"MAC", @"virtualIP", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"],
 
     NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
     NUModuleContextDelegate_moduleContext_didManageObject_                          = 1 << 2,
