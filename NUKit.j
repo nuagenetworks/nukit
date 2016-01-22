@@ -184,6 +184,11 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     [_mainWindowController registerPrincipalModule:aModule accessButton:aButton availableToRoles:someRoles];
 }
 
+- (void)configureContextDefaultFirstResponderTags:(CPArray)anArray
+{
+    [NUModuleContext setDefaultFirstResponderTags:anArray];
+}
+
 
 #pragma mark -
 #pragma mark Utilities

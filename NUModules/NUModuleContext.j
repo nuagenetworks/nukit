@@ -39,14 +39,12 @@
 @global NUModuleActionEdit
 @global NUModuleActionInstantiate
 
+NUModuleContextCommonControlTagsAsFirstResponder = nil;
 
 var NUValidationActive = nil,
-    NUModuleContextAutoValidation = NO;
+    NUModuleContextAutoValidation = NO,
 
-// reversed for optim
-NUModuleContextCommonControlTagsAsFirstResponder = [@"privateIP", @"minAddress", @"MAC", @"virtualIP", @"description", @"value", @"lastName", @"firstName", @"address", @"CIDR", @"name"];
-
-var NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
+    NUModuleContextDelegate_moduleContext_willManageObject_                         = 1 << 1,
     NUModuleContextDelegate_moduleContext_didManageObject_                          = 1 << 2,
 
     NUModuleContextDelegate_moduleContext_willSaveObject_                           = 1 << 3,
@@ -159,6 +157,11 @@ var _isCPArrayControllerKind = function(object, keyPath)
         NUValidationActive = NO;
     else
         NUValidationActive = YES;
+}
+
++ (void)setDefaultFirstResponderTags:(CPArray)anArray
+{
+    NUModuleContextCommonControlTagsAsFirstResponder = anArray;
 }
 
 
