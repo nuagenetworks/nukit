@@ -164,6 +164,11 @@ var _isCPArrayControllerKind = function(object, keyPath)
     NUModuleContextCommonControlTagsAsFirstResponder = anArray;
 }
 
++ (CPArray)defaultFirstResponderTags
+{
+    return NUModuleContextCommonControlTagsAsFirstResponder;
+}
+
 
 #pragma mark -
 #pragma mark Initialization
