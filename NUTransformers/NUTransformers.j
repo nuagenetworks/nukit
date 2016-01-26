@@ -3,6 +3,7 @@
 @import "NUBoolToColorTransformer.j"
 @import "NUBoolToEnabledStringTransformer.j"
 @import "NUBoolToPil2Transformer.j"
+@import "NUBoolToPilReverseTransformer.j"
 @import "NUBoolToPilTransformer.j"
 @import "NUBoolToReversePilTransformer.j"
 @import "NUBoolToUpTransformer.j"
