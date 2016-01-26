@@ -24,11 +24,10 @@
 @import "NUUtilities.j"
 
 @class  NUModule
+@class  NUModuleContext
 
 @global NURESTObjectAttributeAllowedValuesKey
 @global NURESTObjectAttributeDisplayNameKey
-@global NUModuleContextCommonControlTagsAsFirstResponder
-
 
 var NUAdvancedFilteringViewControllerDefault;
 
@@ -263,11 +262,12 @@ var NUAdvancedFilteringViewControllerDefault;
 - (CPArray)_reorderWithCommonControlTagsFirst:(CPArray)anArray
 {
     var firstObjects = [CPMutableArray new],
-        otherObjects = [CPMutableArray new];
+        otherObjects = [CPMutableArray new],
+        tags         = [NUModuleContext defaultFirstResponderTags];
 
-    for (var i = [NUModuleContextCommonControlTagsAsFirstResponder count] - 1; i >= 0; i--)
+    for (var i = [tags count] - 1; i >= 0; i--)
     {
-        var object = NUModuleContextCommonControlTagsAsFirstResponder[i];
+        var object = tags[i];
 
         if ([anArray containsObject:object])
         {
