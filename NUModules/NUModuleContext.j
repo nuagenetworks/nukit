@@ -124,7 +124,6 @@ var _isCPArrayControllerKind = function(object, keyPath)
     CPString        _buttonEditLabel                @accessors(property=buttonEditLabel);
     CPString        _buttonInstantiateLabel         @accessors(property=buttonInstantiateLabel);
     CPString        _name                           @accessors(property=name);
-    CPString        _name                           @accessors(property=name);
     CPView          _editionView                    @accessors(property=editionView);
     id              _delegate                       @accessors(property=delegate);
     id              _preferedPopoverEdge            @accessors(property=preferedPopoverEdge);
