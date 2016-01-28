@@ -413,7 +413,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
     if (_mode == NUNetworkIPV6Mode)
     {
-        if ([aValue length] > 3 || aValue > 128 || aValue < 0)
+        if ([aValue length] > 3 || aValue > 128 || aValue < 0 || aValue == "00")
         {
             [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid IPV6 mask ip format : %@", aValue]];
             return NO;
@@ -424,7 +424,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
     if (_mode == NUNetworkIPV4Mode)
     {
-        if ([aValue length] > 2 || aValue > 32 || aValue < 0)
+        if ([aValue length] > 2 || aValue > 32 || aValue < 0 || aValue == "00")
         {
             [self _errorMessage:[CPString stringWithFormat:@"ERROR: Invalid mask ip format : %@", aValue]];
             return NO;
