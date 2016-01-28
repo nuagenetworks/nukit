@@ -570,6 +570,17 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [_popover makeFirstResponder:_initialFirstResponder];
 }
 
+- (CPArray)boundControls
+{
+    return [[_bindedControlsCache allValues] copy];
+}
+
+- (void)setBoundControlsEnabled:(BOOL)shouldEnable
+{
+    for (var i = [[_bindedControlsCache allValues] count] - 1; i >= 0; i--)
+        [[_bindedControlsCache allValues][i] setEnabled:shouldEnable];
+}
+
 
 #pragma mark -
 #pragma mark Delegate Management
