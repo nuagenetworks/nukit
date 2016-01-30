@@ -24,7 +24,7 @@
 
 @implementation NUNumericTextField : CPTextField
 {
-    BOOL     _allowDecimals     @accessors(property=allowDecimals);
+    BOOL    _allowDecimals     @accessors(property=allowDecimals);
 }
 
 - (BOOL)_setStringValue:(CPString)aValue isNewValue:(BOOL)isNewValue errorDescription:(CPStringRef)anError
@@ -62,6 +62,19 @@
         return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.$/);
 
     return !value.match(/^\d+$/);
+}
+
+- (id)objectValue
+{
+    if ([super objectValue] === nil || [super objectValue] == @"")
+        return nil;
+
+    return [self floatValue];
+}
+
+- (CPString)stringValue
+{
+    return @"" + [super stringValue];
 }
 
 @end
