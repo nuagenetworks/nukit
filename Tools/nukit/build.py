@@ -167,8 +167,8 @@ def build_war(name):
 
     current_path = os.getcwd()
     os.chdir("./webapp")
-    command(command="jar -cf %s.war" % name)
-    command(command="mv %s ../Build/%s/" % (name, target))
+    command(command="jar -cf %s.war ." % name)
+    command(command="mv %s.war ../Build/%s/" % (name, target))
     os.chdir(current_path)
 
 def clean_war():
@@ -216,7 +216,7 @@ def clean_dashboard():
 
 ## Main Function
 
-def perform_build(additional_libraries=[], war_name="ui.war"):
+def perform_build(additional_libraries=[], war_name="ui"):
     """
     """
 

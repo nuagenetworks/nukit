@@ -246,7 +246,9 @@ generate_war = function (project_name, target, build_type)
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Resources", "webapp/"]);
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/index.html", "webapp/"]);
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Info.plist", "webapp/"]);
-    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Application.js", "webapp/"]);
+
+    if (target != "Debug")
+        OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Application.js", "webapp/"]);
 }
 
 /*
