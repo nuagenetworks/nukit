@@ -14,3 +14,4 @@ debug.txt
 *.xcodeproj
 *.cib
 Frameworks/
+*.pyc
