@@ -162,12 +162,12 @@ def build_war(name):
     target = "Deployment"
 
     if "ARCHITECT_BUILD_DEBUG" in os.environ:
-        name = "vcenterui-debug.war"
+        name = "%s-debug" % name
         target = "Debug"
 
     current_path = os.getcwd()
     os.chdir("./webapp")
-    command(command="jar -cf %s ." % name)
+    command(command="jar -cf %s .war" % name)
     command(command="mv %s ../Build/%s/" % (name, target))
     os.chdir(current_path)
 
