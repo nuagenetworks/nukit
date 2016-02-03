@@ -9,6 +9,17 @@ ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..",
 ### Utilities
 
 def command(command, title=None, expected=0):
+    """
+        Runs a shell command.
+
+        If the command doesn't return the expected return code, the script will die
+
+        Args:
+            command: the command to run
+            title: if set, will display only the title, otherwise, it will be generated
+            expected: the return value of the command that will be considered as a success (default: 0)
+    """
+
     if title:
         print "# %s" % title
     else:
@@ -16,6 +27,7 @@ def command(command, title=None, expected=0):
 
     if not VERBOSE:
         command = "%s > /tmp/buildProject.log 2>&1" % command
+
     ret = os.system(command)
 
     if not ret == expected:
@@ -23,17 +35,21 @@ def command(command, title=None, expected=0):
         sys.exit(-1)
     else:
         print "\033[32mSUCCESS\033[0m"
+
     return ret
 
-def init(installDir, buildDir):
+def init(install_dir, build_dir):
+    """
+        Performs some initialization
+    """
     try:
-        os.makedirs(buildDir)
+        os.makedirs(build_dir)
     except:
         pass
     os.environ["JAVA_OPTS"] = "-Xmx1024M"
-    os.environ["CAPP_BUILD"] = buildDir
+    os.environ["CAPP_BUILD"] = build_dir
     os.environ["CAPP_NOSUDO"] = "1"
-    os.environ["PATH"] = "%s:%s" % (os.environ["PATH"], "%s/bin" % installDir)
+    os.environ["PATH"] = "%s:%s" % (os.environ["PATH"], "%s/bin" % install_dir)
 
     if not "NARWHAL_ENGINE" in os.environ:
         if not 'darwin' in sys.platform:
@@ -44,59 +60,105 @@ def init(installDir, buildDir):
 
 ### Libraries Management
 
-def build_library(name, customCommand=None):
+def build_library(name, custom_command=None):
+    """
+        Builds a library
+
+        Args:
+            name: the name of the library (that will be found in Libraries folder)
+            custom_command: by default, the build command will be jake release; jake debug. Set this to change it
+    """
     os.environ["OBJJ_INCLUDE_PATHS"] = "%s/Frameworks" % ROOT_DIRECTORY
     current_path = os.getcwd()
     os.chdir("Libraries/%s" % name)
-    if customCommand is None: command("jake release; jake debug")
-    else: command(customCommand)
+    if custom_command is None: command(command="jake release; jake debug")
+    else: command(command=custom_command)
     os.chdir(current_path)
-    command("capp gen -fl --force -F %s ." % name)
+    command(command="capp gen -fl --force -F %s ." % name)
 
-def clean_library(name, build_prefix=""):
+def clean_library(name):
+    """
+        Cleans a library
+
+        Args:
+            name: the name of the library to clean
+    """
     current_path = os.getcwd()
     os.chdir("Libraries/%s" % name)
-    command("jake clean")
+    command(command="jake clean")
     os.chdir(current_path)
 
 
 ### Theme Management
 
 def build_theme(name):
+    """
+        Builds a Theme
+
+        Args:
+            name: the name of the theme. (that will be found in the Libraries folder)
+    """
     os.environ["OBJJ_INCLUDE_PATHS"] = "%s/Frameworks" % ROOT_DIRECTORY
     current_path = os.getcwd()
     os.chdir("Libraries/%s" % name)
-    command("jake build")
+    command(command="jake build")
     os.chdir(current_path)
-    command("capp gen -fl --force -T %s ." % name)
+    command(command="capp gen -fl --force -T %s ." % name)
 
-def clean_theme(name, build_prefix=""):
+def clean_theme(name):
+    """
+        Cleans a Theme
+
+        Args:
+            name: the name of the theme to clean
+    """
     current_path = os.getcwd()
     os.chdir("Libraries/%s" % name)
-    command("rm -rf %sBuild" % build_prefix)
+    command(command="rm -rf Build")
     os.chdir(current_path)
 
 
 ### Cappuccino Management
 
-def install_cappuccino(installDir, buildDir, localDistrib):
+def install_cappuccino(install_dir, local_distrib):
+    """
+        Installs Cappuccino
+
+        Args:
+            install_dir: where to install cappuccino
+            build_dir: where to build cappuccino
+            local_distrib: the path of a local bootstrapped cappuccino archive
+    """
     current_path = os.getcwd()
     os.chdir("Libraries/Cappuccino")
-    command("rm -rf %s" % installDir)
-    command("./bootstrap.sh --noprompt --directory %s --copy-local %s" % (installDir, localDistrib))
-    command("jake install")
+    command(command="rm -rf %s" % install_dir)
+    command(command="./bootstrap.sh --noprompt --directory %s --copy-local %s" % (install_dir, local_distrib))
+    command(command="jake install")
 
     os.chdir(current_path)
 
-def clean_cappuccino(installDir, buildDir):
-    command("jake clobber-theme; jake clobber")
-    command("rm -rf '%s'" % installDir)
-    command("rm -rf '%s'" % buildDir)
+def clean_cappuccino(install_dir, build_dir):
+    """
+        Cleans Cappuccino installation
+
+        Args:
+            install_dir: where cappuccino is installed
+            build_dir: where cappuccino is built
+    """
+    command(command="jake clobber-theme; jake clobber")
+    command(command="rm -rf '%s'" % install_dir)
+    command(command="rm -rf '%s'" % build_dir)
 
 
 ### WAR Management
 
 def build_war(name):
+    """
+        Builds a war file
+
+        Args:
+            name: name of the war file
+    """
     target = "Deployment"
 
     if "ARCHITECT_BUILD_DEBUG" in os.environ:
@@ -105,19 +167,29 @@ def build_war(name):
 
     current_path = os.getcwd()
     os.chdir("./webapp")
-    command("jar -cf %s ." % name)
-    command("mv %s ../Build/%s/" % (name, target))
+    command(command="jar -cf %s ." % name)
+    command(command="mv %s ../Build/%s/" % (name, target))
     os.chdir(current_path)
 
 def clean_war():
+    """
+        Cleans the war file
+    """
+
     current_path = os.getcwd()
     os.chdir("./webapp")
-    command("rm -rf Application.js *.environment Frameworks Info.plist Resources index.html")
+    command(command="rm -rf Application.js *.environment Frameworks Info.plist Resources index.html")
     os.chdir(current_path)
 
 ### Project Management
 
 def build_project(build_version="dev"):
+    """
+        Builds the main project
+
+        Args:
+            build_version: the build version string (eg. 1.2-dev)
+    """
     current_path = os.getcwd()
     git_rev = commands.getoutput("git log --pretty=format:'%h' -n 1")
     git_branch = commands.getoutput("git symbolic-ref HEAD").split("/")[-1]
@@ -128,21 +200,23 @@ def build_project(build_version="dev"):
     f = open("Resources/app-version.js", "w")
     f.write("APP_GITVERSION = '%s-%s'\nAPP_BUILDVERSION='%s'\n" % (git_branch, git_rev, build_version))
     f.close()
-    command("capp gen -fl . --force")
+    command(command="capp gen -fl . --force")
 
     if "ARCHITECT_BUILD_DEBUG" in os.environ:
-        command("jake devdeploy")
+        command(command="jake devdeploy")
     else:
-        command("jake deploy")
-
-def build_container(container_name):
-    command("docker build -t %s ." % container_name)
+        command(command="jake deploy")
 
 def clean_dashboard():
-    command("rm -rf Build")
+    """
+        Cleans the main project
+    """
+    command(command="rm -rf Build")
 
 
-def main(additional_libraries, war_name, container_default_name):
+## Main Function
+
+def perform_build(additional_libraries=[], war_name="ui.war"):
     """
     """
 
@@ -211,10 +285,10 @@ def main(additional_libraries, war_name, container_default_name):
                         help="Clean all libraries, project and cappuccino")
     parser.add_option("--cappinstalldir",
                         default="/usr/local/narwhal",
-                        dest="cappuccinoInstallDir",
+                        dest="cappuccinoinstalldir",
                         help="Cappuccino install directory")
     parser.add_option("--cappbuilddir",
-                        dest="cappuccinoBuildDir",
+                        dest="cappuccinobuilddir",
                         help="Cappuccino build directory")
     parser.add_option("--nomanifest",
                         dest="nomanifest",
@@ -224,45 +298,36 @@ def main(additional_libraries, war_name, container_default_name):
                         dest="debug",
                         action="store_true",
                         help="Generate a debug deployment build")
-    parser.add_option("--build-container",
-                        dest="buildcontainer",
-                        action="store_true",
-                        default=False,
-                        help="Build the docker container")
-    parser.add_option("--container-name",
-                        dest="containername",
-                        default=container_default_name,
-                        help="Container name. default %s" % container_default_name)
 
     options, args = parser.parse_args()
 
     if options.verbose:
         VERBOSE = True
 
-    if not options.cappuccinoBuildDir and "CAPP_BUILD" in os.environ:
-        options.cappuccinoBuildDir = os.environ["CAPP_BUILD"]
-    if not options.cappuccinoBuildDir:
-        options.cappuccinoBuildDir = "/usr/local/cappuccino"
+    if not options.cappuccinobuilddir and "CAPP_BUILD" in os.environ:
+        options.cappuccinobuilddir = os.environ["CAPP_BUILD"]
+    if not options.cappuccinobuilddir:
+        options.cappuccinobuilddir = "/usr/local/cappuccino"
 
-    options.cappuccinoInstallDir = os.path.expanduser(options.cappuccinoInstallDir)
-    options.cappuccinoBuildDir = os.path.expanduser(options.cappuccinoBuildDir)
+    options.cappuccinoinstalldir = os.path.expanduser(options.cappuccinoinstalldir)
+    options.cappuccinobuilddir = os.path.expanduser(options.cappuccinobuilddir)
 
-    init(options.cappuccinoInstallDir, options.cappuccinoBuildDir)
+    init(install_dir=options.cappuccinoinstalldir, build_dir=options.cappuccinobuilddir)
 
     if options.clean or options.clobber:
-        clean_library("NUKit")
-        clean_library("TNKit")
-        clean_library("RESTCappuccino")
+        clean_library(name="NUKit")
+        clean_library(name="TNKit")
+        clean_library(name="RESTCappuccino")
 
         for library in additional_libraries:
-            clean_library(library["name"])
+            clean_library(name=library["name"])
 
-        clean_theme("NUAristo")
+        clean_theme(name="NUAristo")
         clean_project()
         clean_war()
 
         if options.clobber:
-            clean_cappuccino(options.cappuccinoInstallDir, options.cappuccinoBuildDir)
+            clean_cappuccino(install_dir=options.cappuccinoinstalldir, build_dir=options.cappuccinobuilddir)
 
         sys.exit(0)
 
@@ -274,26 +339,24 @@ def main(additional_libraries, war_name, container_default_name):
 
     ## Required libraries
     if options.everything or options.cappuccino:
-        install_cappuccino(options.cappuccinoInstallDir, options.cappuccinoBuildDir, "/usr/local/cappuccino-base/current")
+        install_cappuccino(install_dir=options.cappuccinoinstalldir,
+                           local_distrib="/usr/local/cappuccino-base/current")
     if options.everything or options.all or options.tnkit or options.libraries:
-        build_library("TNKit")
+        build_library(name="TNKit")
     if options.everything or options.all or options.restcappuccino or options.libraries:
-        build_library("RESTCappuccino")
+        build_library(name="RESTCappuccino")
     if options.everything or options.all or options.nukit or options.libraries:
-        build_library("NUKit")
+        build_library(name="NUKit")
     if options.everything or options.all or options.nuaristo or options.libraries:
-        build_theme("NUAristo")
+        build_theme(name="NUAristo")
 
     ## Additional User Libraries
     for library in additional_libraries:
         if options.everything or options.all or getattr(options, library["name"].lower()) or options.libraries:
-            build_library(library["name"])
+            build_library(name=library["name"])
 
     if options.everything or options.all or options.project:
-        build_project(options.buildversion)
+        build_project(build_version=options.buildversion)
 
     if options.everything or options.all or options.generatewar:
-        build_war(war_name)
-
-    if options.buildcontainer:
-        build_container(options.containername)
+        build_war(name=war_name)
