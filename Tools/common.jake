@@ -228,6 +228,26 @@ add_bundle_files_size = function(bundlePath, totalBytes)
     }
 }
 
+generate_war = function (project_name, target, build_type)
+{
+    OS.system(["rm", "-rf", "webapp/Browser.environment"]);
+    OS.system(["rm", "-rf", "webapp/CommonJS.environment"]);
+    OS.system(["rm", "-rf", "webapp/Frameworks"]);
+    OS.system(["rm", "-rf", "webapp/Resources"]);
+    OS.system(["rm", "-rf", "webapp/index.html"]);
+    OS.system(["rm", "-rf", "webapp/index.html"]);
+    OS.system(["rm", "-rf", "webapp/Info.plist"]);
+    OS.system(["rm", "-rf", "webapp/Application.js"]);
+    OS.system(["rm", "-rf", "webapp/app.manifest"]);
+    OS.system(["rm", "-rf", "webapp/Application.js"]);
+
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Browser.environment", "webapp/"]);
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Frameworks", "webapp/"]);
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Resources", "webapp/"]);
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/index.html", "webapp/"]);
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Info.plist", "webapp/"]);
+    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Application.js", "webapp/"]);
+}
 
 /*
     Tasks
@@ -298,6 +318,15 @@ TASK ("predeploy", ["release"], function()
     compress_app(BUILD_INFO["PROJECT_NAME"]);
 });
 
+TASK ("deploy", ["predeploy"], function()
+{
+    generate_war(BUILD_INFO["PROJECT_NAME"], "Deployment", ".ready");
+});
+
+TASK ("devdeploy", ["debug"], function(){
+    generate_war(BUILD_INFO["PROJECT_NAME"], "Debug", "");
+});
+
 TASK("test", ["test-only"]);
 
 TASK("test-only", function()
@@ -337,4 +366,13 @@ TASK ("cucumber-test", function()
     var code = OS.system("cucumber");
     OS.system("rm -f Cucapp; rm -f cucumber.html")
     OS.exit(code);
+});
+
+TASK ("docker", /*["predeploy"],*/ function()
+{
+    var dockerfile_template = FILE.read(FILE.join("Libraries", "NUKit", "Tools", "Dockerfile"), { charset:"UTF-8" }),
+        dockerfile = dockerfile_template.replace("[__APP_NAME__]", BUILD_INFO["PROJECT_NAME"])
+
+    print(dockerfile);
+
 });
