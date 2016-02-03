@@ -2,7 +2,7 @@ import os, commands
 from optparse import OptionParser
 import sys
 
-VERBOSE = False;
+VERBOSE = True;
 
 ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "..", "..")
 
@@ -136,7 +136,7 @@ def build_project(build_version="dev"):
         command("jake deploy")
 
 def build_container(container_name):
-    command("docker build -t '%s' ." % container_name)
+    command("docker build -t %s ." % container_name)
 
 def clean_dashboard():
     command("rm -rf Build")

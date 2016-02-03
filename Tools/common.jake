@@ -367,12 +367,3 @@ TASK ("cucumber-test", function()
     OS.system("rm -f Cucapp; rm -f cucumber.html")
     OS.exit(code);
 });
-
-TASK ("docker", /*["predeploy"],*/ function()
-{
-    var dockerfile_template = FILE.read(FILE.join("Libraries", "NUKit", "Tools", "Dockerfile"), { charset:"UTF-8" }),
-        dockerfile = dockerfile_template.replace("[__APP_NAME__]", BUILD_INFO["PROJECT_NAME"])
-
-    print(dockerfile);
-
-});
