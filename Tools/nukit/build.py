@@ -167,7 +167,7 @@ def build_war(name):
 
     current_path = os.getcwd()
     os.chdir("./webapp")
-    command(command="jar -cf %s .war" % name)
+    command(command="jar -cf %s.war" % name)
     command(command="mv %s ../Build/%s/" % (name, target))
     os.chdir(current_path)
 
