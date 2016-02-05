@@ -37,8 +37,9 @@ var NUKitToolBarDefault;
     @outlet CPTextField     fieldApplicationName;
     @outlet NUStackView     stackViewButtons;
 
+    CPButton                _buttonLogout       @accessors(property=buttonLogout);
+
     CPView                  _viewSeparator;
-    CPButton                _buttonLogout;
     CPDictionary            _buttonsRegistry;
     CPView                  _viewIcon;
     id                      _applicationNameBoundObject;
