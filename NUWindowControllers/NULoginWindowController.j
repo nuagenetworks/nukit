@@ -26,6 +26,7 @@
 @import "NUUtilities.j"
 @import "NUDataTransferController.j"
 @import "EKShakeAnimation.j"
+@import "NUStackView.j"
 
 @class NUKit
 
@@ -34,6 +35,7 @@
 
 @implementation NULoginWindowController : CPWindowController
 {
+    @outlet NUStackView         stackViewMain;
     @outlet CPButton            buttonLogin;
     @outlet CPImageView         imageViewLogo;
     @outlet CPImageView         imageViewPoweredBy;
@@ -42,13 +44,18 @@
     @outlet CPTextField         fieldLogin;
     @outlet CPTextField         fieldRESTURL;
     @outlet CPTextField         labelCopyright;
-    @outlet CPTextField         labelEnterprise;
     @outlet CPTextField         labelInfo;
-    @outlet CPTextField         labelRESTURL
-    @outlet CPView              viewContainer;
+    @outlet CPView              viewPartLogo;
+    @outlet CPView              viewPartLogin;
+    @outlet CPView              viewPartPassword;
+    @outlet CPView              viewPartEnterprise;
+    @outlet CPView              viewPartServer;
+    @outlet CPView              viewPartControls;
 
-    BOOL                        _organizationFieldHidden @accessors(property=organizationFieldHidden);
-    BOOL                        _serverFieldHidden       @accessors(property=serverFieldHidden);
+    BOOL                        _showsLoginField         @accessors(property=showsLoginField);
+    BOOL                        _showsPasswordField      @accessors(property=showsPasswordField);
+    BOOL                        _showsEnterpriseField    @accessors(property=showsEnterpriseField);
+    BOOL                        _showsServerField        @accessors(property=showsServerField);
 }
 
 #pragma mark -
@@ -56,7 +63,13 @@
 
 - (id)init
 {
-    self = [self initWithWindowCibName:@"Login"];
+    if (self = [self initWithWindowCibName:@"Login"])
+    {
+        _showsLoginField = YES;
+        _showsPasswordField = YES;
+        _showsEnterpriseField = YES;
+        _showsServerField = YES;
+    }
 
     return self;
 }
@@ -86,12 +99,7 @@
     [self window]._windowView._DOMElement.style.animationFillMode = "forwards";
 
     // Container view skin
-    viewContainer._DOMElement.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
-
-    var line = [viewContainer subviewWithTag:@"line"];
-    [line setBorderColor:NUSkinColorGreyDark];
-    [line setBorderWidth:1.0]
-    [line setAlphaValue:0.3];
+    stackViewMain._DOMElement.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
 
     [buttonLogin setBordered:NO];
     [buttonLogin setButtonType:CPMomentaryChangeButton];
@@ -105,26 +113,7 @@
     _cucappID(fieldRESTURL, "field-restaddress");
     _cucappID(buttonLogin, "button-login");
 
-    var frame = [viewContainer frame],
-        h = 26;
-
-    if (_organizationFieldHidden)
-    {
-        [labelEnterprise setHidden:YES];
-        [fieldEnterprise setHidden:YES];
-        frame.origin.y += h / 2;
-        frame.size.height -= h;
-    }
-
-    if (_serverFieldHidden)
-    {
-        [labelRESTURL setHidden:YES];
-        [fieldRESTURL setHidden:YES];
-        frame.origin.y += h / 2;
-        frame.size.height -= h;
-    }
-
-    [viewContainer setFrame:frame];
+    [self _adjustStackViewContent];
 
     [imageViewPoweredBy setHidden:![[NUKit kit] usesPoweredBy]];
 }
@@ -161,6 +150,75 @@
         [[self window] makeFirstResponder:fieldPassword];
     else
         [[self window] makeFirstResponder:fieldLogin];
+}
+
+- (void)_adjustStackViewContent
+{
+    var parts = [viewPartLogo];
+
+    if (_showsLoginField)
+        [parts addObject:viewPartLogin];
+
+    if (_showsPasswordField)
+        [parts addObject:viewPartPassword];
+
+    if (_showsEnterpriseField)
+        [parts addObject:viewPartEnterprise];
+
+    if (_showsServerField)
+        [parts addObject:viewPartServer];
+
+    [parts addObject:viewPartControls];
+
+    [stackViewMain setSubviews:parts];
+}
+
+
+#pragma mark -
+#pragma mark Getters and Setters
+
+- (void)setShowsLoginField:(BOOL)shouldShow
+{
+    if (_showsLoginField == shouldShow)
+        return;
+
+    [self willChangeValueForKey:@"showsLoginField"];
+    _showsLoginField = shouldShow;
+    [self _adjustStackViewContent];
+    [self didChangeValueForKey:@"showsLoginField"];
+}
+
+- (void)setShowsPasswordField:(BOOL)shouldShow
+{
+    if (_showsPasswordField == shouldShow)
+        return;
+
+    [self willChangeValueForKey:@"showsPasswordField"];
+    _showsPasswordField = shouldShow;
+    [self _adjustStackViewContent];
+    [self didChangeValueForKey:@"showsPasswordField"];
+}
+
+- (void)setShowsEnterpriseField:(BOOL)shouldShow
+{
+    if (_showsEnterpriseField == shouldShow)
+        return;
+
+    [self willChangeValueForKey:@"showsEnterpriseField"];
+    _showsEnterpriseField = shouldShow;
+    [self _adjustStackViewContent];
+    [self didChangeValueForKey:@"showsEnterpriseField"];
+}
+
+- (void)setShowsServerField:(BOOL)shouldShow
+{
+    if (_showsServerField == shouldShow)
+        return;
+
+    [self willChangeValueForKey:@"showsServerField"];
+    _showsServerField = shouldShow;
+    [self _adjustStackViewContent];
+    [self didChangeValueForKey:@"showsServerField"];
 }
 
 
