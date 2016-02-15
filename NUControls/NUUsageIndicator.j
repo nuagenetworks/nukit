@@ -25,14 +25,18 @@
 
 - (void)setDoubleValue:(double)aValue
 {
-    if (aValue < 80)
+    [super setDoubleValue:aValue];
+
+    var percentage = parseFloat(aValue) / parseFloat([self maxValue]);
+
+    if (percentage < 0.8)
         [self setValue:NUSkinColorBlue forThemeAttribute:@"bar-color"];
-    else if (aValue >= 80 && aValue < 90)
+    else if (percentage >= 0.8 && percentage < 0.9)
         [self setValue:NUSkinColorOrange forThemeAttribute:@"bar-color"];
     else
         [self setValue:NUSkinColorRed forThemeAttribute:@"bar-color"];
 
-    [super setDoubleValue:aValue];
+
 }
 
 
