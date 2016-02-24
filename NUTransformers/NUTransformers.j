@@ -14,7 +14,6 @@
 @import "NUIPv6ToStringTransformer.j"
 @import "NUMillisecondsToDateTransformer.j"
 @import "NUMillisecondsToDaysHoursMinutesTransformer.j"
-@import "NUModuleTitleTransformers.j"
 @import "NUNullDescriptionTransformer.j"
 @import "NUNullToBoolTransformer.j"
 @import "NUNullToGreyColorTransformer.j"
