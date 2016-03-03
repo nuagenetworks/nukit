@@ -38,8 +38,10 @@ var NUAbstractObjectAssociator_didAssociatorFetchAssociatedObject_          = 1 
     NUAbstractObjectAssociator_didAssociatorRemoveAssociation_              = 1 << 3,
     NUAbstractObjectAssociator_didAssociatorChangeAssociation_              = 1 << 4;
 
+var NUAbstractObjectAssociatorImageRequired = nil;
+
 NUObjectAssociatorDisplayModeDataView = 1;
-NUObjectAssociatorDisplayModeText = 2;
+NUObjectAssociatorDisplayModeText     = 2;
 
 var BUTTONS_SIZE = 12;
 
@@ -61,6 +63,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     id                          _delegate                   @accessors(property=delegate);
     int                         _displayMode                @accessors(property=displayMode);
 
+    BOOL                        _isRequired;
     BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
     CPDictionary                _categoriesRegistry;
@@ -169,6 +172,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     if (!_displayMode)
         [self setDisplayMode:[self defaultDisplayMode]];
 
+    [self _displayRequiredImage];
 }
 
 
@@ -383,9 +387,50 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return dataView;
 }
 
+- (void)setRequired:(BOOL)isRequired
+{
+    if (self._isRequired == isRequired)
+        return;
+
+    self._isRequired = isRequired;
+
+
+}
+
+- (BOOL)isRequired
+{
+    return !!self._isRequired;
+}
+
 
 #pragma mark -
 #pragma mark Utilities
+
+
+- (void)_displayRequiredImage
+{
+    var view         = [self view],
+        currentFrame = [view bounds];
+
+    if (self._isRequired)
+    {
+        if (!NUAbstractObjectAssociatorImageRequired)
+            NUAbstractObjectAssociatorImageRequired = NUImageInKit(@"required.png", CGSizeMake(8, 8));
+
+        self.__requiredImageView = [[CPImageView alloc] initWithFrame:CGRectMake(0, 0, 8, 8)];
+        [self.__requiredImageView setAutoresizingMask:CPViewMinXMargin];
+        [self.__requiredImageView setImage:NUAbstractObjectAssociatorImageRequired];
+        [self.__requiredImageView setToolTip:@"This association is required"];
+
+        [self.__requiredImageView setFrameOrigin:CGPointMake(CGRectGetWidth(currentFrame) - 16, CGRectGetMidY(currentFrame) - 4)];
+        [[self view] addSubview:self.__requiredImageView];
+    }
+    else
+    {
+        if (self.__requiredImageView)
+            [self.__requiredImageView removeFromSuperview];
+    }
+}
 
 - (void)_configureObjectsChooser
 {
