@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15E33e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15E56a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
@@ -14,9 +14,7 @@
                 <outlet property="imageViewLogo" destination="65" id="SZv-b3-YGE"/>
                 <outlet property="imageViewPoweredBy" destination="pPU-j5-8g2" id="9lI-rh-fxh"/>
                 <outlet property="labelCopyright" destination="4Ub-fx-37W" id="26A-Gq-FxR"/>
-                <outlet property="labelEnterprise" destination="13" id="dhO-jv-aqt"/>
                 <outlet property="labelInfo" destination="47" id="49"/>
-                <outlet property="labelRESTURL" destination="35" id="7oA-as-0TA"/>
                 <outlet property="stackViewMain" destination="Piq-OY-hPp" id="2BJ-ti-Lnb"/>
                 <outlet property="viewPartControls" destination="KCS-6V-CcM" id="Ql2-w8-0Q2"/>
                 <outlet property="viewPartEnterprise" destination="Nhf-OS-ZBV" id="N9o-Eb-OQk"/>
