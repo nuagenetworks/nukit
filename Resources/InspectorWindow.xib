@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15E56a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NUInspectorWindowController">
             <connections>
-                <outlet property="buttonOpenDoc" destination="3Dx-T3-sQK" id="OeU-iW-AIP"/>
                 <outlet property="fieldObjectCreationDate" destination="kw2-rw-sob" id="jjn-1U-PKA"/>
                 <outlet property="fieldObjectExternalID" destination="Q6b-Qx-Pq9" id="d5y-p1-rtz"/>
                 <outlet property="fieldObjectID" destination="2a7-Cg-cPj" id="Y2c-PU-DNh"/>
@@ -28,19 +27,19 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="G5H-5n-fgl">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <rect key="contentRect" x="-1784" y="168" width="306" height="703"/>
+            <rect key="contentRect" x="-1784" y="168" width="353" height="705"/>
             <rect key="screenRect" x="-1920" y="0.0" width="1920" height="1080"/>
             <view key="contentView" id="V6P-si-dOY">
-                <rect key="frame" x="0.0" y="0.0" width="306" height="703"/>
+                <rect key="frame" x="0.0" y="0.0" width="353" height="705"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView id="QZ4-Ha-wJu" customClass="TNTabView">
-                        <rect key="frame" x="0.0" y="0.0" width="306" height="703"/>
+                        <rect key="frame" x="0.0" y="0.0" width="353" height="705"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </customView>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-206" y="314.5"/>
+            <point key="canvasLocation" x="-182.5" y="315.5"/>
         </window>
         <view id="5dr-08-7he">
             <rect key="frame" x="0.0" y="0.0" width="300" height="703"/>
@@ -225,7 +224,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="12" headerView="qkJ-22-JyY" id="i67-bv-ia2">
-                                <rect key="frame" x="0.0" y="0.0" width="259.5" height="12"/>
+                                <rect key="frame" x="0.0" y="0.0" width="260" height="167"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -264,7 +263,7 @@
                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="X63-r9-PJ3">
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="1Rs-gZ-YsB">
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="1Rs-gZ-YsB">
                         <rect key="frame" x="436" y="0.0" width="16" height="200"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
@@ -351,9 +350,6 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
-                    <connections>
-                        <action selector="openAPIDocInExternalWindow:" target="-2" id="WEe-RV-az3"/>
-                    </connections>
                 </button>
             </subviews>
             <point key="canvasLocation" x="232" y="348.5"/>

@@ -47,7 +47,6 @@ var NUInspectorWindowsRegistry = @{},
 
 @implementation NUInspectorWindowController : CPWindowController
 {
-    @outlet CPButton                    buttonOpenDoc;
     @outlet CPTableView                 tableViewAttributes;
     @outlet CPTableView                 tableViewGenealogy;
     @outlet CPTextField                 fieldObjectCreationDate;
@@ -139,11 +138,6 @@ var NUInspectorWindowsRegistry = @{},
     [tableViewAttributes setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
     [tableViewAttributes setBackgroundColor:NUSkinColorWhite]
     [[tableViewAttributes enclosingScrollView] setBorderColor:NUSkinColorGrey];
-
-    [buttonOpenDoc setBordered:NO];
-    [buttonOpenDoc setButtonType:CPMomentaryChangeButton];
-    [buttonOpenDoc setValue:NUImageInKit(@"button-help.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateNormal];
-    [buttonOpenDoc setValue:NUImageInKit(@"button-help-pressed.png", 18, 18) forThemeAttribute:@"image" inState:CPThemeStateHighlighted];
 
     [tabViewMain setDelegate:self];
     _configure_nuage_tabview(tabViewMain, NO);
@@ -305,22 +299,6 @@ var NUInspectorWindowsRegistry = @{},
 #pragma mark -
 #pragma mark Utilities
 
-- (CPURL)_currentObjectDocumentationURL
-{
-    var customAPIVersion = [[NUKit kit] valueForApplicationArgument:@"apiversion"];
-
-    if (customAPIVersion)
-        customAPIVersion = customAPIVersion.replace(".", "_");
-
-    var bundle    = [CPBundle mainBundle],
-        baseURL   = [[[NURESTLoginController defaultController] URL] baseURL],
-        version   = customAPIVersion || [bundle objectForInfoDictionaryKey:@"NUAPIVersion"].replace(".", "_"),
-        docPath   = [bundle objectForInfoDictionaryKey:@"NUAPIDocumentationURL"].replace(new RegExp("s^\/", "g"), ""),
-        finalPath = docPath + "/V" + version + "/" + [_inspectedObject RESTName] + ".html";
-
-    return [CPURL URLWithString:finalPath relativeToURL:baseURL];
-}
-
 - (void)makeKeyInspector
 {
     if ([[[self window] platformWindow] isVisible])
@@ -334,11 +312,6 @@ var NUInspectorWindowsRegistry = @{},
 - (@action)openAnotherInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForSelectedObject];
-}
-
-- (@action)openAPIDocInExternalWindow:(id)aSender
-{
-    window.open([self _currentObjectDocumentationURL], "_new");
 }
 
 
