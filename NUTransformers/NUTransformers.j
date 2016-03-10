@@ -27,4 +27,5 @@
 @import "NUNumericValueToSecondsUnitTransformer.j"
 @import "NUSpeedToStringTransformer.j"
 @import "NUStringToCapitalizedStringTransformer.j"
+@import "NUTimestampToStringTransformer.j"
 @import "NUTotalNumberValueTransformer.j"
