@@ -62,6 +62,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     CPImage                         _companyLogo                    @accessors(property=companyLogo);
     CPString                        _APIPrefix                      @accessors(property=APIPrefix);
     CPString                        _applicationName                @accessors(property=applicationName);
+    CPString                        _autoServerBaseURL              @accessors(property=autoServerBaseURL);
     CPString                        _companyName                    @accessors(property=companyName);
     CPString                        _copyright                      @accessors(property=copyright);
     id                              _RESTUser                       @accessors(property=RESTUser);
@@ -441,7 +442,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
         APIVersion = customAPIVersion;
 
     if (baseURL == @"auto/")
-        baseURL = [CPURL URLWithString:[self _computeBrowserLocationOrigin] + @"/"];
+        baseURL = [CPURL URLWithString:[self _discoverServerURL] + @"/"];
 
     finalRESTURL = [CPURL URLWithString:(_APIPrefix + APIVersion + "/") relativeToURL:baseURL];
 
@@ -450,22 +451,27 @@ var NUKitDelegate_didLogin_             = 1 << 1,
     return finalRESTURL;
 }
 
-- (CPString)_computeBrowserLocationOrigin
+- (CPString)_discoverServerURL
 {
-    var origin = window.location.origin;
-
-    if (!origin || typeof(origin) == "undefined")
+    if (!_autoServerBaseURL || _autoServerBaseURL == "")
     {
-        var protocol = window.location.protocol,
-            hostname = window.location.hostname,
-            port = window.location.port;
+            var origin = window.location.origin;
 
-        origin = protocol + "//" + hostname;
-        if (port && port != @"")
-            origin += ":" + port;
+        if (!origin || typeof(origin) == "undefined")
+        {
+            var protocol = window.location.protocol,
+                hostname = window.location.hostname,
+                port = window.location.port;
+
+            origin = protocol + "//" + hostname;
+            if (port && port != @"")
+                origin += ":" + port;
+        }
+
+        return origin;
     }
-
-    return origin;
+    else
+        return _autoServerBaseURL;
 }
 
 
