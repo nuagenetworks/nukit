@@ -106,7 +106,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return ret;
 }
 
-
+/*! NUModuleContext is responsible for CRUD operation on a single object
+*/
 @implementation NUModuleContext : CPObject
 {
     BOOL            _modified                       @accessors(property=modified);
@@ -158,11 +159,16 @@ var _isCPArrayControllerKind = function(object, keyPath)
         NUValidationActive = YES;
 }
 
+/*! Sets the default responder tags.
+    Give a revert array.
+*/
 + (void)setDefaultFirstResponderTags:(CPArray)anArray
 {
     NUModuleContextCommonControlTagsAsFirstResponder = anArray;
 }
 
+/*! Returns the list of first responder tags.
+*/
 + (CPArray)defaultFirstResponderTags
 {
     return NUModuleContextCommonControlTagsAsFirstResponder;
@@ -172,6 +178,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Initialization
 
+/*! Initializes a new context.
+*/
 - (NUModuleContext)initWithName:(CPString)aName identifier:(CPString)anIdentifier
 {
     if (self = [super init])
@@ -204,6 +212,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Custom Getters and Setters
 
+/*! Sets the popover to use
+*/
 - (void)setPopover:(CPPopover)aPopover
 {
     if (_popover == aPopover)
@@ -221,6 +231,9 @@ var _isCPArrayControllerKind = function(object, keyPath)
     _basePopoverSize = [_editionView frameSize];
 }
 
+/*! Set the main edition view.
+    EditionView will be used to look for controls with tags for autobinding.
+*/
 - (void)setEditionView:(CPView)aView
 {
     if (aView == _editionView)
@@ -253,6 +266,10 @@ var _isCPArrayControllerKind = function(object, keyPath)
         [self setButtonSave:[self _controlForProperty:@"save"]];
 }
 
+/*! Sets the current edited object.
+    A copy will be created and used when user is modifying it.
+    A pristine copy will be kept to perform some comparison and validation
+*/
 - (void)setEditedObject:(NURESTObject)anObject
 {
     if (anObject == _editedObject)
@@ -273,6 +290,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _bindControls];
 }
 
+/*! Sets the button that will be used to save the object
+*/
 - (void)setButtonSave:(CPButton)aButton
 {
     if (_buttonSave == aButton)
@@ -299,6 +318,9 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [[_buttonSave superview] addSubview:_viewSpinner];
 }
 
+/*! Set if saving is enabled or not. If disabled,
+    the save button will also be disabled.
+*/
 - (void)setSavingEnabled:(BOOL)shouldEnable
 {
     if ((!NUValidationActive || shouldEnable) && [self _sendDelegateShouldEnableSaving])
@@ -313,6 +335,9 @@ var _isCPArrayControllerKind = function(object, keyPath)
     }
 }
 
+/*! Update the current edited object with a new version of itself.
+    This is used to update the field in case of push notification.
+*/
 - (void)updateEditedObjectWithNewVersion:(NURESTObject)anObject
 {
     var JSONData = [anObject objectToJSON];
@@ -327,6 +352,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateUpdateEditedObject];
 }
 
+/*! Shows the loading spinner.
+*/
 - (void)showLoading:(BOOL)shouldShow
 {
     if ([_viewSpinner superview] && shouldShow)
@@ -339,6 +366,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Property Binding Management
 
+/*! @ignore
+*/
 - (void)_resetPopoverCache
 {
     _editionView           = nil;
@@ -350,6 +379,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     _bindedControlsCache = @{};
 }
 
+/*! @ignore
+*/
 - (CPControl)_controlForProperty:(CPString)aName
 {
     if (![_bindedControlsCache containsKey:aName])
@@ -372,7 +403,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 
     return [_bindedControlsCache objectForKey:aName];
 }
-
+/*! @ignore
+*/
 - (void)_bindControls
 {
     if (!_bindingsDirty || !_editedObject)
@@ -502,6 +534,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     _bindingsDirty = NO;
 }
 
+/*! @ignore
+*/
 - (void)_unbindControls
 {
     if (!_editedObject)
@@ -547,6 +581,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     _bindingsDirty = YES;
 }
 
+/*! @ignore
+*/
 - (void)_setCurrentInitialFirstResponder
 {
     if (_initialFirstResponder && _popover)
@@ -570,11 +606,15 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [_popover makeFirstResponder:_initialFirstResponder];
 }
 
+/*! Returns the list of all bound controls.
+*/
 - (CPArray)boundControls
 {
     return [[_bindedControlsCache allValues] copy];
 }
 
+/*! Enable or disable all the bound controls.
+*/
 - (void)setBoundControlsEnabled:(BOOL)shouldEnable
 {
     for (var i = [[_bindedControlsCache allValues] count] - 1; i >= 0; i--)
@@ -585,6 +625,47 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Delegate Management
 
+/*! Set the delegate.
+
+    - (void)moduleContext:(NUModuleContext)aContext willManageObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext didManageObject:(NURESTObject)anObject
+
+    - (void)moduleContext:(NUModuleContext)aContext willSaveObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext didSaveObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+    - (void)moduleContext:(NUModuleContext)aContext didFailToSaveObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+
+    - (void)moduleContext:(NUModuleContext)aContext willCreateObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext didCreateObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+    - (void)moduleContext:(NUModuleContext)aContext didFailToCreateObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+
+    - (void)moduleContext:(NUModuleContext)aContext willUpdateObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext didUpdateObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+    - (void)moduleContext:(NUModuleContext)aContext didFailToUpdateObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+
+    - (void)moduleContext:(NUModuleContext)aContext willDeleteObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext didDeleteObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+    - (void)moduleContext:(NUModuleContext)aContext didFailToDeleteObject:(NURESTObject)anObject connection:(NURESTConnection)aConnection
+
+    - (CPArray)moduleContext:(NUModuleContext)aContext additionalArgumentsForObjectCreate:(NURESTObject)anObject
+    - (CPArray)moduleContext:(NUModuleContext)aContext additionalArgumentsForObjectSave:(NURESTObject)anObject
+    - (CPArray)moduleContext:(NUModuleContext)aContext additionalArgumentsForObjectDelete:(NURESTObject)anObject
+    - (CPArray)moduleContext:(NUModuleContext)aContext additionalArgumentsForObjectInstantiate:(NURESTObject)anObject
+
+    - (void)moduleContext:(NUModuleContext)aContext validateObject:(NURESTObject)anObject attribute:(CPString)anAttribute validation:(NUValidation)aValidation
+    - (void)moduleContext:(NUModuleContext)aContext didFailValidateObject:(NURESTObject)anObject validation:(NUValidation)aValidation
+    - (void)didFailWithValidationErrors:(NUValidation)aValidation
+    - (void)moduleContextDidClearAllValidationErrors:(NUValidation)aValidation
+
+    - (void)moduleContextShouldEnableSaving:(NUModuleContext)aContext
+
+    - (void)moduleContext:(NUModuleContext)aContext didUpdateEditedObject:(NURESTObject)anObject
+
+    - (NURESTObject)moduleContext:(NUModuleContext)aContext templateForInstantiationOfObject:(NURESTObject)anObject
+
+    - (void)moduleContext:(NUModuleContext)aContext bindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertu ofObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext unbindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertu ofObject:(NURESTObject)anObject
+    - (void)moduleContext:(NUModuleContext)aContext additionalArgumentsForObjectInstantiate:(NURESTObject)anObject
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (aDelegate == _delegate)
@@ -675,84 +756,112 @@ var _isCPArrayControllerKind = function(object, keyPath)
         _implementedDelegateMethods |= NUModuleContextDelegate_moduleContext_didClearAllValidationErrors_;
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateWillSaveObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_willSaveObject_)
         [_delegate moduleContext:self willSaveObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidSaveObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didSaveObject_connection_)
         [_delegate moduleContext:self didSaveObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidFailToSaveObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailToSaveObject_connection_)
         [_delegate moduleContext:self didFailToSaveObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateWillCreateObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_willCreateObject_)
         [_delegate moduleContext:self willCreateObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidCreateObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didCreateObject_connection_)
         [_delegate moduleContext:self didCreateObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidFailToCreateObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailToCreateObject_connection_)
         [_delegate moduleContext:self didFailToCreateObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateWillUpdateObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_willUpdateObject_)
         [_delegate moduleContext:self willUpdateObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidUpdateObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didUpdateObject_connection_)
         [_delegate moduleContext:self didUpdateObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidFailToUpdateObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailToUpdateObject_connection_)
         [_delegate moduleContext:self didFailToUpdateObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateWillDeleteObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_willDeleteObject_)
         [_delegate moduleContext:self willDeleteObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidDeleteObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didDeleteObject_connection_)
         [_delegate moduleContext:self didDeleteObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidFailToDeleteObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailToDeleteObject_connection_)
         [_delegate moduleContext:self didFailToDeleteObject:anObject connection:aConnection];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateValidateObjectWithAttribute:(CPString)anAttribute
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_validateObject_attribute_validation_)
         [_delegate moduleContext:self validateObject:_editedObject attribute:anAttribute validation:_currentValidation];
 }
 
+/*! @ignore
+*/
 - (BOOL)_sendDelegateShouldEnableSaving
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContextShouldEnableSaving_)
@@ -761,24 +870,32 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return YES;
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateUpdateEditedObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didUpdateEditedObject_)
         [_delegate moduleContext:self didUpdateEditedObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateWillManageObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_willManageObject_)
         [_delegate moduleContext:self willManageObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidManageObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didManageObject_)
         [_delegate moduleContext:self didManageObject:_editedObject];
 }
 
+/*! @ignore
+*/
 - (NURESTObject)_sendDelegateTemplateForInstantiationOfObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_templateForInstantiationOfObject_)
@@ -787,24 +904,32 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return nil;
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidServerValidationOfObject
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailValidateObject_validation_)
         [_delegate moduleContext:self didFailValidateObject:_editedObject validation:_currentValidation];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateAdditionalArgumentsForObjectCreate
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectCreate_)
         return [_delegate moduleContext:self additionalArgumentsForObjectCreate:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateAdditionalArgumentsForObjectSave
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectSave_)
         return [_delegate moduleContext:self additionalArgumentsForObjectSave:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateAdditionalArgumentsForObjectDelete
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_additionalArgumentsForObjectDelete_)
@@ -817,6 +942,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
         return [_delegate moduleContext:self additionalArgumentsForObjectInstantiate:_editedObject];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateBindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertyName
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_bindTableView_forProperty_ofObject_)
@@ -825,6 +952,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
         [[[aTableView tableColumns] firstObject] bind:CPValueBinding toObject:_editedObject withKeyPath:aPropertyName + @".arrangedObjects.value" options:nil];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateUnbindTableView:(CPTableView)aTableView forProperty:(CPString)aPropertyName
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_unbindTableView_forProperty_ofObject_)
@@ -837,12 +966,16 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [aTableView reloadData];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidFailWithValidationErrors:(NUValidation)aValidation
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didFailWithValidationErrors_)
         [_delegate moduleContext:self didFailWithValidationErrors:aValidation];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidClearAllValidationErrors
 {
     if (_implementedDelegateMethods & NUModuleContextDelegate_moduleContext_didClearAllValidationErrors_)
@@ -853,6 +986,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Popover Management
 
+/*! Open the popover for the given action
+*/
 - (void)openPopoverForAction:(int)anAction sender:(id)aSender
 {
     if (!_popover)
@@ -903,6 +1038,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Validation System
 
+/*! @ignore
+*/
 - (CPArray)_allValidationFields
 {
     var fields = [_editionView subviewsWithTagLike:"validation_" recursive:_searchForTagsRecursively];
@@ -919,6 +1056,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return fields;
 }
 
+/*! @ignore
+*/
 - (void)_makeRelatedFieldFirstResponderAccordingToCurrentValidation
 {
     var property    = [[[_currentValidation errors] allKeys] firstObject],
@@ -933,6 +1072,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
         [[control window] makeFirstResponder:control];
 }
 
+/*! @ignore
+*/
 - (BOOL)_performServerValidation:(NURESTConnection)aConnection
 {
     var ret = YES;
@@ -985,6 +1126,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return ret;
 }
 
+/*! @ignore
+*/
 - (BOOL)_performClientValidation
 {
     if (!NUValidationActive)
@@ -1004,6 +1147,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     return YES;
 }
 
+/*! @ignore
+*/
 - (void)_updateValidationFields
 {
     [self clearAllValidationFields];
@@ -1045,6 +1190,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateDidFailWithValidationErrors:_currentValidation];
 }
 
+/*! Clears all validation fields if any.
+*/
 - (void)clearAllValidationFields
 {
     var matchingSubviews = [self _allValidationFields];
@@ -1069,6 +1216,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Modification Management
 
+/*! @ignore
+*/
 - (void)_addObservers
 {
     if (!_editedObject)
@@ -1095,6 +1244,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
                                                object:nil];
 }
 
+/*! @ignore
+*/
 - (void)_removeObservers
 {
     if (!_editedObject)
@@ -1121,6 +1272,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 
 }
 
+/*! @ignore
+*/
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)context
 {
     var oldValue = [change objectForKey:CPKeyValueChangeOldKey],
@@ -1136,6 +1289,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self setSavingEnabled:_modified && [_currentValidation success]];
 }
 
+/*! @ignore
+*/
 - (void)_didReceiveRESTConfirmationCancelNotification:(CPNotification)aNotification
 {
     if ([[[aNotification object] connection] transactionID] == _currentTransactionID)
@@ -1149,6 +1304,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark REST Management
 
+/*! @ignore
+*/
 - (void)_invokeRESTActionWithArguments:(CPArray)someArguments additionalArguments:(CPArray)someAdditionalArguments
 {
     someArguments = someAdditionalArguments ? [someArguments arrayByAddingObjectsFromArray:someAdditionalArguments] : someArguments;
@@ -1160,6 +1317,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     _currentTransactionID = [invocation returnValue];
 }
 
+/*! Creates the given RESTObject
+*/
 - (void)createRESTObject:(NURESTObject)anObject
 {
     [self _sendDelegateWillSaveObject];
@@ -1172,6 +1331,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
                      additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectCreate]];
 }
 
+/*! @ignore
+*/
 - (void)_didParent:(NURESTObject)aParentObject createChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
 {
     [self showLoading:NO];
@@ -1192,6 +1353,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateDidCreateObject:aChildObject connection:aConnection];
 }
 
+/*! Updates the given RESTObject
+*/
 - (void)updateRESTObject:(NURESTObject)anObject
 {
     [self _sendDelegateWillSaveObject];
@@ -1204,6 +1367,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
                      additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectSave]];
 }
 
+/*! @ignore
+*/
 - (void)_didParent:(NURESTObject)aParentObject updateChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
 {
     [self showLoading:NO];
@@ -1222,6 +1387,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateDidUpdateObject:aChildObject connection:aConnection];
 }
 
+/*! Deletes the given RESTObject
+*/
 - (void)deleteRESTObject:(NURESTObject)anObject
 {
     [self _sendDelegateWillDeleteObject];
@@ -1233,6 +1400,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
                      additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectDelete]];
 }
 
+/*! @ignore
+*/
 - (void)_didParent:(NURESTObject)aParentObject deleteChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
 {
     if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
@@ -1249,6 +1418,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateDidDeleteObject:aChildObject connection:aConnection];
 }
 
+/*! Instantiates the given RESTObject
+*/
 - (void)instantiateRESTObject:(NURESTObject)anObject
 {
     var template = [self _sendDelegateTemplateForInstantiationOfObject];
@@ -1262,6 +1433,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
                      additionalArguments:[self _sendDelegateAdditionalArgumentsForObjectInstantiate]];
 }
 
+/*! @ignore
+*/
 - (void)_didParent:(NURESTObject)aParentObject instantiateChildObject:(NURESTObject)aChildObject connection:(NURESTConnection)aConnection
 {
     if (![self _performServerValidation:aConnection])
@@ -1279,11 +1452,15 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Actions
 
+/*! @ignore
+*/
 - (@action)openHelpWindow:(id)aSender
 {
     window.open([[CPURL URLWithString:@"Resources/Help/popover-" + _identifier + @".html"] absoluteString], "_new", "width=800,height=600");
 }
 
+/*! Action sent to create a new object from the current edited object
+*/
 - (@action)createEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
@@ -1296,6 +1473,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self createRESTObject:_editedObject];
 }
 
+/*! Action sent to update the current edited object
+*/
 - (@action)updateEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
@@ -1316,12 +1495,16 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self updateRESTObject:_editedObject];
 }
 
+/*! Action sent to delete all objects set as selectedObjects
+*/
 - (@action)deleteSelectedObjects:(id)aSender
 {
     for (var i = [_selectedObjects count] - 1; i >= 0; i--)
         [self deleteRESTObject:_selectedObjects[i]];
 }
 
+/*! Action sent to instantiate the current edited object
+*/
 - (@action)instantiateEditedObject:(id)aSender
 {
     [self clearAllValidationFields];
@@ -1338,6 +1521,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Delegates
 
+/*! @ignore
+*/
 - (void)controlTextDidEndEditing:(CPNotification)aNotification
 {
     [self _sendDelegateValidateObjectWithAttribute:[[aNotification object] tag]];
@@ -1348,6 +1533,8 @@ var _isCPArrayControllerKind = function(object, keyPath)
 #pragma mark -
 #pragma mark Popover Delegate
 
+/*! @ignore
+*/
 - (void)popoverWillShow:(CPPopover)aPopover
 {
     [self setSavingEnabled:NO];
@@ -1358,11 +1545,15 @@ var _isCPArrayControllerKind = function(object, keyPath)
     [self _sendDelegateWillManageObject];
 }
 
+/*! @ignore
+*/
 - (void)popoverDidShow:(CPPopover)aPopover
 {
     [self _setCurrentInitialFirstResponder];
 }
 
+/*! @ignore
+*/
 - (void)popoverDidClose:(CPPopover)aPopover
 {
     [self _sendDelegateDidManageObject];
