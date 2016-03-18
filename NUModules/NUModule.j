@@ -80,7 +80,8 @@ NUModuleActionInspect             = 7;
 NUModuleTabViewModeText = 1;
 NUModuleTabViewModeIcon = 2;
 
-
+/*! NUModule is the basic class that is used to show and manipulate ReSTObjects
+*/
 @implementation NUModule : CPViewController <CPTableViewDelegate, CPOutlineViewDelegate, CPPopoverDelegate, CPSplitViewDelegate, CPTabViewDelegate>
 {
     @outlet CPButton                buttonHelp;
@@ -177,7 +178,7 @@ NUModuleTabViewModeIcon = 2;
     CPMenu                          _contextualMenu;
     CPNumber                        _maxPossiblePage;
     CPPopover                       _modulePopover;
-    CPTimer                         _timerReloadLatestPage;
+    CPTimer                         _timer_reloadLatestPage;
     id                              _dataSource;
     id                              _fileUpload;
     int                             _numberOfRemainingContextsToLoad;
@@ -187,61 +188,108 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Class Methods
 
+/*! Returns the state of the auto confirmation global configuration
+*/
 + (BOOL)autoConfirm
 {
     return NUModuleAutoValidation;
 }
 
+/*! Sets the state of the global auto confirmation. When this is set,
+    no user input validation will be required for actions like delete.
+*/
 + (void)setAutoConfirm:(BOOL)isEnabled
 {
     NUModuleAutoValidation = isEnabled;
 }
 
+/*! Overrides this method to make the module table less.
+    A table less module will skip the loading of entities, and will
+    directly set the submodule's currentParent to be its own
+    currentParent.
+*/
 + (BOOL)isTableBasedModule
 {
     return YES;
 }
 
+/*! Override this method to provide a human readable name.
+    This will be used in multiple places, like for instance
+    as the label of an itemized module, or the title the CPTabViewItem
+    that will contain the module's view.
+*/
 + (CPString)moduleName
 {
     return [self className];
 }
 
+/*! Returns the module tab view mode
+    It can be on the following:
+
+    - NUModuleTabViewModeText: the tab view will use the text from + (CPString)moduleName
+    - NUModuleTabViewModeIcon: the tab view will use the icon defined in + (CPImage)moduleIcon
+*/
 + (BOOL)moduleTabViewMode
 {
     return NUModuleTabViewModeText;
 }
 
+/*! Overrides this set a unique identifier for the module tab.
+*/
 + (CPString)moduleTabIconIdentifier
 {
     return nil;
 }
 
+/*! Override this to provide a custom icon that will be used in the
+    module's CPTabViewItem.
+*/
 + (CPImage)moduleIcon
 {
     return nil;
 }
 
+/*! Module unique identifier. You should not need to touch this.
+*/
 + (CPString)moduleIdentifier
 {
     return @"net.nuagenetworks.vsd." + [[self className] lowercaseString];
 }
 
+/*! Overrides this and return NO to disable to automatic context management.
+    Automatic context management allows the NUModule to automatically switch
+    the current NUModuleContext to be used according to the currentParent RESTName.
+    In most of the cases, you don't need to change this.
+*/
 + (BOOL)automaticContextManagement
 {
     return YES;
 }
 
+/*! Overrides this and return NO to disable the auto matic selection saving.
+    When a module is hidden, it will remember the last selected item.
+*/
 + (BOOL)automaticSelectionSaving
 {
     return YES;
 }
 
+/*! Overrides this and return NO to disable the auto memory management.
+    You should not have to use this unless you are using very specific pattern that needs the
+    parent's object fetcher to not be cleared when the module is hidden.
+    If you disable this, you are responsible to discarding the children when needed. If you forget to
+    do so, you'll encounter big memory leaks.
+*/
 + (BOOL)automaticChildrenListsDiscard
 {
     return YES;
 }
 
+/*! Overrides this and return NO to disable the automatic commit in fetchers.
+    When a NUModule fetches the list of currentParent's children, this list will be automatically
+    added as the content of the fetcher. If you disable this, the fetched children will be only cached in
+    the NUModule DataSource.
+*/
 + (BOOL)commitFetchedObjects
 {
     return YES;
@@ -251,6 +299,10 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Initialization
 
+/*! Called when the view is loaded from a xib.
+    Override this to add additional initialization.
+    DO NOT FORGET to call [super viewDidLoad].
+*/
 - (void)viewDidLoad
 {
     [[self view] setBackgroundColor:NUSkinColorGreyLighter];
@@ -557,6 +609,8 @@ NUModuleTabViewModeIcon = 2;
     [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(_userLoggedOut:) name:NUKitUserLoggedOutNotification object:nil];
 }
 
+/*! Mirror of the class method + (BOOL)isTableBasedModule. never override this.
+*/
 - (BOOL)isTableBasedModule
 {
     return [[self class] isTableBasedModule];
@@ -566,6 +620,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Notification Handlers
 
+/*! @ignore
+*/
 - (void)_userLoggedOut:(CPNotification)aNotification
 {
     [self closeAllPopovers];
@@ -578,6 +634,9 @@ NUModuleTabViewModeIcon = 2;
     [self moduleLoggingOut];
 }
 
+/*! Internal API you can override.
+    This message will be sent when the user is logging out of the application
+*/
 - (void)moduleLoggingOut
 {
 
@@ -587,6 +646,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Context Management
 
+/*! Register a NUModuleContext responsible for managing the given model class.
+*/
 - (void)registerContext:(NUModuleContext)aContext forClass:(Class)aClass
 {
     [aContext setManagedObjectClass:aClass];
@@ -597,6 +658,8 @@ NUModuleTabViewModeIcon = 2;
     [self setCurrentContext:aContext];
 }
 
+/*! Checks if the module contains a NUModuleContext for the given identifier.
+*/
 - (BOOL)containsContextWithIdentifier:(CPString)anIdentifier
 {
     var contexts = [_contextRegistry allValues];
@@ -609,6 +672,8 @@ NUModuleTabViewModeIcon = 2;
     return NO;
 }
 
+/*! Returns the registered NUModuleContext for the given identifier.
+*/
 - (NUModuleContext)contextWithIdentifier:(CPString)anIdentifier
 {
     var contexts = [_contextRegistry allValues];
@@ -622,6 +687,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! Sets the current active module context.
+*/
 - (void)setCurrentContext:(NUModuleContext)aContext
 {
     if (aContext == _currentContext)
@@ -634,6 +701,9 @@ NUModuleTabViewModeIcon = 2;
     [self updateCucappIDsAccordingToContext:aContext];
 }
 
+/*! Sets the current active module context using its identifier.
+    The given context must be already registered.
+*/
 - (void)setCurrentContextWithIdentifier:(CPString)anIdentifier
 {
     if ([_currentContext identifier] == anIdentifier)
@@ -641,7 +711,8 @@ NUModuleTabViewModeIcon = 2;
 
     [self setCurrentContext:[self contextWithIdentifier:anIdentifier]];
 }
-
+/*! @ignore
+*/
 - (void)_cleanContexts
 {
     var contexts = [_contextRegistry allValues];
@@ -655,15 +726,22 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Context Management Internal API
 
+/*! Context initialization. If your NUModule subclass needs to manage some objects,
+    You MUST override this method and register the context inside.
+*/
 - (void)configureContexts
 {
 }
 
+/*! Returns a the context to use for a particular NUModuleAction
+*/
 - (NUModuleContext)defaultContextForAction:(id)anAction
 {
     return _currentContext;
 }
 
+/*! Returns an array of current active contexts
+*/
 - (CPArray)moduleCurrentActiveContexts
 {
     return _currentContext ? [_currentContext]: [];
@@ -673,6 +751,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Module Popover Embededed Management
 
+/*! Defines if the module must be shown in a Popover instead of in a classic view.
+    You should not need to set this manually, it will be set automatically when needed.
+*/
 - (void)setShowsInPopover:(BOOL)shoulShowInPopover
 {
     _showsInPopover = shoulShowInPopover;
@@ -688,11 +769,16 @@ NUModuleTabViewModeIcon = 2;
     [viewMainTableViewContainer setBorderColor:NUSkinColorGreyLight];
 }
 
+/*! See - (void)showOnView:(CPView)aView relativeToRect:(CGRect)aRect forParentObject:(id)aParentObject
+*/
 - (void)showOnView:(CPView)aView forParentObject:(id)aParentObject
 {
     [self showOnView:aView relativeToRect:nil forParentObject:aParentObject];
 }
 
+/*! Makes the module to be shown in a popover.
+    When doing this, you must pass the currentParent yourself.
+*/
 - (void)showOnView:(CPView)aView relativeToRect:(CGRect)aRect forParentObject:(id)aParentObject
 {
     [self view];
@@ -715,6 +801,8 @@ NUModuleTabViewModeIcon = 2;
     [_modulePopover showRelativeToRect:aRect ofView:aView preferredEdge:nil];
 }
 
+/*! Close the module's popover
+*/
 - (void)closeModulePopover
 {
     if (!_showsInPopover)
@@ -728,6 +816,11 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Parent Management
 
+/*! Set the current parent.
+    This will be automatically done by the parent module.
+    The only place where you need to manually pass the current parent is if the module
+    is the NUKit Core Module.
+*/
 - (void)setCurrentParent:(id)aParent
 {
     if ([aParent isKindOfClass:NUCategory])
@@ -756,6 +849,8 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Parent Management Internal API
 
+/*! Internal API that you can override to perform action once the module recieved a current parent.
+*/
 - (void)moduleDidSetCurrentParent:(id)aParent
 {
 }
@@ -764,6 +859,10 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Menu Management
 
+/*! You can override this if you need additional NUModuleActions.
+    You must create a register a new CPMenuItem for each custom action,
+    Then return the list of action in the order you want them to appear in the CPMenu.
+*/
 - (CPArray)configureContextualMenu
 {
     var menuItemAdd = [[CPMenuItem alloc] initWithTitle:@"Add..." action:@selector(openNewObjectPopover:) keyEquivalent:@""];
@@ -790,6 +889,8 @@ NUModuleTabViewModeIcon = 2;
     return [NUModuleActionAdd, NUModuleActionEdit, NUModuleActionDelete, NUModuleActionInstantiate, NUModuleActionImport, NUModuleActionExport,  NUModuleActionInspect];
 }
 
+/*! Registers a new CPMenuItem for the given action
+*/
 - (void)registerMenuItem:(CPMenuItem)aMenuItem forAction:(int)anAction
 {
     if (![_controlsForActionRegistry containsKey:anAction])
@@ -799,11 +900,15 @@ NUModuleTabViewModeIcon = 2;
     [aMenuItem setTarget:self];
 }
 
+/*! Returns the action for the given CPMenuItem
+*/
 - (id)actionForMenuItem:(CPMenuItem)aMenuItem
 {
     return [[_contextualMenuItemRegistry allKeysForObject:aMenuItem] firstObject];
 }
 
+/*! @ignore
+*/
 - (CPMenu)_currentContextualMenu
 {
     [self _updateCurrentSelection];
@@ -820,6 +925,8 @@ NUModuleTabViewModeIcon = 2;
     return _contextualMenu;
 }
 
+/*! @ignore
+*/
 - (CPArray)_sortedPermittedActions
 {
     var sortedActions = _sortedActionsForMenu,
@@ -838,6 +945,11 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Menu Management Internal API
 
+/*! Internal API you can override to give a CPControl that will be used
+    to open a NUModuleContext Popover when the user click on CPMenuItem.
+    By default, the tableView is used. If your module is table less, but still have
+    some CPMenu, be sure to override this.
+*/
 - (CPControl)defaultPopoverTargetForMenuItem
 {
     return tableView;
@@ -847,6 +959,10 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Visibility Management
 
+/*! Called by the parent module when the module becomes visible
+    You should not override this. To do additional initialization,
+    use the internal API - (void)moduleDidShow
+*/
 - (void)willShow
 {
     if (_isVisible)
@@ -876,6 +992,10 @@ NUModuleTabViewModeIcon = 2;
     [self reload];
 }
 
+/*! Returns if the modules agrees on hiding.
+    You should not override this. To do additional computation,
+    use the internal API - (void)moduleShouldHide
+*/
 - (BOOL)shouldHide
 {
     if (!_isVisible)
@@ -891,6 +1011,10 @@ NUModuleTabViewModeIcon = 2;
     return [self moduleShouldHide];
 }
 
+/*! Called by the parent module when the module is about to become hidden.
+    You should not override this. To do additional deinitialization,
+    use the internal API - (void)moduleWillHide.
+*/
 - (void)willHide
 {
     if (!_isVisible)
@@ -934,16 +1058,25 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Visibility Management Internal API
 
+/*! Internal API you can override to perform additional things when
+    a module just showed. When this is called, the module is already visible.
+*/
 - (void)moduleDidShow
 {
 
 }
 
+/*! Internal API you can override to perform computation to decide if the
+    module should hide.
+*/
 - (BOOL)moduleShouldHide
 {
     return YES;
 }
 
+/*! Internal API you can override to perform additional things when
+    a module is about to become hidden. When this is called, the module is still visible.
+*/
 - (void)moduleWillHide
 {
 
@@ -953,6 +1086,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Memory Management
 
+/*! @ignore
+*/
 - (void)_discardCurrentParentChildren
 {
     if (![[self class] automaticChildrenListsDiscard])
@@ -968,6 +1103,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Loading and Pagination
 
+/*! Called to tell the module to start getting information from the server.
+    You should never have to override this method.
+*/
 - (void)reload
 {
     _latestPageLoaded                = -1;
@@ -984,7 +1122,7 @@ NUModuleTabViewModeIcon = 2;
     if (!_currentParent)
         return;
 
-    [self flushCategoriesContent];
+    [self _flushCategoriesContent];
 
     if (!_isProcessingPush)
         [self showLoading];
@@ -1000,6 +1138,8 @@ NUModuleTabViewModeIcon = 2;
     [self moduleDidReload];
 }
 
+/*! @ignore
+*/
 - (void)_reloadUsingContext:(NUModuleContext)aContext
 {
     var fetcherKeyPath = [aContext fetcherKeyPath],
@@ -1012,12 +1152,15 @@ NUModuleTabViewModeIcon = 2;
         [CPException raise:CPInternalInconsistencyException reason:"Context cannot find fetcher " + fetcherKeyPath  + " in currentParent  " + _currentParent + " of module "+ self];
 
     if (_usesPagination)
-        [self loadFirstPageUsingFetcher:fetcher];
+        [self _loadFirstPageUsingFetcher:fetcher];
     else
-        [self loadEverythingUsingFetcher:fetcher];
+        [self _loadEverythingUsingFetcher:fetcher];
 }
 
-- (void)loadPage:(CPNumber)aPage usingFetcher:(NURESTFetcher)aFetcher
+/*! Load a particular page using the given fetcher.
+    You should not have to use this.
+*/
+- (void)_loadPage:(CPNumber)aPage usingFetcher:(NURESTFetcher)aFetcher
 {
     if (aPage === nil)
         _latestPageLoaded = -1;
@@ -1046,29 +1189,44 @@ NUModuleTabViewModeIcon = 2;
     [_activeTransactionsIDs addObject:ID];
 }
 
-- (void)loadEverythingUsingFetcher:(NURESTFetcher)aFetcher
+/*! Load all the pages using the given fetcher.
+    You should not have to use this.
+*/
+- (void)_loadEverythingUsingFetcher:(NURESTFetcher)aFetcher
 {
     [aFetcher flush];
-    [self loadPage:nil usingFetcher:aFetcher];
+    [self _loadPage:nil usingFetcher:aFetcher];
 }
 
-- (void)loadFirstPageUsingFetcher:(NURESTFetcher)aFetcher
+/*! Load the first page using the given fetcher.
+    You should not have to use this.
+*/
+- (void)_loadFirstPageUsingFetcher:(NURESTFetcher)aFetcher
 {
     [aFetcher flush];
-    [self loadPage:0 usingFetcher:aFetcher];
+    [self _loadPage:0 usingFetcher:aFetcher];
 }
 
-- (void)loadNextPageUsingFetcher:(NURESTFetcher)aFetcher
+/*! Load the next page using the given fetcher.
+    You should not have to use this.
+*/
+- (void)_loadNextPageUsingFetcher:(NURESTFetcher)aFetcher
 {
-    [self loadPage:(_latestPageLoaded + 1) usingFetcher:aFetcher];
+    [self _loadPage:(_latestPageLoaded + 1) usingFetcher:aFetcher];
 }
 
-- (void)reloadLatestPageUsingFetcher:(NURESTFetcher)aFetcher
+/*! Reload the latest loaded page using the given fetcher.
+    You should not have to use this.
+*/
+- (void)__reloadLatestPageUsingFetcher:(NURESTFetcher)aFetcher
 {
-    [self loadPage:_latestPageLoaded usingFetcher:aFetcher];
+    [self _loadPage:_latestPageLoaded usingFetcher:aFetcher];
 }
 
-- (void)loadNextPage
+/*! Load the next page using the current context.
+    You should not have to use this.
+*/
+- (void)_loadNextPage
 {
     // CS 01/11/2016: For now, we don't deal with pagination when using categories...
     // Meaning that if we deal with pagination, we have only one context!
@@ -1077,25 +1235,30 @@ NUModuleTabViewModeIcon = 2;
         fetcher        = [_currentParent valueForKeyPath:fetcherKeyPath];
 
     if (fetcher)
-        [self loadNextPageUsingFetcher:fetcher];
+        [self _loadNextPageUsingFetcher:fetcher];
     else
         [CPException raise:CPInternalInconsistencyException reason:"Cannot find fetcher to load next page in module " + self];
 }
 
-- (void)reloadLatestPage
+/*! Reload the latest page using the current context.
+    You should not have to use this.
+*/
+- (void)_reloadLatestPage
 {
-    if (_timerReloadLatestPage)
+    if (_timer_reloadLatestPage)
     {
         [self setPaginationSynchronizing:NO];
-        [_timerReloadLatestPage invalidate];
+        [_timer_reloadLatestPage invalidate];
     }
 
     [self setPaginationSynchronizing:YES];
 
-    _timerReloadLatestPage = [CPTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_performReloadLatestPage:) userInfo:nil repeats:NO];
+    _timer_reloadLatestPage = [CPTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_perform_reloadLatestPage:) userInfo:nil repeats:NO];
 }
 
-- (void)_performReloadLatestPage:(CPTimer)aTimer
+/*! @ignore
+*/
+- (void)_perform_reloadLatestPage:(CPTimer)aTimer
 {
     var fetcherKeyPath = [_currentContext fetcherKeyPath],
         fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
@@ -1111,15 +1274,19 @@ NUModuleTabViewModeIcon = 2;
         [self setPaginationSynchronizing:NO];
 }
 
+/*! @ignore
+*/
 - (void)_fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didCountChildren:(int)aCount
 {
     [self setPaginationSynchronizing:NO];
     [self setTotalNumberOfEntities:aCount];
     [self _synchronizePagination];
 
-    [self reloadLatestPageUsingFetcher:aFetcher];
+    [self __reloadLatestPageUsingFetcher:aFetcher];
 }
 
+/*! ignore
+*/
 - (void)_synchronizePagination
 {
     if (_latestPageLoaded == -1)
@@ -1131,6 +1298,9 @@ NUModuleTabViewModeIcon = 2;
     CPLog.debug("PAGINATION: Synchronized pagination is now %@/%@ (objects: %@/%@)", _latestPageLoaded, _maxPossiblePage, [_dataSource count], _totalNumberOfEntities);
 }
 
+/*! Set the state of the module that tells it is actually synchronizing the pagination.
+    You should not have to use this.
+*/
 - (void)setPaginationSynchronizing:(BOOL)isSycing
 {
     [self willChangeValueForKey:@"formatedTotalNumberOfEntities"];
@@ -1138,6 +1308,8 @@ NUModuleTabViewModeIcon = 2;
     [self didChangeValueForKey:@"formatedTotalNumberOfEntities"];
 }
 
+/*! ignore
+*/
 - (void)_addScrollViewObservers
 {
     if (![self isTableBasedModule] || _isObservingScrollViewBounds)
@@ -1149,6 +1321,8 @@ NUModuleTabViewModeIcon = 2;
     [scrollViewClipView addObserver:self forKeyPath:@"bounds" options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
 }
 
+/*! ignore
+*/
 - (void)_removeScrollViewObservers
 {
     if (![self isTableBasedModule] || !_isObservingScrollViewBounds)
@@ -1162,6 +1336,9 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Reloading Internal API
 
+/*! Internal API you can override to perform additional things after the module
+    has reloaded.
+*/
 - (void)moduleDidReload
 {
 
@@ -1171,6 +1348,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Object Counting
 
+/*! @ignore
+*/
 - (void)formatedTotalNumberOfEntities
 {
     if (_paginationSynchronizing)
@@ -1185,6 +1364,8 @@ NUModuleTabViewModeIcon = 2;
     return (_totalNumberOfEntities < 2) ? _totalNumberOfEntities + " object" : _totalNumberOfEntities + " objects";
 }
 
+/*! @ignore
+*/
 - (void)setTotalNumberOfEntities:(CPNumber)aTotal
 {
     [self willChangeValueForKey:@"totalNumberOfEntities"];
@@ -1194,6 +1375,8 @@ NUModuleTabViewModeIcon = 2;
     [self didChangeValueForKey:@"formatedTotalNumberOfEntities"];
 }
 
+/*! @ignore
+*/
 - (void)_updateGrandTotal
 {
     var grandTotal  = 0,
@@ -1209,10 +1392,16 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark  Module Titles
 
+/*! Internal API you can override to change the module title.
+    This is called during the reloading phase.
+*/
 - (void)updateModuleTitle
 {
 }
 
+/*! Internal API you can override to change the module title.
+    This is called during the submodule selection phase.
+*/
 - (void)updateModuleSubtitle
 {
 }
@@ -1221,6 +1410,10 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Permitted Actions
 
+/*! Update the permitted actions list.
+    Call this is you want the list of available action to be updated at anytime.
+    This is normally done automatically during the reloading phase.
+*/
 - (void)updatePermittedActions
 {
     var allActions       = [_controlsForActionRegistry allKeys],
@@ -1235,6 +1428,8 @@ NUModuleTabViewModeIcon = 2;
     [self _filterEnabledActions];
 }
 
+/*! @ignore
+*/
 - (void)_filterEnabledActions
 {
     var conditionEmptySelection  = [_currentSelectedObjects count] == 0,
@@ -1254,6 +1449,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! @ignore
+*/
 - (CPArray)_permittedActionsForSelectedObjects
 {
     var permittedActionsSet = [self permittedActionsForObject:nil];
@@ -1271,6 +1468,8 @@ NUModuleTabViewModeIcon = 2;
     return [permittedActionsSet allObjects];
 }
 
+/*! Override if you want to change the different permitted action for a particular object.
+*/
 - (CPSet)permittedActionsForObject:(id)anObject
 {
     var conditionAdministrator  = _currentUserHasRoles([NURESTUserRoleCSPRoot, NURESTUserRoleOrgAdmin]),
@@ -1292,6 +1491,9 @@ NUModuleTabViewModeIcon = 2;
     return permittedActionsSet;
 }
 
+/*! set if the given action is permitted.
+    you should not need to use this.
+*/
 - (void)setAction:(CPString)anAction permitted:(BOOL)isPermitted
 {
     if (isPermitted && ![_currentPermittedActions containsObject:anAction])
@@ -1303,11 +1505,16 @@ NUModuleTabViewModeIcon = 2;
     [[self controlsForAction:anAction] makeObjectsPerformSelector:@selector(setHidden:) withObject:!isPermitted];
 }
 
+/*! Check if the given action is currently permitted.
+*/
 - (BOOL)isActionPermitted:(int)anAction
 {
     return [_currentPermittedActions containsObject:anAction];
 }
 
+/*! Register a particular control for a given action.
+    This control will later be enabled/disabled according to the current permitted actions.
+*/
 - (void)registerControl:(CPControl)aControl forAction:(CPString)anAction
 {
     if (![_controlsForActionRegistry containsKey:anAction])
@@ -1316,11 +1523,15 @@ NUModuleTabViewModeIcon = 2;
     [[_controlsForActionRegistry objectForKey:anAction] addObject:aControl];
 }
 
+/*! Returns all the controls registred for a particular action
+*/
 - (CPArray)controlsForAction:(CPString)anAction
 {
     return [_controlsForActionRegistry objectForKey:anAction];
 }
 
+/*! Return the action of by a particular registerer control.
+*/
 - (id)actionForControl:(CPControl)aControl
 {
     var keys = [_controlsForActionRegistry allKeys];
@@ -1336,6 +1547,8 @@ NUModuleTabViewModeIcon = 2;
     return nil;
 }
 
+/*! Returns the action of a sender. This can be a control or a CPMenuItem.
+*/
 - (void)actionForSender:(id)aSender
 {
     if ([aSender isKindOfClass:CPMenuItem])
@@ -1346,6 +1559,8 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Additional Action
 
+/*! Internal API you can override to register additional action for custom controls.
+*/
 - (void)configureAdditionalControls
 {
 }
@@ -1354,6 +1569,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark CRUD Operations
 
+/*! Open the popover used to create a new object
+*/
 - (@action)openNewObjectPopover:(id)aSender
 {
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
@@ -1379,6 +1596,8 @@ NUModuleTabViewModeIcon = 2;
     [_currentContext openPopoverForAction:action sender:aSender];
 }
 
+/*! Open the popover used to edit an existing object
+*/
 - (@action)openEditObjectPopover:(id)aSender
 {
     if ([tableView numberOfSelectedRows] != 1)
@@ -1408,6 +1627,8 @@ NUModuleTabViewModeIcon = 2;
     [_currentContext openPopoverForAction:NUModuleActionEdit sender:aSender];
 }
 
+/*! Opens the popover to delete an existing object.
+*/
 - (@action)openDeleteObjectPopover:(id)aSender
 {
     if (![self isActionPermitted:NUModuleActionDelete])
@@ -1440,6 +1661,8 @@ NUModuleTabViewModeIcon = 2;
     [popoverConfirmation setDefaultButton:buttonConfirm];
 }
 
+/*! @ignore
+*/
 - (void)_performDeleteObjects:(id)aSender
 {
     [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
@@ -1477,6 +1700,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark CRUD Operation Internal API
 
+/*! Internal API you can override if you want to perform additional information just before
+    the actual deletion of the given objects.
+*/
 - (CPArray)modulePerformSelectionCleanupBeforeDeletion:(CPArray)someSelectedObjects
 {
     return someSelectedObjects;
@@ -1486,6 +1712,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Import and Export
 
+/*! @ignore
+    do not use this
+*/
 - (void)exportObject:(id)anObject usingAction:(id)anAction
 {
     [[NURESTJobsController defaultController] postJob:[self moduleExportJobForAction:anAction]
@@ -1494,12 +1723,18 @@ NUModuleTabViewModeIcon = 2;
                                          ofObject:self];
 }
 
+/*! @ignore
+    do not use this
+*/
 - (@action)exportSelectedObjects:(id)aSender
 {
     for (var i = [_currentSelectedObjects count] - 1; i >= 0; i--)
         [self exportObject:_currentSelectedObjects[i] usingAction:[self actionForSender:aSender]];
 }
 
+/*! @ignore
+    do not use this
+*/
 - (void)_didExport:(NUJobExport)aJob
 {
     if ([aJob status] != NURESTJobStatusSUCCESS)
@@ -1532,6 +1767,9 @@ NUModuleTabViewModeIcon = 2;
     createDownload(JSON.stringify([aJob result]), fileName, "json");
 }
 
+/*! @ignore
+    do not use this
+*/
 - (void)importInObject:(id)anObject usingAction:(id)anAction
 {
     _fileUpload                = document.createElement("input");
@@ -1579,11 +1817,17 @@ NUModuleTabViewModeIcon = 2;
     _fileUpload.click();
 }
 
+/*! @ignore
+    do not use this
+*/
 - (@action)import:(id)aSender
 {
     [self importInObject:_currentParent usingAction:[self actionForSender:aSender]];
 }
 
+/*! @ignore
+    do not use this
+*/
 - (void)_didImport:(NUJobImport)aJob
 {
     if ([aJob status] != NURESTJobStatusSUCCESS)
@@ -1592,11 +1836,17 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Import and Export Internal API
 
+/*! @ignore
+    do not use this
+*/
 - (NURESTJob)moduleImportJobForAction:(id)anAction
 {
     return [NUJobImport new];
 }
 
+/*! @ignore
+    do not use this
+*/
 - (NURESTJob)moduleExportJobForAction:(id)anAction
 {
     return [NUJobExport new];
@@ -1606,6 +1856,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Help Window
 
+/*! @ignore
+    do not use this. This will be removed
+*/
 - (@action)openHelpWindow:(id)aSender
 {
     window.open([[CPURL URLWithString:@"Resources/Help/" + [[self class] moduleIdentifier] + @".html"] absoluteString], "_new", "width=800,height=600");
@@ -1615,6 +1868,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Filtering
 
+/*! @ignore
+*/
 - (@action)clickSearchButton:(id)aSender
 {
     if ([self enableAdvancedSearch])
@@ -1626,6 +1881,8 @@ NUModuleTabViewModeIcon = 2;
         [self filterObjects:aSender];
 }
 
+/*! Sets the current filter, and perform a reload.
+*/
 - (@action)filterObjects:(id)aSender
 {
     var filterString = [aSender stringValue];
@@ -1635,6 +1892,8 @@ NUModuleTabViewModeIcon = 2;
     [self reload];
 }
 
+/*! Apply the advanced given filers.
+*/
 - (void)applyAdvancedFilters:(CPString)aString
 {
     [filterField setStringValue:aString];
@@ -1646,6 +1905,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark External Windows
 
+/*! Clones the module and opens it in a new CPPlatformWindow.
+*/
 - (@action)openModuleInExternalWindow:(id)aSender
 {
     var bundle                 = [CPBundle bundleForClass:[self class]],
@@ -1690,6 +1951,8 @@ NUModuleTabViewModeIcon = 2;
     } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
+/*! Close the module if opened in an external CPPlatformWindow
+*/
 - (void)closeModuleExternalWindow
 {
     if (!_showsInExternalWindow)
@@ -1704,10 +1967,16 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark External Windows Internal API
 
+/*! Internal API you can override to perform additional things when a module
+    has just been cloned and opened in an external window.
+*/
 - (void)didOpenCloneModule:(NUModule)aCloneModule
 {
 }
 
+/*! Internal API you can override in order to perform additional things when the cloned
+    module has just been opened.
+*/
 - (void)didOpenAsCloneOfModule:(NUModule)aParentModule
 {
     [[[self view] window] setTitle:[self moduleTitle]];
@@ -1715,6 +1984,8 @@ NUModuleTabViewModeIcon = 2;
     [buttonOpenInExternalWindow setHidden:YES];
 }
 
+/*! @ignore
+*/
 - (void)didCloseFromExternalWindow
 {
     [self willHide];
@@ -1724,6 +1995,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark TabView Management
 
+/*! @ignore
+*/
 - (CPTabViewItem)tabViewItem
 {
     if (!_tabViewItem)
@@ -1751,6 +2024,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark SubModules Management
 
+/*! @ignore
+*/
 - (void)_updateActiveSubModules
 {
     _activeSubModules = [self currentActiveSubModules];
@@ -1769,6 +2044,8 @@ NUModuleTabViewModeIcon = 2;
     [self _setCurrentParentForSubModules];
 }
 
+/*! @ignore
+*/
 - (BOOL)_tabViewItemsNeedsUpdate
 {
     var currentTabItems = [tabViewContent tabViewItems];
@@ -1783,6 +2060,9 @@ NUModuleTabViewModeIcon = 2;
     return NO;
 }
 
+/*! Sets the list of the submodule for the current module.
+    This is usually done in viewDidLoad.
+*/
 - (void)setSubModules:(CPArray)someModules
 {
     for (var i = [_subModules count] - 1; i >= 0; i--)
@@ -1794,6 +2074,8 @@ NUModuleTabViewModeIcon = 2;
     [self moduleDidSetSubModules:someModules];
 }
 
+/*! Add a single submodule.
+*/
 - (void)addSubModule:(NUModule)aSubModule
 {
     if (!aSubModule)
@@ -1810,6 +2092,8 @@ NUModuleTabViewModeIcon = 2;
     [self moduleDidAddSubModule:aSubModule];
 }
 
+/*! Removes a single submodule.
+*/
 - (void)removeSubModule:(NUModule)aSubModule
 {
     if (!aSubModule || ![_subModules containsObject:aSubModule])
@@ -1825,6 +2109,8 @@ NUModuleTabViewModeIcon = 2;
     [tabViewContent removeTabViewItem:[aSubModule tabViewItem]];
 }
 
+/*! Returns the list of visible submodules.
+*/
 - (NUModule)visibleSubModule
 {
     for (var i = [_activeSubModules count] - 1; i >= 0; i--)
@@ -1838,6 +2124,8 @@ NUModuleTabViewModeIcon = 2;
     return nil;
 }
 
+/*! Refresh the list of active submodules.
+*/
 - (void)refreshActiveSubModules
 {
     var previousSelectedIdentifier;
@@ -1860,6 +2148,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! Call willHide and resets the currentParent of all submodules
+*/
 - (void)hideAllSubModules
 {
     for (var i = [_activeSubModules count] - 1; i >= 0; i--)
@@ -1870,6 +2160,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! @ignore
+*/
 - (NUModule)_subModuleWithIdentifier:(CPString)anIndentifier
 {
     for (var i = [_subModules count] - 1; i >= 0; i--)
@@ -1883,6 +2175,8 @@ NUModuleTabViewModeIcon = 2;
     return nil;
 }
 
+/*! @ignore
+*/
 - (void)_setCurrentParentForSubModules
 {
     var parentObject = [[self class] isTableBasedModule] ? [_currentSelectedObjects firstObject] : _currentParent;
@@ -1896,23 +2190,38 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark  Sub Modules Internal API
 
+/*! Internal API you can override to perform additional things when a module just
+    set its submodules
+*/
 - (void)moduleDidSetSubModules:(CPArray)someModules
 {
 }
 
+/*! Internal API you can override to perform additional things when a module just
+    set one submodule.
+*/
 - (void)moduleDidAddSubModule:(NUModule)aSubModule
 {
 }
 
+/*! Internal API you can override to perform additional things when a module just
+    removed one submodule
+*/
 - (void)moduleWillRemoveSubModule:(NUModule)aSubModule
 {
 }
 
+/*! Returns the list of current active submodules.
+    You can overrides this to update the list of active submodules according to some properties
+    of a parent of instance.
+*/
 - (CPArray)currentActiveSubModules
 {
     return _subModules;
 }
 
+/*! internal API called when the list of visible submodule just changed.
+*/
 - (void)moduleDidChangeVisibleSubmodule
 {
 
@@ -1922,6 +2231,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark  Push Management
 
+/*! Starts listening for push notifications
+*/
 - (void)registerForPushNotification
 {
     if (![[self class] automaticContextManagement])
@@ -1939,6 +2250,8 @@ NUModuleTabViewModeIcon = 2;
                                                object:[NURESTPushCenter defaultCenter]];
 }
 
+/*! Stops listening for push notifications
+*/
 - (void)unregisterFromPushNotification
 {
     if (![[self class] automaticContextManagement])
@@ -1955,6 +2268,8 @@ NUModuleTabViewModeIcon = 2;
                                                object:[NURESTPushCenter defaultCenter]];
 }
 
+/*! @ignore
+*/
 - (void)_didReceivePush:(CPNotification)aNotification
 {
     // if the current parent is dirty, don't manage any push
@@ -1992,8 +2307,8 @@ NUModuleTabViewModeIcon = 2;
             pushManaged = YES;
             [self performPrePushOperation];
 
-            if (_timerReloadLatestPage)
-                [_timerReloadLatestPage invalidate];
+            if (_timer_reloadLatestPage)
+                [_timer_reloadLatestPage invalidate];
         }
 
         switch (eventType)
@@ -2036,6 +2351,8 @@ NUModuleTabViewModeIcon = 2;
     _isProcessingPush = NO;
 }
 
+/*! @ignore
+*/
 - (BOOL)_processCreateEventWithJSONObject:(id)aJSONObject ofType:(CPString)aType updateMechanism:(CPString)updateMechanism
 {
     var obj = [self createObjectWithRESTName:aType];
@@ -2053,6 +2370,8 @@ NUModuleTabViewModeIcon = 2;
     return YES;
 }
 
+/*! @ignore
+*/
 - (BOOL)_processUpdateEventWithJSONObject:(id)aJSONObject ofType:(CPString)aType updateMechanism:(CPString)updateMechanism
 {
     var obj = [_dataSource objectWithID:aJSONObject.ID];
@@ -2089,6 +2408,8 @@ NUModuleTabViewModeIcon = 2;
     return YES;
 }
 
+/*! @ignore
+*/
 - (BOOL)_processDeleteEventWithJSONObject:(id)aJSONObject ofType:(CPString)aType updateMechanism:(CPString)updateMechanism
 {
     var ID = aJSONObject.ID,
@@ -2112,6 +2433,8 @@ NUModuleTabViewModeIcon = 2;
     return YES;
 }
 
+/*! @ignore
+*/
 - (void)_reloadUIAfterPush
 {
     if (![self isTableBasedModule])
@@ -2122,10 +2445,12 @@ NUModuleTabViewModeIcon = 2;
     if (_usesPagination)
     {
         [self _synchronizePagination];
-        [self reloadLatestPage];
+        [self _reloadLatestPage];
     }
 }
 
+/*! @ignore
+*/
 - (void)_insertCreatedObject:(id)anObject updateTotal:(BOOL)shouldUpdateTotal
 {
     if (_filter)
@@ -2146,6 +2471,8 @@ NUModuleTabViewModeIcon = 2;
     [self _manageGettingStartedVisibility];
 }
 
+/*! @ignore
+*/
 - (void)_removeDeletedObject:(id)anObject
 {
     if (!anObject)
@@ -2181,6 +2508,8 @@ NUModuleTabViewModeIcon = 2;
     [self _manageGettingStartedVisibility];
 }
 
+/*! @ignore
+*/
 - (void)_refetchObject:(id)anObject hierarchy:(BOOL)shouldRefreshHierarchy
 {
     _reloadHierarchyAfterRefetch = shouldRefreshHierarchy;
@@ -2189,6 +2518,8 @@ NUModuleTabViewModeIcon = 2;
         [anObject fetchAndCallSelector:@selector(_didRefetchObject:connection:) ofObject:self];
 }
 
+/*! @ignore
+*/
 - (void)_didRefetchObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (_reloadHierarchyAfterRefetch)
@@ -2212,6 +2543,8 @@ NUModuleTabViewModeIcon = 2;
     [self performPostRefetchOperation];
 }
 
+/*! @ignore
+*/
 - (void)_updateCurrentEditedObjectWithObjectIfNeeded:(id)anObject
 {
     if (![[_currentContext editedObject] isEqual:anObject])
@@ -2222,16 +2555,27 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Push Management Internal API
 
+/*! Internal API you can override to perform additional operations
+    just before the module processed one or more push notifications.
+*/
 - (void)performPrePushOperation
 {
 }
 
+/*! Internal API you can override to perform additional operations
+    just after the module processed one or more push notifications.
+*/
 - (void)performPostPushOperation
 {
     if ([tableView isKindOfClass:CPOutlineView])
         [tableView expandAll];
 }
 
+/*! Decides if the module should manage a push notification.
+    This is just high level.
+    You can override this, but once your custom logic is done,
+    and if it didn't match anything you want, be sure to return the super return.
+*/
 - (BOOL)shouldManagePushOfType:(CPString)aType forEntityType:(CPString)entityType
 {
     var shouldForceManage = NO;
@@ -2247,6 +2591,10 @@ NUModuleTabViewModeIcon = 2;
     return shouldForceManage || [self containsContextWithIdentifier:entityType];
 }
 
+/*! Decides if the module should process a push notification.
+    You can override this, but once your custom logic is done,
+    and if it didn't match anything you want, be sure to return the super return.
+*/
 - (BOOL)shouldProcessJSONObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     // if we don't have a _parentModule, and the push is an update of the current parent, we update it
@@ -2271,18 +2619,24 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Various Utilities
 
+/*! Shows the loading indicator on the table view
+*/
 - (void)showLoading
 {
     if (tableView)
         [[NUDataTransferController defaultDataTransferController] showFetchingViewOnView:tableView];
 }
 
+/*! Hides the loading indicator on the table view
+*/
 - (void)hideLoading
 {
     if (tableView)
         [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:tableView];
 }
 
+/*! Close all popovers.
+*/
 - (void)closeAllPopovers
 {
     var contexts = [_contextRegistry allValues];
@@ -2296,17 +2650,21 @@ NUModuleTabViewModeIcon = 2;
     [[NUAdvancedFilteringViewController defaultController] closePopover];
 }
 
+/*! @ignore
+*/
 - (void)_flushTableView
 {
     if (![self isTableBasedModule])
         return;
 
-    [self flushCategoriesContent];
+    [self _flushCategoriesContent];
 
     [_dataSource removeAllObjects];
     [self tableViewReloadData];
 }
 
+/*! @ignore
+*/
 - (void)tableViewReloadData
 {
     if (![self isTableBasedModule])
@@ -2322,6 +2680,8 @@ NUModuleTabViewModeIcon = 2;
     _inhibitsSelectionUpdate = NO;
 }
 
+/*! Check if the module is a child of any parent with a given class name
+*/
 - (BOOL)isChildOfModuleWithClassName:(CPString)aName
 {
     if ([_parentModuleHierarchyCache containsKey:aName])
@@ -2342,6 +2702,8 @@ NUModuleTabViewModeIcon = 2;
     return NO;
 }
 
+/*! Returns the content of the Datasource, with the categories removed, if any
+*/
 - (void)flattenedDataSourceContent
 {
     var ret = [];
@@ -2354,6 +2716,8 @@ NUModuleTabViewModeIcon = 2;
     return ret;
 }
 
+/*! @ignore
+*/
 - (CPTabViewItem)_tabViewItemForProperty:(CPString)aPropertyName tabView:(CPTabView)aTabView
 {
     var itemObjects = aTabView._itemObjects;
@@ -2371,6 +2735,8 @@ NUModuleTabViewModeIcon = 2;
     return nil;
 }
 
+/*! @ignore
+*/
 - (void)showValidationErrors:(NUValidation)aValidation OnTabView:(CPTabView)aTabView
 {
     var errors      = [[aValidation errors] allKeys],
@@ -2411,6 +2777,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! @ignore
+*/
 - (void)hideValidationErrorsForTabView:(CPTabView)aTabView
 {
     var itemObjects = aTabView._itemObjects;
@@ -2424,6 +2792,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Cucapp
 
+/*! Overrides this to define more cucappIDs.
+    You should use - (void)setCuccapPrefix:(CPString)aPrefix forAction:(CPString)anAction
+*/
 - (void)configureCucappIDs
 {
     [self setCuccapPrefix:@"add" forAction:NUModuleActionAdd];
@@ -2434,16 +2805,22 @@ NUModuleTabViewModeIcon = 2;
     [self setCuccapPrefix:@"export" forAction:NUModuleActionExport];
 }
 
+/*! set the cucapp prefix for a given action
+*/
 - (void)setCuccapPrefix:(CPString)aPrefix forAction:(CPString)anAction
 {
     [_cuccapPrefixesRegistry setObject:aPrefix forKey:anAction];
 }
 
+/*! Returns the cucapp prefix for the given action
+*/
 - (CPString)cuccapPrefixForAction:(CPString)anAction
 {
     return [_cuccapPrefixesRegistry objectForKey:anAction];
 }
 
+/*! Update the cucapp IDs when the current active context changes.
+*/
 - (void)updateCucappIDsAccordingToContext:(NUModuleContext)aContext
 {
     if (filterField)
@@ -2470,6 +2847,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Masking Views
 
+/*! Display the masking view.
+*/
 - (void)displayMaskingView
 {
     if (!maskingView || [maskingView superview])
@@ -2481,6 +2860,8 @@ NUModuleTabViewModeIcon = 2;
     [self didShowMaskingView];
 }
 
+/*! Hides the masking view.
+*/
 - (void)hideMaskingView
 {
     if (!maskingView || ![maskingView superview])
@@ -2490,6 +2871,8 @@ NUModuleTabViewModeIcon = 2;
     [self didHideMaskingView];
 }
 
+/*! Display the masking view for multiple selected objects.
+*/
 - (void)displayMultipleSelectedObjectsMaskingView
 {
     if (!multipleSelectedObjectsMaskingView || [multipleSelectedObjectsMaskingView superview])
@@ -2501,6 +2884,8 @@ NUModuleTabViewModeIcon = 2;
     [self didShowMultipleSelectionMaskingView];
 }
 
+/*! Hides the masking view for multiple selected objects.
+*/
 - (void)hideMultipleSelectedObjectsMaskingView
 {
     if (!multipleSelectedObjectsMaskingView || ![multipleSelectedObjectsMaskingView superview])
@@ -2510,6 +2895,8 @@ NUModuleTabViewModeIcon = 2;
     [self didHideMultipleSelectionMaskingView];
 }
 
+/*! Display the current masking view, either the one for single or for multiple selections.
+*/
 - (void)displayCurrentMaskingView
 {
     if (!viewEditObject)
@@ -2528,6 +2915,8 @@ NUModuleTabViewModeIcon = 2;
         [self displayMaskingView]
 }
 
+/*! Hides the current masking view, either the one for single or for multiple selection.
+*/
 - (void)hideCurrentMaskingView
 {
     [self hideMultipleSelectedObjectsMaskingView];
@@ -2536,28 +2925,40 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Masking Views Internal API
 
+/*! Internal API you can override to block the showing of a the single selection masking view
+*/
 - (BOOL)shouldShowMaskingView
 {
     return YES;
 }
 
+/*! Internal API you can override to perform additional operations when the single selection masking view becomes visible
+*/
 - (void)didShowMaskingView
 {
 }
 
+/*! Internal API you can override to perform additional operations when the single selection masking view becomes hidden
+*/
 - (void)didHideMaskingView
 {
 }
 
+/*! Internal API you can override to block the showing of a the multiple selection masking view
+*/
 - (BOOL)shouldShowMultipleSelectionMaskingView
 {
     return YES;
 }
 
+/*! Internal API you can override to perform additional operations when the multiple selection masking view becomes visible
+*/
 - (void)didShowMultipleSelectionMaskingView
 {
 }
 
+/*! Internal API you can override to perform additional operations when the multiple selection masking view becomes hidden
+*/
 - (void)didHideMultipleSelectionMaskingView
 {
 }
@@ -2566,6 +2967,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Getting Started View
 
+/*! @ignore
+*/
 - (void)_manageGettingStartedVisibility
 {
     // CS 04-09-2015 Added verification on active transactions:
@@ -2623,6 +3026,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! Checks if the getting started view is visible.
+*/
 - (BOOL)isGettingViewStartedVisible
 {
     return !![viewGettingStarted superview];
@@ -2630,6 +3035,9 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Getting Started View Internal API
 
+/*! Internal API you can override to perform additional operations
+    when the getting started view becomes visible
+*/
 - (void)didShowGettingStartedView:(BOOL)isVisible
 {
 
@@ -2639,6 +3047,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Split View Management
 
+/*! adjust the sizing of the split views.
+*/
 - (void)adjustSplitViewSize
 {
     if (splitViewMain && [[splitViewMain subviews] count] > 1 && _autoResizeSplitViewSize)
@@ -2652,6 +3062,9 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Selection Management
 
+/*! Sets the current selection. This is called automatically when the Selection
+    of the main table view is changing.
+*/
 - (void)setCurrentSelection:(CPArray)someObjects
 {
     var indexSet = [[CPIndexSet alloc] init];
@@ -2696,6 +3109,8 @@ NUModuleTabViewModeIcon = 2;
         [tableView deselectAll];
 }
 
+/*! @ignore
+*/
 - (BOOL)_standardShouldSelectRowIndexes:(CPIndexSet)someIndexes
 {
     if (_overrideShouldHide)
@@ -2728,6 +3143,8 @@ NUModuleTabViewModeIcon = 2;
     return shouldSelect;
 }
 
+/*! @ignore
+*/
 - (void)_saveCurrentSelection
 {
     if (![self isTableBasedModule])
@@ -2736,6 +3153,8 @@ NUModuleTabViewModeIcon = 2;
     _previousSelectedObjects = [_currentSelectedObjects copy];
 }
 
+/*! @ignore
+*/
 - (void)_restorePreviousSelection
 {
     if (![self isTableBasedModule])
@@ -2744,6 +3163,8 @@ NUModuleTabViewModeIcon = 2;
     [self setCurrentSelection:_previousSelectedObjects];
 }
 
+/*! @ignore
+*/
 - (void)_updateCurrentSelection
 {
     if (_inhibitsSelectionUpdate)
@@ -2806,6 +3227,8 @@ NUModuleTabViewModeIcon = 2;
     [previousSelection makeObjectsPerformSelector:@selector(discardAllFetchers)];
 }
 
+/*! Archive the current selection for later restoration
+*/
 - (void)archiveCurrentSelection
 {
     if (![self isTableBasedModule] || ![[self class] automaticSelectionSaving] || !_currentParent || [_currentParent isDirty])
@@ -2814,6 +3237,8 @@ NUModuleTabViewModeIcon = 2;
     [_selectionArchive setObject:[_currentSelectedObjects valueForKey:@"ID"] forKey:[_currentParent ID]];
 }
 
+/*! Retore previously archived selection if possible
+*/
 - (void)restoreArchivedSelection
 {
     if (![self isTableBasedModule] || ![[self class] automaticSelectionSaving] || !_currentParent || [_currentParent isDirty])
@@ -2844,6 +3269,8 @@ NUModuleTabViewModeIcon = 2;
     [_selectionArchive removeObjectForKey:key];
 }
 
+/*! Clean up selection archive cache.
+*/
 - (void)cleanOutdatedArchivedSelection
 {
     if (![self isTableBasedModule])
@@ -2871,10 +3298,14 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Selection Management Internal API
 
+/*! Internal API you can override to peform additional operations when the user changed the selection
+*/
 - (void)moduleDidSelectObjects:(CPArray)someObjects
 {
 }
 
+/*! Internal API you can override to decide if the user can change the current selection
+*/
 - (BOOL)moduleShouldChangeSelection
 {
     if (editorController)
@@ -2887,13 +3318,17 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Category Management
 
+/*! Returns the NUCategory to be used for the given objects.
+*/
 - (NUCategory)categoryForObject:(id)anObject
 {
 }
 
+/*! Sets the list of NUCategories to be used.
+*/
 - (void)setCategories:(CPArray)someCategories
 {
-    [self flushCategoriesContent];
+    [self _flushCategoriesContent];
 
     [self willChangeValueForKey:@"categories"];
     _categories = someCategories;
@@ -2902,7 +3337,9 @@ NUModuleTabViewModeIcon = 2;
     _usesPagination = ![_categories count];
 }
 
-- (void)flushCategoriesContent
+/*! @ignore
+*/
+- (void)_flushCategoriesContent
 {
     for (var i = [_categories count] - 1; i >= 0; i--)
         [[_categories[i] children] removeAllObjects];
@@ -2912,6 +3349,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Content Management
 
+/*! @ignore
+*/
 - (void)_cleanChildren:(CPArray)someChildren ofObject:(id)anObject fetcher:(NURESTFetcher)aFetcher
 {
     if (!someChildren)
@@ -2935,6 +3374,8 @@ NUModuleTabViewModeIcon = 2;
     return someChildren;
 }
 
+/*! @ignore
+*/
 - (void)__fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
     var transactionID = [aFetcher transactionID];
@@ -2953,6 +3394,8 @@ NUModuleTabViewModeIcon = 2;
     [self fetcher:aFetcher ofObject:anObject didFetchContent:someContents];
 }
 
+/*! @ignore
+*/
 - (void)fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
     if (!someContents)
@@ -3009,6 +3452,8 @@ NUModuleTabViewModeIcon = 2;
     [self performPostFetchOperation];
 }
 
+/*! Performs the sorting of the data source
+*/
 - (void)sortDataSourceContent
 {
     if (![self isTableBasedModule])
@@ -3029,6 +3474,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! Sets the content of the data source.
+*/
 - (void)setDataSourceContent:(CPArray)contents
 {
     [self hideLoading];
@@ -3039,6 +3486,8 @@ NUModuleTabViewModeIcon = 2;
     [self _manageGettingStartedVisibility];
 }
 
+/*! Create a new instance of the object with the given rest name
+*/
 - (id)createObjectWithRESTName:(CPString)anIdenfier
 {
     var context = [self contextWithIdentifier:anIdenfier],
@@ -3056,21 +3505,33 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Contents Internal API
 
+/*! Internal API you can override to decide how to handle a fetching error.
+    By default it will post an error.
+*/
 - (void)errorWhileFetchingWithFetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject fetchContent:(CPArray)someContents
 {
     [NURESTConnection handleResponseForConnection:[aFetcher currentConnection] postErrorMessage:YES];
 }
 
+/*! internal API you can override to perform additional operations
+    just before the module fetches the children
+*/
 - (void)performPreFetchOperation:(CPArray)someContents
 {
 
 }
 
+/*! internal API you can override to perform additional operations
+    just after the module fetched the children
+*/
 - (void)performPostFetchOperation
 {
 
 }
 
+/*! internal API you can override to perform additional operations
+    just after the module re fetched the children (used for pagination)
+*/
 - (void)performPostRefetchOperation
 {
 
@@ -3080,6 +3541,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Should Hide Management
 
+/*! @ignore
+*/
 - (void)_showPendingChangeWithDiscardSelector:(SEL)aSelector nextSelection:(id)aNextSelection
 {
     var confirmAlert = [[TNAlert alloc] initWithMessage:@"Unsaved Changes"
@@ -3114,11 +3577,15 @@ NUModuleTabViewModeIcon = 2;
     [confirmAlert._window._windowView setBorderColor:NUSkinColorGreyDark];
 }
 
+/*! @ignore
+*/
 - (void)_discardPendingChanges:(id)someUserInfo
 {
     // pass
 }
 
+/*! @ignore
+*/
 - (void)_continueTableViewSelectionChange:(CPIndexSet)selectionIndexes
 {
     _overrideShouldHide = YES;
@@ -3135,6 +3602,8 @@ NUModuleTabViewModeIcon = 2;
         [self updateEditorControllerWithObjects:_currentSelectedObjects];
 }
 
+/*! @ignore
+*/
 - (void)_continueTabChange:(CPTabViewItem)aTabViewItem
 {
     _overrideShouldHide = YES;
@@ -3145,22 +3614,32 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Data View Management
 
+/*! Register data view with the given name to be used for the given class
+*/
 - (void)registerDataViewWithName:(CPString)aName forClass:(Class)aClass
 {
     var dataView = [[[NUKit kit] registeredDataViewWithIdentifier:aName] duplicate];
     [_dataViews setObject:dataView forKey:aClass.name];
 }
 
+/*! Returns the data view registered for the given class
+*/
 - (CPView)registeredDataViewForClass:(Class)aClass
 {
     return [_dataViews objectForKey:aClass.name]
 }
 
+/*! @ignore
+*/
 - (CPView)_dataViewForObject:(id)anObject
 {
     return [self registeredDataViewForClass:[anObject class]];
 }
 
+/*! Set the dataview of the for given object to be highlighted.
+    It will call setHighlighted on the corresponding dataview.
+    The data view is responsible to show that it is highlighted.
+*/
 - (void)setDataViewForObject:(id)anObject highlighted:(BOOL)shouldHighlight
 {
     switch ([tableView className])
@@ -3183,6 +3662,8 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Data View Internal API
 
+/*! Called when a data view will be displayed.
+*/
 - (void)willDisplayDataView:(CPView)aView
 {
 }
@@ -3191,6 +3672,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Responder Chain Management
 
+/*! Returns the initial first responder of the module.
+*/
 - (CPResponder)initialFirstResponder
 {
     var module = [self visibleSubModule];
@@ -3201,6 +3684,8 @@ NUModuleTabViewModeIcon = 2;
     return tableView || tabViewContent;
 }
 
+/*! @ignore
+*/
 - (BOOL)acceptsFirstResponder
 {
     return YES;
@@ -3210,6 +3695,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Inspector Management
 
+/*! Open the inspect for the selected object.
+*/
 - (@action)openInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForSelectedObject];
@@ -3219,6 +3706,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Editor Management
 
+/*! Shows or hide the editor, if any
+*/
 - (void)showModuleEditor:(BOOL)shouldShow
 {
     if (!editorController || !viewEditorContainer)
@@ -3245,6 +3734,9 @@ NUModuleTabViewModeIcon = 2;
     [[self visibleSubModule] adjustSplitViewSize];
 }
 
+/*! Tells the editor controller to update itself according to the
+    given objects.
+*/
 - (void)updateEditorControllerWithObjects:(CPArray)someObjects
 {
     var singleSelection         = [someObjects count] == 1,
@@ -3263,6 +3755,8 @@ NUModuleTabViewModeIcon = 2;
     [self showModuleEditor:_stickyEditor || singleSelection || multipleSelection];
 }
 
+/*! @ignore
+*/
 - (@action)tableViewDidClick:(id)aSender
 {
     if (!_selectionDidChanged && [self editorController] && [[self editorController] currentParent] != [_currentSelectedObjects firstObject] && [self _standardShouldSelectRowIndexes:[tableView selectedRowIndexes]])
@@ -3272,34 +3766,63 @@ NUModuleTabViewModeIcon = 2;
 
 #pragma mark Editor Management Internal API
 
+/*! Configure the given editor. This will be called by initialization.
+*/
+- (void)configureEditor:(NUEditorsViewController)anEditorController
+{
+}
+
+/*! Internal API you can override to block the editor for beeing shown.
+*/
 - (BOOL)moduleEditorShouldShow
 {
     return YES;
 }
 
+/*! Internal API you can override to perform addition operations
+    just after the editor becomes visible
+*/
 - (void)moduleEditorDidShow
 {
 }
 
+/*! Internal API you can override to perform addition operations
+    just before the editor becomes hidden
+*/
 - (void)moduleEditorWillHide
 {
 }
 
+/*! Internal API you can override to return an optional transformer
+    that will be used to change the editor title.
+*/
 - (id)moduleEditorTitleTransformer
 {
     return nil;
 }
 
+/*! If the editor has a title, you can return a key path
+    that will be used on the editor currentParent to update the title.
+*/
 - (CPString)moduleEditorTitleKeyPathForObject:(id)anObject
 {
     return @"name"
 }
 
+/*! If the editor has a icon, you can return the image
+    to use according to the given object.
+*/
 - (CPImage)moduleEditorImageTitleForObject:(id)anObject
 {
     return [anObject icon];
 }
 
+
+#pragma mark -
+#pragma mark Keys Events
+
+/*! @ignore
+*/
 - (void)interpretKeyEvents:(CPArray)someEvents
 {
     var event    = [someEvents firstObject],
@@ -3319,6 +3842,8 @@ NUModuleTabViewModeIcon = 2;
     }
 }
 
+/*! @ignore
+*/
 - (void)keyDown:(CPEvent)anEvent
 {
     [self interpretKeyEvents:[anEvent]];
@@ -3328,6 +3853,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark KVO Observers
 
+/*! @ignore
+*/
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
 {
     if (_latestPageLoaded >= _maxPossiblePage)
@@ -3345,7 +3872,7 @@ NUModuleTabViewModeIcon = 2;
         // do not observe bounds change until we receive the next page
         [self _removeScrollViewObservers];
 
-        [self loadNextPage];
+        [self _loadNextPage];
     }
 }
 
@@ -3353,6 +3880,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Outline View Delegates
 
+/*! @ignore
+*/
 - (void)outlineViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
@@ -3363,6 +3892,8 @@ NUModuleTabViewModeIcon = 2;
     } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
+/*! @ignore
+*/
 - (int)outlineView:(CPOutlineView)anOutlineView heightOfRowByItem:(id)anItem
 {
     var dataView = [self _dataViewForObject:anItem];
@@ -3373,6 +3904,8 @@ NUModuleTabViewModeIcon = 2;
         return [dataView frameSize].height;
 }
 
+/*! @ignore
+*/
 - (CPView)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
 {
     var dataView = [self _dataViewForObject:anItem],
@@ -3388,6 +3921,8 @@ NUModuleTabViewModeIcon = 2;
     return view;
 }
 
+/*! @ignore
+*/
 - (CPIndexSet)outlineView:(CPOutlineView)anOutlineView selectionIndexesForProposedSelection:(CPIndexSet)proposedIndexes
 {
     var indexesToRemove = [CPIndexSet new],
@@ -3421,33 +3956,45 @@ NUModuleTabViewModeIcon = 2;
     return proposedIndexes;
 }
 
+/*! @ignore
+*/
 - (void)outlineView:(CPOutlineView)anOutlineView willDisplayView:(CPView)aView forTableColumn:(CPTableColumn)aTableColumn item:(id)anItem
 {
     [self willDisplayDataView:aView];
 }
 
+/*! @ignore
+*/
 - (void)outlineView:(CPOutlineView)anOutlineView willRemoveView:(CPView)aView forTableColumn:(CPTableColumn)aTableColumn item:(id)anItem
 {
     if ([aView respondsToSelector:@selector(setObjectValue:)])
         [aView setObjectValue:nil];
 }
 
+/*! @ignore
+*/
 - (BOOL)outlineView:(CPOutlineView)anOutlineView shouldCollapseItem:(id)anItem
 {
     return NO;
 }
 
+/*! @ignore
+*/
 - (BOOL)outlineView:(CPOutlineView)anOutlineView shouldSelectItem:(id)anItem
 {
     return ![anItem isKindOfClass:NUCategory];
 }
 
+/*! @ignore
+*/
 - (void)outlineViewDeleteKeyPressed:(CPTableView)aTableView
 {
     if ([_currentSelectedObjects count] && ([self isActionPermitted:NUModuleActionDelete]))
         [self openDeleteObjectPopover:aTableView];
 }
 
+/*! @ignore
+*/
 - (CPMenu)outlineView:(CPOutlineView)anOutlineView menuForTableColumn:(CPTableColumn)aColumn item:(is)anItem
 {
     return [self _currentContextualMenu];
@@ -3457,6 +4004,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Table View Delegates
 
+/*! @ignore
+*/
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     _selectionDidChanged = YES;
@@ -3466,6 +4015,8 @@ NUModuleTabViewModeIcon = 2;
     } argument:nil order:0 modes:[CPDefaultRunLoopMode]];
 }
 
+/*! @ignore
+*/
 - (int)tableView:(CPTableView)aTableView heightOfRow:(int)aRow
 {
     var dataView = [self _dataViewForObject:[_dataSource objectAtIndex:aRow]];
@@ -3476,6 +4027,8 @@ NUModuleTabViewModeIcon = 2;
         return [dataView frameSize].height;
 }
 
+/*! @ignore
+*/
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     var item = [_dataSource objectAtIndex:aRow],
@@ -3491,28 +4044,38 @@ NUModuleTabViewModeIcon = 2;
     return view;
 }
 
+/*! @ignore
+*/
 - (CPIndexSet)tableView:(CPTableView)aTableView selectionIndexesForProposedSelection:(CPIndexSet)proposedIndexes
 {
     return [self _standardShouldSelectRowIndexes:proposedIndexes] ? proposedIndexes : [tableView selectedRowIndexes];
 }
 
+/*! @ignore
+*/
 - (void)tableView:(CPTableView)aTableView willDisplayView:(CPView)aView forTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     [self willDisplayDataView:aView];
 }
 
+/*! @ignore
+*/
 - (void)tableView:(CPTableView)aTableView willRemoveView:(CPView)aView forTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     if ([aView respondsToSelector:@selector(setObjectValue:)])
         [aView setObjectValue:nil];
 }
 
+/*! @ignore
+*/
 - (void)tableViewDeleteKeyPressed:(CPTableView)aTableView
 {
     if ([_currentSelectedObjects count] && ([self isActionPermitted:NUModuleActionDelete]))
         [self openDeleteObjectPopover:aTableView];
 }
 
+/*! @ignore
+*/
 - (CPMenu)tableView:(CPTableView)aTableView menuForTableColumn:(CPTableColumn)aColumn row:(CPInteger)aRow
 {
     return [self _currentContextualMenu];
@@ -3522,6 +4085,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark TabView Delegates
 
+/*! @ignore
+*/
 - (BOOL)tabView:(TNTabView)aTabView shouldSelectTabViewItem:(CPTabViewItem)anItem
 {
     if (_overrideShouldHide)
@@ -3542,6 +4107,8 @@ NUModuleTabViewModeIcon = 2;
     return YES;
 }
 
+/*! @ignore
+*/
 - (void)tabView:(TNTabView)aTabView willSelectTabViewItem:(CPTabViewItem)anItem
 {
     var previousModule = [self _subModuleWithIdentifier:[[aTabView selectedTabViewItem] identifier]];
@@ -3553,6 +4120,8 @@ NUModuleTabViewModeIcon = 2;
         [anItem setView:[nextModule view]];
 }
 
+/*! @ignore
+*/
 - (void)tabView:(TNTabView)aTabView didSelectTabViewItem:(CPTabViewItem)anItem
 {
     [self _setCurrentParentForSubModules];
@@ -3569,6 +4138,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark SplitView Delegates
 
+/*! @ignore
+*/
 - (float)splitView:(CPSplitView)aSplitView constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)subviewIndex
 {
     if (splitViewEditor && aSplitView == splitViewEditor)
@@ -3586,6 +4157,8 @@ NUModuleTabViewModeIcon = 2;
     return (_autoResizeSplitViewSize === 0) ? 0 : proposedMax;
 }
 
+/*! @ignore
+*/
 - (float)splitView:(CPSplitView)aSplitView constrainMinCoordinate:(float)proposedMax ofSubviewAt:(int)subviewIndex
 {
     if (splitViewEditor && aSplitView == splitViewEditor)
@@ -3603,6 +4176,8 @@ NUModuleTabViewModeIcon = 2;
     return (proposedMax <= _autoResizeSplitViewSize) ? _autoResizeSplitViewSize : proposedMax;
 }
 
+/*! @ignore
+*/
 - (void)splitView:(CPSplitView)aSplitView resizeSubviewsWithOldSize:(CGSize)oldSize
 {
     [aSplitView adjustSubviews];
@@ -3618,6 +4193,8 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark Popover Delegate
 
+/*! @ignore
+*/
 - (void)popoverDidClose:(CPPopover)aPopover
 {
     if (aPopover != _modulePopover)
@@ -3626,6 +4203,8 @@ NUModuleTabViewModeIcon = 2;
     [self willHide];
 }
 
+/*! @ignore
+*/
 - (void)popoverWillShow:(CPPopover)aPopover
 {
     if (aPopover != _modulePopover)
@@ -3640,19 +4219,14 @@ NUModuleTabViewModeIcon = 2;
 #pragma mark -
 #pragma mark CPWindow Delegate
 
+/*! @ignore
+*/
 - (void)windowWillClose:(CPWindow)aWindow
 {
     if (aWindow !== [self externalWindow])
         return;
 
     [self didCloseFromExternalWindow];
-}
-
-#pragma mark -
-#pragma mark Editor Management Internal API
-
-- (void)configureEditor:(NUEditorsViewController)anEditorController
-{
 }
 
 @end

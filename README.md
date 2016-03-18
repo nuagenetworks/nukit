@@ -49,7 +49,7 @@ There are different flavors of the NUModule:
 - NUObjectsChooser: A module used by other modules to present a list of objects
 
 
-Example of a NUModule
+Example of a simple NUModule
 
 
 ```objj
@@ -80,7 +80,7 @@ Example of a NUModule
     // We create a context for manipulating a SDTask
     var context = [[NUModuleContext alloc] initWithName:@"Task" identifier:[SDTask RESTName]];
 
-    // We give the context the keypath to access the task fetcher
+    // We give the context the key path to access the task fetcher
     // from the the parent model
     [context setFetcherKeyPath:@"tasks"];
 
