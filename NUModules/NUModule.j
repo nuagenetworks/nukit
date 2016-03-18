@@ -178,7 +178,7 @@ NUModuleTabViewModeIcon = 2;
     CPMenu                          _contextualMenu;
     CPNumber                        _maxPossiblePage;
     CPPopover                       _modulePopover;
-    CPTimer                         _timer_reloadLatestPage;
+    CPTimer                         _timerReloadLatestPage;
     id                              _dataSource;
     id                              _fileUpload;
     int                             _numberOfRemainingContextsToLoad;
@@ -1115,7 +1115,7 @@ NUModuleTabViewModeIcon = 2;
 
     [_activeTransactionsIDs removeAllObjects];
     [self setTotalNumberOfEntities:-1];
-    [self setPaginationSynchronizing:NO];
+    [self _setPaginationSynchronizing:NO];
     [self _flushTableView];
     [self updateModuleTitle];
 
@@ -1157,8 +1157,7 @@ NUModuleTabViewModeIcon = 2;
         [self _loadEverythingUsingFetcher:fetcher];
 }
 
-/*! Load a particular page using the given fetcher.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_loadPage:(CPNumber)aPage usingFetcher:(NURESTFetcher)aFetcher
 {
@@ -1189,8 +1188,7 @@ NUModuleTabViewModeIcon = 2;
     [_activeTransactionsIDs addObject:ID];
 }
 
-/*! Load all the pages using the given fetcher.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_loadEverythingUsingFetcher:(NURESTFetcher)aFetcher
 {
@@ -1198,8 +1196,7 @@ NUModuleTabViewModeIcon = 2;
     [self _loadPage:nil usingFetcher:aFetcher];
 }
 
-/*! Load the first page using the given fetcher.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_loadFirstPageUsingFetcher:(NURESTFetcher)aFetcher
 {
@@ -1207,24 +1204,21 @@ NUModuleTabViewModeIcon = 2;
     [self _loadPage:0 usingFetcher:aFetcher];
 }
 
-/*! Load the next page using the given fetcher.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_loadNextPageUsingFetcher:(NURESTFetcher)aFetcher
 {
     [self _loadPage:(_latestPageLoaded + 1) usingFetcher:aFetcher];
 }
 
-/*! Reload the latest loaded page using the given fetcher.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)__reloadLatestPageUsingFetcher:(NURESTFetcher)aFetcher
 {
     [self _loadPage:_latestPageLoaded usingFetcher:aFetcher];
 }
 
-/*! Load the next page using the current context.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_loadNextPage
 {
@@ -1240,25 +1234,24 @@ NUModuleTabViewModeIcon = 2;
         [CPException raise:CPInternalInconsistencyException reason:"Cannot find fetcher to load next page in module " + self];
 }
 
-/*! Reload the latest page using the current context.
-    You should not have to use this.
+/*! @ignore
 */
 - (void)_reloadLatestPage
 {
-    if (_timer_reloadLatestPage)
+    if (_timerReloadLatestPage)
     {
-        [self setPaginationSynchronizing:NO];
-        [_timer_reloadLatestPage invalidate];
+        [self _setPaginationSynchronizing:NO];
+        [_timerReloadLatestPage invalidate];
     }
 
-    [self setPaginationSynchronizing:YES];
+    [self _setPaginationSynchronizing:YES];
 
-    _timer_reloadLatestPage = [CPTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_perform_reloadLatestPage:) userInfo:nil repeats:NO];
+    _timerReloadLatestPage = [CPTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(_performReloadLatestPage:) userInfo:nil repeats:NO];
 }
 
 /*! @ignore
 */
-- (void)_perform_reloadLatestPage:(CPTimer)aTimer
+- (void)_performReloadLatestPage:(CPTimer)aTimer
 {
     var fetcherKeyPath = [_currentContext fetcherKeyPath],
         fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
@@ -1271,14 +1264,14 @@ NUModuleTabViewModeIcon = 2;
                                    ofObject:self
                                       block:nil];
     else
-        [self setPaginationSynchronizing:NO];
+        [self _setPaginationSynchronizing:NO];
 }
 
 /*! @ignore
 */
 - (void)_fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didCountChildren:(int)aCount
 {
-    [self setPaginationSynchronizing:NO];
+    [self _setPaginationSynchronizing:NO];
     [self setTotalNumberOfEntities:aCount];
     [self _synchronizePagination];
 
@@ -1298,10 +1291,9 @@ NUModuleTabViewModeIcon = 2;
     CPLog.debug("PAGINATION: Synchronized pagination is now %@/%@ (objects: %@/%@)", _latestPageLoaded, _maxPossiblePage, [_dataSource count], _totalNumberOfEntities);
 }
 
-/*! Set the state of the module that tells it is actually synchronizing the pagination.
-    You should not have to use this.
+/*! ignore
 */
-- (void)setPaginationSynchronizing:(BOOL)isSycing
+- (void)_setPaginationSynchronizing:(BOOL)isSycing
 {
     [self willChangeValueForKey:@"formatedTotalNumberOfEntities"];
     _paginationSynchronizing = isSycing;
@@ -2307,8 +2299,8 @@ NUModuleTabViewModeIcon = 2;
             pushManaged = YES;
             [self performPrePushOperation];
 
-            if (_timer_reloadLatestPage)
-                [_timer_reloadLatestPage invalidate];
+            if (_timerReloadLatestPage)
+                [_timerReloadLatestPage invalidate];
         }
 
         switch (eventType)
