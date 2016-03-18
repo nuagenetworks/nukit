@@ -1,10 +1,8 @@
 # Starter XIBs
 
-## Introduction
-
 This folder contains several preconfigured XIBs you can use with NUKit's NUModules. You should be able to select the one that is the closer of what you need to do, then change the file's owner class name, and adapt the UI to you needs.
 
-## XIBs
+## XIB Starter Files
 
 - `NodeModule.xib`: Interface for module with child modules
 - `LeafModule.xib`: Interface for module with no submodules

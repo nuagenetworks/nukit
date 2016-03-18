@@ -94,4 +94,4 @@ Example of a NUModule
 @end
 ```
 
-By just doing that and creating the according xib file, you'll have a complete Tasks manager.
+By just doing that and creating the according xib file (using for instance the `LeafModule.xib` available in `Tools/xibs` as a starting point), you'll have a complete Tasks view.
