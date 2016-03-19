@@ -30,7 +30,9 @@
 
 var NUKitToolBarDefault;
 
-
+/*! NUKitToolBar is a really simple toolbar, way easier to use than the CPToolbar
+    It also do a lot less.
+*/
 @implementation NUKitToolBar : CPControl
 {
     @outlet CPImageView     imageApplicationIcon;
@@ -53,6 +55,8 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark Class Methods
 
+/*! Returns the default toolbar
+*/
 + (id)defaultToolBar
 {
     return NUKitToolBarDefault;
@@ -62,6 +66,8 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (id)initWithFrame:(CGRect)aFrame
 {
     if (self = [super initWithFrame:aFrame])
@@ -70,6 +76,8 @@ var NUKitToolBarDefault;
     return self;
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     _buttonsRegistry = @{};
@@ -90,6 +98,8 @@ var NUKitToolBarDefault;
     [_viewSeparator setBackgroundColor:NUSkinColorGrey];
 }
 
+/*! @ignore
+*/
 - (void)awakeFromCib
 {
     [stackViewButtons setMode:NUStackViewModeHorizontal];
@@ -110,11 +120,15 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark Utilities
 
+/*! Sets the current enterprise. This is kind of badly named and it will change.
+*/
 - (void)setCurrentEnterprise:(id)anEnterprise
 {
     [_viewIcon setObjectValue:anEnterprise];
 }
 
+/*! Register a new button for the given roles.
+*/
 - (void)registerButton:(CPButton)aButton forRoles:(CPArray)someRoles
 {
     [_buttonsRegistry setObject:someRoles || [CPNull null] forKey:aButton];
@@ -125,6 +139,8 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark Application Name and Icon Management
 
+/*! Bind the application name field to the given object with the given keypath
+*/
 - (void)bindApplicationNameToObject:(id)anObject withKeyPath:(CPString)aKeyPath
 {
     [fieldApplicationName unbind:CPValueBinding];
@@ -138,6 +154,8 @@ var NUKitToolBarDefault;
         [fieldApplicationName setStringValue:[[NUKit kit] companyName]];
 }
 
+/*! Bind the application icon field to the given object with the given keypath
+*/
 - (void)bindApplicationIconToObject:(id)anObject withKeyPath:(CPString)aKeyPath
 {
     [imageApplicationIcon unbind:CPValueBinding];
@@ -151,23 +169,31 @@ var NUKitToolBarDefault;
         [imageApplicationIcon setImage:[[NUKit kit] companyLogo]];
 }
 
+/*! Sets a temporary application name
+*/
 - (void)setTemporaryApplicationName:(CPString)aName
 {
     [fieldApplicationName unbind:CPValueBinding];
     [fieldApplicationName setStringValue:aName];
 }
 
+/*! Sets a temporary application icon
+*/
 - (void)setTemporaryApplicationIcon:(CPString)anIcon
 {
     [imageApplicationIcon unbind:CPValueBinding];
     [imageApplicationIcon setImage:anIcon];
 }
 
+/*! Resets the temporary application name
+*/
 - (void)resetTemporaryApplicationName
 {
     [self bindApplicationNameToObject:_applicationNameBoundObject withKeyPath:_applicationNameBoundKeyPath];
 }
 
+/*! Resets the temporary application icon
+*/
 - (void)resetTemporaryApplicationIcon
 {
     [self bindApplicationIconToObject:_applicationIconBoundObject withKeyPath:_applicationIconBoundKeyPath];
@@ -177,6 +203,8 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark Layout
 
+/*! @ignore
+*/
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -210,6 +238,8 @@ var NUKitToolBarDefault;
 #pragma mark -
 #pragma mark CPCoding compliance
 
+/*! @ignore
+*/
 - (id)initWithCoder:(CPCoder)aCoder
 {
     if (self = [super initWithCoder:aCoder])
@@ -224,6 +254,8 @@ var NUKitToolBarDefault;
     return self;
 }
 
+/*! @ignore
+*/
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
     [super encodeWithCoder:aCoder];

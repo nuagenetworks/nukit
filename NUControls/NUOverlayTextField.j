@@ -23,6 +23,10 @@
 @import "NUSkin.j"
 
 
+/*! NUOverlayTextField is a field used
+    by NUModuleSelfParent to display general validation
+    error. It's not meant to be used.
+*/
 @implementation NUOverlayTextField : CPView
 {
     CPTextField _targetTextField    @accessors(getter=targetTextField);

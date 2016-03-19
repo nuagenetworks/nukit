@@ -34,6 +34,8 @@ if (typeof(navigator) != "undefined")
 var DCFileDropableTargets = [];
 
 
+/*! @ignore
+*/
 @implementation NUFileDropController : CPObject
 {
     BOOL        _enabled                @accessors(getter=isEnabled);

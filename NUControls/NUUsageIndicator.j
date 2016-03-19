@@ -21,6 +21,13 @@
 @import "NUSkin.j"
 
 
+/*! Usage indicator is progress indicator
+    with color changing accordint to its value.
+
+    - between 0% and 10%: normal color
+    - between 80% and 89% : orange
+    - 90% and above: red;
+*/
 @implementation NUUsageIndicator : CPProgressIndicator
 
 - (void)setDoubleValue:(double)aValue
@@ -35,9 +42,6 @@
         [self setValue:NUSkinColorOrange forThemeAttribute:@"bar-color"];
     else
         [self setValue:NUSkinColorRed forThemeAttribute:@"bar-color"];
-
-
 }
-
 
 @end

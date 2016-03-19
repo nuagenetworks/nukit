@@ -46,6 +46,9 @@ var NUNetworkTextField_noMathWithRegex_forValue_ = 1 << 1,
 
 var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 
+/*! NUNetworkTextField is a textfield that is made for IPv4, IPv6 and MAC Address
+    You can use it as is.
+*/
 @implementation NUNetworkTextField : CPTextField
 {
     BOOL                                        _mask                           @accessors(getter=hasMask, setter=setMask:);
@@ -81,11 +84,15 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Init methods
 
+/*! @ignore
+*/
 + (void)initialize
 {
     SELECTING_COLOR = [CPColor colorWithHexString:@"A2CCFE"];
 }
 
+/*! @ignore
+*/
 - (id)init
 {
     if (self = [super init])
@@ -96,6 +103,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return self;
 }
 
+/*! @ignore
+*/
 - (id)initWithFrame:(CGRect)aRect
 {
     if (self = [super initWithFrame:aRect])
@@ -106,6 +115,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return self;
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     _stringValue = @"";
@@ -177,6 +188,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Responder methods
 
+/*! @ignore
+*/
 - (BOOL)becomeFirstResponder
 {
     if (!_currentNetworkTextField)
@@ -203,6 +216,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return NO;
 }
 
+/*! @ignore
+*/
 - (void)_asyncMakeFirstResponder:(CPNotification)aNotification
 {
     var userInfo = [aNotification userInfo];
@@ -213,6 +228,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
         [self selectAll];
 }
 
+/*! @ignore
+*/
 - (BOOL)acceptsFirstResponder
 {
     var currentFirstResponder = [[self window] firstResponder];
@@ -228,6 +245,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return [self isEnabled];
 }
 
+/*! @ignore
+*/
 - (BOOL)isFirstResponder
 {
     var firstResponder = [[self window] firstResponder];
@@ -247,6 +266,11 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Accessors
 
+/*! You can set the mode of the NUNetworkTextField
+    NUNetworkIPV4Mode
+    NUNetworkIPV6Mode
+    NUNetworkMACMode
+*/
 - (void)setMode:(int)aMode
 {
     if (aMode == _mode)
@@ -260,6 +284,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self _populateNetworkElementTextFields]
 }
 
+/*! Sets if the network mask is required or not
+*/
 - (void)setMask:(BOOL)aMask
 {
     if (aMask == _mask)
@@ -280,12 +306,16 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [super setEditable:NO];
 }
 
+/*! @ignore
+*/
 - (void)setNextKeyView:(CPView)aView
 {
     [[_networkElementTextFields lastObject] setNextKeyView:aView];
     [super setNextKeyView:aView];
 }
 
+/*! @ignore
+*/
 - (void)setShowCancelButton:(BOOL)aBoolean
 {
     if (_showCancelButton == aBoolean)
@@ -328,8 +358,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark IP Utilities
 
-/*!
-    Return an array with the digits of the objectValue.
+/*! Returns an array with the digits of the objectValue.
     Call the delegateif there is an error
 */
 - (CPArray)_digitsForIPValue:(id)anObjectValue
@@ -353,6 +382,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return ips;
 }
 
+/*! @ignore
+*/
 - (CPArray)_digitsForMACValue:(id)anObjectValue
 {
     var macs = anObjectValue.split(@":"),
@@ -367,8 +398,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return macs;
 }
 
-/*!
-    Return a boolean to know if the value is an ip value
+/*! Returns a boolean to know if the value is an ip value
 */
 - (BOOL)_isIPValue:(id)aValue
 {
@@ -401,8 +431,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return YES;
 }
 
-/*!
-    Return a boolean to know if the value is mask value
+/*! Returns a boolean to know if the value is mask value
 */
 - (BOOL)_isMaskValue:(id)aValue
 {
@@ -436,6 +465,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return YES;
 }
 
+/*! @ignore
+*/
 - (BOOL)_isMACValue:(id)aValue
 {
     if (!aValue)
@@ -452,8 +483,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return YES;
 }
 
-/*!
-    Return a boolean to know if the objectValue match the regexp
+/*! Returns a boolean to know if the objectValue match the regexp
 */
 - (BOOL)_checkValueWithRegex
 {
@@ -475,26 +505,28 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Accessors objectValue stringValue
 
+/*! @ignore
+*/
 - (CPString)stringValue
 {
     return [self objectValue];
 }
 
+/*! @ignore
+*/
 - (id)objectValue
 {
     return _internObjectValue;
 }
 
-/*!
-    Set the stringValue of the control
+/*! Sets the stringValue of the control
 */
 - (void)setStringValue:(CPString)aStringValue
 {
     [self setObjectValue:aStringValue];
 }
 
-/*!
-    Set the objectValue of the control
+/*! Sets the objectValue of the control
     Here we check if the objectValue is a IP Value
 */
 - (void)setObjectValue:(id)anObjectValue
@@ -578,11 +610,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self setNeedsLayout];
 }
 
-/*!
-    Set the objectValue of a textField
-    @param anObjectValue the objectValue
-    @param anIndex the index of the textField
-    @return a boolean to know if the ip value was good or not
+/*! Sets the objectValue of a textField
 */
 - (BOOL)_setObjectValue:(id)anObjectValue atIndex:(int)anIndex
 {
@@ -631,9 +659,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Layout methods
 
-/*!
-    Modifies the bounding rectangle for the cancel button.
-    @param rect The updated bounding rectangle to use for the cancel button. The default value is the value passed into the rect parameter.
+/*! Modifies the bounding rectangle for the cancel button.
     Subclasses can override this method to return a new bounding rectangle for the cancel button. You might use this method to provide a custom layout for the search field control.
 */
 - (CGRect)cancelButtonRectForBounds:(CGRect)rect
@@ -643,11 +669,15 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     return CGRectMake(CGRectGetWidth(rect) - size.width - 5, (CGRectGetHeight(rect) - size.width) / 2, size.height, size.height);
 }
 
+/*! @ignore
+*/
 - (void)_updateCancelButtonVisibility
 {
     [_cancelButton setHidden:(!_showCancelButton || [_internObjectValue length] === 0 || ![self isEnabled])];
 }
 
+/*! @ignore
+*/
 - (void)layoutSubviews
 {
     [self _themeTextFields];
@@ -714,8 +744,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self _updateScrollViewFrame];
 }
 
-/*!
-    Populate the control with several textFields
+/*! Populates the control with several textFields
 */
 - (void)_populateNetworkElementTextFields
 {
@@ -784,7 +813,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self setNeedsLayout];
 }
 
-/*!
+/*! @ignore
     Theme the textFields
 */
 - (void)_themeTextFields
@@ -825,7 +854,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self _updatePositionTextFields];
 }
 
-/*!
+/*! @ignore
     Update the position of the textFields
 */
 - (void)_updatePositionTextFields
@@ -851,7 +880,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Select textField methods
 
-/*!
+/*! @ignore
     Select the previous textField
 */
 - (void)_selectPreviousTextField
@@ -862,7 +891,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
         [self selectTextField:[_networkElementTextFields objectAtIndex:(index - 1)]];
 }
 
-/*!
+/*! @ignore
     Select the next textField
 */
 - (void)_selectNextTextField
@@ -873,7 +902,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
         [self selectTextField:[_networkElementTextFields objectAtIndex:(index + 1)]];
 }
 
-/*!
+/*! @ignore
     Select the given textField
 */
 - (void)selectTextField:(_NUNetworkElementTextField)aTextField
@@ -905,7 +934,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Private delegate
 
-/*!
+/*! @ignore
     Delegate _textDidChange
     Here we change the objectValue of th control
 */
@@ -933,16 +962,22 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:self userInfo:nil]];
 }
 
+/*! @ignore
+*/
 - (void)_networkTextFieldAction:(id)sender
 {
     [self sendAction:[self action] to:[self target]];
 }
 
+/*! @ignore
+*/
 - (void)selectText:(id)sender
 {
     [self selectAll];
 }
 
+/*! @ignore
+*/
 - (void)selectAll
 {
     if ([_internObjectValue length] == 0)
@@ -967,6 +1002,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [_fakeTextField selectAll:self];
 }
 
+/*! @ignore
+*/
 - (void)_deselectAll
 {
     for (var i = [_networkElementTextFields count] - 1; i >= 0; i--)
@@ -985,6 +1022,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
         [_fakeTextField removeFromSuperview];
 }
 
+/*! @ignore
+*/
 - (void)_cancelOperation:(id)sender
 {
     _selectAll = NO;
@@ -999,6 +1038,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Mouse events
 
+/*! @ignore
+*/
 - (void)mouseDown:(CPEvent)anEvent
 {
     [super mouseDown:anEvent];
@@ -1008,9 +1049,12 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     window.setTimeout(function(){_doubleClick = NO;}, 300);
 }
 
+
 #pragma mark -
 #pragma mark Past Copy Cut methods
 
+/*! @ignore
+*/
 - (void)pasteString:(CPString)aString
 {
     [self setStringValue:aString];
@@ -1030,10 +1074,12 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [self textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:self userInfo:nil]];
 }
 
+
 #pragma mark -
 #pragma mark Overriding
 
-
+/*! @ignore
+*/
 - (void)_removeObservers
 {
     if (!_isObserving)
@@ -1045,6 +1091,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [[CPNotificationCenter defaultCenter] removeObserver:self name:CPViewFrameDidChangeNotification object:nil];
 }
 
+/*! @ignore
+*/
 - (void)_addObservers
 {
     if (_isObserving)
@@ -1060,12 +1108,16 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Bounds and frame notifications
 
+/*! @ignore
+*/
 - (void)boundsDidChangeNotification:(CPNotification)aNotification
 {
     [self _updateContainerFrame];
     [self _updateScrollViewFrame];
 }
 
+/*! @ignore
+*/
 - (void)frameDidChangeNotification:(CPNotification)aNotification
 {
     [self _updateContainerFrame];
@@ -1076,6 +1128,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
 #pragma mark -
 #pragma mark Container methods
 
+/*! @ignore
+*/
 - (void)_updateContainerFrame
 {
     var frame = CGRectMakeCopy([self bounds]);
@@ -1084,6 +1138,8 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     [_container setFrame:CGRectMakeCopy(frame)];
 }
 
+/*! @ignore
+*/
 - (void)_updateScrollViewFrame
 {
     var frame = CGRectMakeCopy([self bounds]);
@@ -1109,8 +1165,13 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     NUNetworkSeparatorValueKey = @"NUNetworkSeparatorValueKey",
     NUNetworkModeKey = @"NUNetworkModeKey";
 
+/*! @ignore
+*/
 @implementation NUNetworkTextField (CPCoding)
 
+
+/*! @ignore
+*/
 - (id)initWithCoder:(CPCoder)aCoder
 {
     if (self = [super initWithCoder:aCoder])
@@ -1128,6 +1189,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return self;
 }
 
+/*! @ignore
+*/
 - (void)encodeWithCoder:(CPCoder)aCoder
 {
     [self setSubviews:[]];
@@ -1143,9 +1206,11 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 @end
 
 
+/*! @ignore
+*/
 @implementation NUNetworkTextField (NUNetworkTextFieldDelegate)
 
-/*!
+/*! @ignore
     Delegate _noMatchWithRegex:forValue:
     @param the regex
     @param aValue
@@ -1158,7 +1223,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [_networkTextFieldDelegate networkTextField:self noMatchWithRegex:aRegex forValue:aValue];
 }
 
-/*!
+/*! @ignore
     Delegate _matchWithRegex:forValue:
     @param the regex
     @param aValue
@@ -1171,7 +1236,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [_networkTextFieldDelegate networkTextField:self matchWithRegex:aRegex forValue:aValue];
 }
 
-/*!
+/*! @ignore
     Delegate errorMessage
     @param aString the message
 */
@@ -1185,11 +1250,16 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 @end
 
+
+/*! @ignore
+*/
 @implementation _NUBasicNetworktextField : CPTextField
 {
 
 }
 
+/*! @ignore
+*/
 - (BOOL)acceptsFirstResponder
 {
     if (![_delegate isEditable] || ![_delegate isEnabled])
@@ -1210,6 +1280,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super acceptsFirstResponder];
 }
 
+/*! @ignore
+*/
 - (void)drawRect:(CGRect)aRect
 {
     var context = [[CPGraphicsContext currentContext] graphicsPort],
@@ -1231,6 +1303,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 @end
 
 
+/*! @ignore
+*/
 @implementation _NUNetworkElementTextField : CPTextField
 {
     _NUNetworkElementTextField  _nextTextField  @accessors(property=nextTextField);
@@ -1240,18 +1314,22 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     CPString    _lastValue;
 }
 
+/*! @ignore
+*/
 + (CPTextField)textFieldWithStringValue:(CPString)aStringValue placeholder:(CPString)aPlaceholder width:(float)aWidth
 {
     return [super textFieldWithStringValue:aStringValue placeholder:aPlaceholder width:aWidth];
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     _mask = NO;
     _lastValue = [self stringValue];
 }
 
-/*!
+/*! @ignore
     This method will set the _currentNetworkTextField of the delegate
 */
 - (BOOL)becomeFirstResponder
@@ -1290,7 +1368,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super becomeFirstResponder];
 }
 
-/*!
+/*! @ignore
     This method will unset the _currentNetworkTextField of the delegate
 */
 - (BOOL)resignFirstResponder
@@ -1302,6 +1380,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super resignFirstResponder];
 }
 
+/*! @ignore
+*/
 - (BOOL)acceptsFirstResponder
 {
     var bounds = CGRectMakeCopy([[_delegate._scrollView contentView] bounds]);
@@ -1317,7 +1397,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [_delegate acceptsFirstResponder];
 }
 
-/*!
+/*! @ignore
     Key down method
     Here we check if we use the right/left arrow and the position of the cursor
 */
@@ -1343,6 +1423,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [super keyDown:anEvent];
 }
 
+/*! @ignore
+*/
 - (void)moveLeft:(id)sender
 {
     var lastPosition;
@@ -1361,6 +1443,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (void)moveRight:(id)sender
 {
     var lastPosition,
@@ -1380,11 +1464,15 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (void)cancelOperation:(id)sender
 {
     [_delegate _deselectAll];
 }
 
+/*! @ignore
+*/
 - (void)deleteBackward:(id)sender
 {
     if (![[self stringValue] length])
@@ -1394,6 +1482,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (BOOL)performKeyEquivalent:(CPEvent)anEvent
 {
     var key = [anEvent charactersIgnoringModifiers],
@@ -1408,6 +1498,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super performKeyEquivalent:anEvent];
 }
 
+/*! @ignore
+*/
 - (void)keyUp:(CPEvent)anEvent
 {
     if (!_isPast)
@@ -1437,6 +1529,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (void)textDidEndEditing:(CPNotification)aNotification
 {
     if ([aNotification object] !== self || _delegate._selectAll)
@@ -1543,7 +1637,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
-/*!
+/*! @ignore
     Notification when the text change
     We check here what is the new character and how to handle it
     Here we may select the next/previous textField or send a message to the superIPtextField for saying that the ip just changed
@@ -1666,7 +1760,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [_delegate _textDidChange:self];
 }
 
-/*!
+/*! @ignore
     Set the ip value to the control
     @param the ip value
 */
@@ -1676,7 +1770,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     _lastValue = aStringValue;
 }
 
-/*!
+/*! @ignore
     Set the object value to the control. This method guarantes to only have integer
 */
 - (void)setObjectValue:(id)anObjectValue
@@ -1697,7 +1791,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [super setObjectValue:anObjectValue];
 }
 
-/*!
+/*! @ignore
     Return the previousKeyView who is the nextKeyView of the superNetworkTextField
     @return a view
 */
@@ -1709,6 +1803,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super previousKeyView];
 }
 
+/*! @ignore
+*/
 - (CPView)nextKeyView
 {
     if (_delegate._mode != NUNetworkIPV6Mode && _delegate._internObjectValue == @"")
@@ -1721,6 +1817,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 #pragma mark -
 #pragma mark Copy methods
 
+/*! @ignore
+*/
 - (void)paste:(id)sender
 {
     [self setStringValue:@""];
@@ -1732,6 +1830,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 #pragma mark -
 #pragma mark mouseDown event
 
+/*! @ignore
+*/
 - (void)mouseDown:(CPEvent)anEvent
 {
     if (_delegate._doubleClick && ((_delegate._isTableViewNetworktextField && [_delegate isSelectable]) || !_delegate._isTableViewNetworktextField))
@@ -1750,6 +1850,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 #pragma mark -
 #pragma mark DrawRect
 
+/*! @ignore
+*/
 - (void)drawRect:(CGRect)aRect
 {
     var context = [[CPGraphicsContext currentContext] graphicsPort],
@@ -1770,7 +1872,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 
 @end
 
-/*! _NUFakeTextField is used for the event ctrl + a and ctrl + c.
+/*! @ignore
+    _NUFakeTextField is used for the event ctrl + a and ctrl + c.
     This create a textField with an opacity 0, and we redirect all the events to the real networktextField if needed
 */
 @implementation _NUFakeTextField : CPTextField
@@ -1781,6 +1884,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     BOOL    _cursorToLastPosition;
 }
 
+/*! @ignore
+*/
 - (id)init
 {
     if (self = [super init])
@@ -1790,11 +1895,15 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return self;
 }
 
+/*! @ignore
+*/
 - (BOOL)acceptsFirstResponder
 {
     return [super acceptsFirstResponder];
 }
 
+/*! @ignore
+*/
 - (BOOL)resignFirstResponder
 {
     if (!([super resignFirstResponder]))
@@ -1803,6 +1912,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return YES;
 }
 
+/*! @ignore
+*/
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -1813,6 +1924,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 #endif
 }
 
+/*! @ignore
+*/
 - (BOOL)performKeyEquivalent:(CPEvent)anEvent
 {
     var key = [anEvent charactersIgnoringModifiers],
@@ -1835,26 +1948,36 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     return [super performKeyEquivalent:anEvent];
 }
 
+/*! @ignore
+*/
 - (void)moveLeft:(id)sender
 {
     [self _selectFirstTextField];
 }
 
+/*! @ignore
+*/
 - (void)moveDown:(id)sender
 {
     [self _selectFirstTextField];
 }
 
+/*! @ignore
+*/
 - (void)moveRight:(id)sender
 {
     [self _selectLastValidTextField];
 }
 
+/*! @ignore
+*/
 - (void)moveUp:(id)sender
 {
     [self _selectLastValidTextField];
 }
 
+/*! @ignore
+*/
 - (void)_selectLastValidTextField
 {
     var textField;
@@ -1870,17 +1993,23 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [self _selectTextField:textField range:CPMakeRange([[textField stringValue] length],0)];
 }
 
+/*! @ignore
+*/
 - (void)_selectFirstTextField
 {
     var textField = [_networkTextField._networkElementTextFields firstObject];
     [self _selectTextField:textField range:CPMakeRange(0,0)];
 }
 
+/*! @ignore
+*/
 - (void)cancelOperation:(id)sender
 {
     [self _selectFirstTextField];
 }
 
+/*! @ignore
+*/
 - (void)deleteBackward:(id)sender
 {
     if (![_networkTextField isEnabled])
@@ -1892,6 +2021,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     [_networkTextField textDidChange:[CPNotification notificationWithName:CPControlTextDidChangeNotification object:_networkTextField userInfo:nil]];
 }
 
+/*! @ignore
+*/
 - (void)keyDown:(CPEvent)anEvent
 {
     var key = [anEvent charactersIgnoringModifiers],
@@ -1940,6 +2071,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (void)keyUp:(CPEvent)anEvent
 {
     if (!_isPast)
@@ -1957,7 +2090,8 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
-/*! Needed when we lost the focus (tab or mouse event) when we have selected all
+/*! @ignore
+    Needed when we lost the focus (tab or mouse event) when we have selected all
 */
 - (void)textDidEndEditing:(CPNotification)aNotification
 {
@@ -2013,27 +2147,36 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     }
 }
 
+/*! @ignore
+*/
 - (CPView)nextKeyView
 {
     return [_networkTextField nextKeyView];
 }
 
+/*! @ignore
+*/
 - (CPView)nextValidKeyView
 {
     return [_networkTextField nextValidKeyView];
 }
 
+/*! @ignore
+*/
 - (CPView)previousKeyView
 {
     return [_networkTextField previousKeyView];
 }
 
+/*! @ignore
+*/
 - (CPView)previousValidKeyView
 {
     return [_networkTextField previousValidKeyView];
 }
 
-/*! This select the given textField of the networkTextField and put the position of the cursor to the given range
+/*! @ignore
+    This select the given textField of the networkTextField and put the position of the cursor to the given range
 */
 - (void)_selectTextField:(_NUNetworkElementTextField)aNetworkTextField range:(CPRange)aRange
 {
@@ -2050,9 +2193,12 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
         [aNetworkTextField setSelectedRange:aRange];
 }
 
+
 #pragma mark -
 #pragma mark Copy methods
 
+/*! @ignore
+*/
 - (void)paste:(id)sender
 {
     _isPast = YES;
@@ -2062,6 +2208,7 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
 @end
 
 // Here because flat files in NUKit, because Antoine and not possible to make test with that...
+// antoine: :)
 function intFromHexa(hexa){
     return parseInt(hexa, 16);
 }

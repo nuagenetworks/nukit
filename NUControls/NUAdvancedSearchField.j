@@ -67,6 +67,9 @@ var NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_        =
 var _BEZEL_INSET_BOTTOM = 1.0,
     _BEZEL_INSET_LEFT = 0.0;
 
+/*! NUAdvancedSearchField is field that will present
+    results in a scrollable panel, a la spotlight
+*/
 @implementation NUAdvancedSearchField : CPSearchField
 {
     BOOL                                        _allowsVerticalResizing     @accessors(property=allowsVerticalResizing);
@@ -91,6 +94,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (void)_initSearchValues
 {
     _currentHiglightedItems = [];
@@ -98,6 +103,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     _numberOfItems = 0;
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     [super _init];
@@ -137,6 +144,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [self setPostsFrameChangedNotifications:YES];
 }
 
+/*! @ignore
+*/
 - (void)_makeTableView
 {
     _tableView = [[CPTableView alloc] initWithFrame:CGRectMakeZero()];
@@ -150,6 +159,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_tableView setBackgroundColor:[CPColor clearColor]];
 }
 
+/*! @ignore
+*/
 - (void)_makeScrollViewWithFrame:(CGRect)aFrame
 {
     _scrollView = [[CPScrollView alloc] initWithFrame:aFrame];
@@ -164,6 +175,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_scrollView setBackgroundColor:[CPColor clearColor]];
 }
 
+/*! @ignore
+*/
 - (void)_makePanelWithFrame:(CGRect)aFrame
 {
     _panel = [[_NUAdvancedSearchFieldPanel alloc] initWithContentRect:aFrame styleMask:CPBorderlessWindowMask];
@@ -183,6 +196,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Notifications Handlers
 
+/*! @ignore
+*/
 - (void)frameDidChangeNotification:(CPNotification)aNotification
 {
     if ([self isVisible])
@@ -200,6 +215,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark DataSource Management
 
+/*! Sets the data source to use.
+*/
 - (void)setDataSource:(id <NUAdvancedSearchFieldDataSource>)aDataSource
 {
     _searchFieldDataSource = aDataSource;
@@ -209,6 +226,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         _implementedSearchFieldDataSourceMethods |= NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_;
 }
 
+/*! @ignore
+*/
 - (CPDictionary)_sendDataSourceMatchingItemsForString:(CPString)aStringValue
 {
     if (!(_implementedSearchFieldDataSourceMethods & NUAdvancedSearchFieldDataSource_searchField_matchingItemsForString_))
@@ -221,6 +240,16 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Delegate Management
 
+/*! Sets the delegate
+
+    - (int)searchField:(NUAdvancedSearchField)aSearchField heightOfViewForObjectValue:(CPObject)anObject
+    - (CPView)searchField:(NUAdvancedSearchField)aSearchField groupDataViewForObjectValue:(CPObject)anObject
+    - (CPView)searchField:(NUAdvancedSearchField)aSearchField dataViewForObjectValue:(CPObject)anObject
+    - (int)searchField:(NUAdvancedSearchField)aSearchField heightOfGroupViewForObjectValue:(CPObject)anObject
+    - (void)searchField:(NUAdvancedSearchField)aSearchField didSelectItem:(CPObject)anItem
+    - (void)searchFieldDidClosePanel:(NUAdvancedSearchField)aSearchField
+    - (void)searchFieldDidClosePanel:(NUAdvancedSearchField)aSearchField
+*/
 - (void)setDelegate:(id <NUAdvancedSearchFieldDelegate>)aDelegate
 {
     _searchFieldDelegate = aDelegate
@@ -251,6 +280,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         _implementedSearchFieldDelegateMethods |= NUAdvancedSearchFieldDelegate_searchFieldShouldCancel_;
 }
 
+/*! @ignore
+*/
 - (CPView)_sendDelegateGroupDataViewForObjectValue:(id)anObjectValue
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_groupDataViewForObjectValue_))
@@ -259,6 +290,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return [_searchFieldDelegate searchField:self groupDataViewForObjectValue:anObjectValue];
 }
 
+/*! @ignore
+*/
 - (CPView)_sendDelegateDataViewForObjectValue:(id)anObjectValue
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_dataViewForObjectValue_))
@@ -267,6 +300,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return [_searchFieldDelegate searchField:self dataViewForObjectValue:anObjectValue];
 }
 
+/*! @ignore
+*/
 - (float)_sendDelegateHeightOfViewForObjectValue:(id)anObjectValue
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_heightOfViewForObjectValue_))
@@ -275,6 +310,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return [_searchFieldDelegate searchField:self heightOfViewForObjectValue:anObjectValue];
 }
 
+/*! @ignore
+*/
 - (float)_sendDelegateHeightOfGroupViewForObjectValue:(id)anObjectValue
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchField_heightOfGroupViewForObjectValue_))
@@ -283,6 +320,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return [_searchFieldDelegate searchField:self heightOfGroupViewForObjectValue:anObjectValue];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidSelectItem:(id)anObjectValue
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_didSelectItem_))
@@ -291,6 +330,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_searchFieldDelegate searchField:self didSelectItem:anObjectValue];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateSearchFieldDidClosePanel
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldDidClosePanel_))
@@ -299,6 +340,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_searchFieldDelegate searchFieldDidClosePanel:self];
 }
 
+/*! @ignore
+*/
 - (BOOL)_sendDelegateShouldCancel
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldShouldCancel_))
@@ -307,6 +350,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return [_searchFieldDelegate searchFieldShouldCancel:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidCancel
 {
     if (!(_implementedSearchFieldDelegateMethods & NUAdvancedSearchFieldDelegate_searchFieldDidCancel_))
@@ -319,6 +364,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark NUAdvancedSearchField API
 
+/*! Shows the result panel
+*/
 - (void)showPanel
 {
     [self _calculateNumberOfItems];
@@ -356,6 +403,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [_panel orderFront:nil];
 }
 
+/*! Closes the result panel
+*/
 - (void)closePanel
 {
     [self _initSearchValues];
@@ -367,11 +416,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [_tableView setDelegate:self];
 }
 
+/*! Sets the content to show in the result panel.
+*/
 - (void)setContent:(CPMutableDictionary)someContents
 {
     [self setContent:someContents showPanel:YES];
 }
 
+/*! Sets the content to show in the result panel and show it
+*/
 - (void)setContent:(CPMutableDictionary)someContents showPanel:(BOOL)shouldShowPanel
 {
     _content = someContents;
@@ -385,6 +438,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [self closePanel];
 }
 
+/*! Selects the next item.
+*/
 - (BOOL)selectNextItem
 {
     if (![_tableView isEnabled])
@@ -410,6 +465,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
+/*! Selects the previous item.
+*/
 - (BOOL)selectPreviousItem
 {
     if (![_tableView isEnabled])
@@ -435,6 +492,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
+/*! Select the given row
+*/
 - (BOOL)selectRow:(int)row
 {
     if (row === [_tableView selectedRow])
@@ -454,11 +513,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         return NO;
 }
 
+/*! Check is the panel is visible
+*/
 - (BOOL)isVisible
 {
     return [_panel isVisible];
 }
 
+/*! Sets the panel background color
+*/
 - (void)setPanelBackgroundColor:(CPColor)aColor
 {
     _panelBackgroundColor = aColor;
@@ -471,6 +534,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Utilities
 
+/*! @ignore
+*/
 - (void)_calculateNumberOfItems
 {
     _numberOfItems = 0;
@@ -486,6 +551,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
+/*! @ignore
+*/
 - (id)_objectValueForIndex:(int)anIndex
 {
     var keys = [_content allKeys],
@@ -512,6 +579,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
+/*! @ignore
+*/
 - (BOOL)_isGroupRow:(int)aRowIndex
 {
     var keys = [_content allKeys],
@@ -531,6 +600,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     return NO;
 }
 
+/*! @ignore
+*/
 - (void)_selectCurrentItemAndReset:(BOOL)shouldReset
 {
     var objectValue = [self _objectValueForIndex:[_tableView selectedRow]];
@@ -546,11 +617,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Action
 
+/*! @ignore
+*/
 - (void)_doubleClickTableView:(id)sender
 {
     [self _selectCurrentItemAndReset:NO];
 }
 
+/*! @ignore
+*/
 - (void)_searchFieldAction:(id)sender
 {
     var stringValue = [sender stringValue];
@@ -571,6 +646,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (void)setStringValue:(CPString)aStringValue
 {
     [super setStringValue:aStringValue];
@@ -582,6 +659,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     }
 }
 
+/*! @ignore
+*/
 - (void)viewWillMoveToSuperview:(CPView)aView
 {
     [super viewWillMoveToSuperview:aView];
@@ -592,12 +671,16 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(frameDidChangeNotification:) name:CPViewFrameDidChangeNotification object:nil];
 }
 
+/*! @ignore
+*/
 - (void)insertNewline:(id)sender
 {
     if ([self isVisible] && [_tableView selectedRow] != CPNotFound)
         [self _selectCurrentItemAndReset:NO];
 }
 
+/*! @ignore
+*/
 - (void)cancelOperation:(id)sender
 {
     if (![self _sendDelegateShouldCancel])
@@ -607,6 +690,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [self _sendDelegateDidCancel];
 }
 
+/*! @ignore
+*/
 - (void)moveDown:(id)sender
 {
     if ([self isVisible])
@@ -615,6 +700,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [self _searchFieldAction:self];
 }
 
+/*! @ignore
+*/
 - (void)moveUp:(id)sender
 {
     if ([self isVisible])
@@ -623,23 +710,31 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [self _searchFieldAction:self];
 }
 
+/*! @ignore
+*/
 - (void)scrollPageDown:(id)sender
 {
     if ([self isVisible])
         [_scrollView scrollPageDown:sender];
 }
 
+/*! @ignore
+*/
 - (void)scrollPageUp:(id)sender
 {
     if ([self isVisible])
         [_scrollView scrollPageUp:sender];
 }
 
+/*! @ignore
+*/
 - (void)scrollToBeginningOfDocument:(id)sender
 {
     [_scrollView scrollToBeginningOfDocument:sender];
 }
 
+/*! @ignore
+*/
 - (void)scrollToEndOfDocument:(id)sender
 {
     [_scrollView scrollToEndOfDocument:sender];
@@ -655,16 +750,22 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark CPTableView DataSource
 
+/*! @ignore
+*/
 - (int)numberOfRowsInTableView:(CPTableView)aTableView
 {
     return _numberOfItems;
 }
 
+/*! @ignore
+*/
 - (id)tableView:(CPTableView)aTableView objectValueForTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     return [self _objectValueForIndex:aRowIndex];
 }
 
+/*! @ignore
+*/
 - (id)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aTableColumn row:(int)aRowIndex
 {
     var objectValue = [self _objectValueForIndex:aRowIndex];
@@ -679,11 +780,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 #pragma mark -
 #pragma mark CPTableView Delegates
 
+/*! @ignore
+*/
 - (BOOL)tableView:(CPTableView)aTableView shouldSelectRow:(int)rowIndex
 {
     return ![self _isGroupRow:rowIndex];
 }
 
+/*! @ignore
+*/
 - (void)tableViewSelectionDidChange:(CPNotification)aNotification
 {
     var selectedRow = [_tableView selectedRow],
@@ -692,11 +797,15 @@ var _BEZEL_INSET_BOTTOM = 1.0,
     [self _sendDelegateDidSelectItem:objectValue];
 }
 
+/*! @ignore
+*/
 - (BOOL)tableView:(CPTableView)aTableView isGroupRow:(int)aRowIndex
 {
     return [self _isGroupRow:aRowIndex];
 }
 
+/*! @ignore
+*/
 - (float)tableView:(CPTableView)tableView heightOfRow:(int)row
 {
     var objectValue = [self _objectValueForIndex:row],
@@ -710,15 +819,20 @@ var _BEZEL_INSET_BOTTOM = 1.0,
 @end
 
 
-
+/*! @ignore
+*/
 @implementation _NUAdvancedSearchFieldPanel : CPPanel
 
+/*! @ignore
+*/
 - (void)orderFront:(id)sender
 {
     [self _trapNextMouseDown];
     [super orderFront:sender];
 }
 
+/*! @ignore
+*/
 - (void)_mouseWasClicked:(CPEvent)anEvent
 {
     var mouseWindow = [anEvent window],
@@ -730,6 +844,8 @@ var _BEZEL_INSET_BOTTOM = 1.0,
         [self _trapNextMouseDown];
 }
 
+/*! @ignore
+*/
 - (void)_trapNextMouseDown
 {
     // Don't dequeue the event so clicks in controls will work

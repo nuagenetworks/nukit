@@ -22,6 +22,8 @@
 @import "NUUtilities.j"
 
 
+/*! @ignore
+*/
 @implementation NUTabViewItemPrototype : TNTabItemPrototype
 
 + (float)margin
@@ -42,7 +44,8 @@
 @end
 
 
-
+/*! @ignore
+*/
 @implementation NUImageTabViewItemPrototype : TNTabItemPrototype
 {
     CPImage _image;

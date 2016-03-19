@@ -18,6 +18,9 @@
 @import <AppKit/CPScrollView.j>
 
 
+/*! NUHorizontalScrollView is a scroll view that will scroll horizontally
+    when the user is scrolling vertically.
+*/
 @implementation NUHorizontalScrollView : CPScrollView
 
 - (void)_respondToScrollWheelEventWithDeltaX:(float)deltaX deltaY:(float)deltaY

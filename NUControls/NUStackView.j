@@ -23,6 +23,16 @@ NUStackViewModeHorizontal = 1;
 NUStackViewModeVertical   = 2;
 
 
+/*! NUStackView allows to always layout its subviews
+    in a ordered stack. It has two modes:
+
+    [stackView setMode:NUStackViewModeHorizontal];
+    [stackView setMode:NUStackViewModeVertical];
+
+    And the margin between the stacked subview can be set using:
+
+    [stackView setMargin:CGInsetMake(3, 3, 3, 3)];
+*/
 @implementation NUStackView : CPView
 {
     int     _mode   @accessors(property=mode);
@@ -33,6 +43,8 @@ NUStackViewModeVertical   = 2;
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (id)initWithFrame:(CGRect)aFrame
 {
     if (self = [super initWithFrame:aFrame])
@@ -41,6 +53,8 @@ NUStackViewModeVertical   = 2;
     return self;
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     _mode = _mode || NUStackViewModeVertical;
@@ -51,6 +65,8 @@ NUStackViewModeVertical   = 2;
 #pragma mark -
 #pragma mark Layout
 
+/*! @ignore
+*/
 - (void)layoutSubviews
 {
     if (_mode == NUStackViewModeVertical)
@@ -59,6 +75,8 @@ NUStackViewModeVertical   = 2;
         [self _layoutHorizontal];
 }
 
+/*! @ignore
+*/
 - (void)_layoutVertical
 {
     var views     = [self subviews],
@@ -86,6 +104,8 @@ NUStackViewModeVertical   = 2;
     [self setFrame:frame];
 }
 
+/*! @ignore
+*/
 - (void)_layoutHorizontal
 {
     var views     = [self subviews],
@@ -116,6 +136,8 @@ NUStackViewModeVertical   = 2;
 #pragma mark -
 #pragma mark CPCoding compliance
 
+/*! @ignore
+*/
 - (id)initWithCoder:(CPCoder)aCoder
 {
     if (self = [super initWithCoder:aCoder])

@@ -24,6 +24,10 @@
 @global CPApp
 
 
+/*! NUExpandableSearchField is the field you can use in NUModule interfaces.
+    When double clicking on the little magnifier of this text field,
+    the NUAdvancedFilteringView of the NUModule owning this field will be shown.
+*/
 @implementation NUExpandableSearchField : CPSearchField
 {
     BOOL                _isExpanded         @accessors(property=isExpanded);

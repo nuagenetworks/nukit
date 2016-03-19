@@ -36,7 +36,9 @@ NUHoverViewTriggerWidth = 10;
 var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     NUHoverViewDelegate_hoverViewDidHide = 1 << 2;
 
-
+/*! NUHoverView is view that will be shown on the top of another view.
+    It can also be retracted or shown according to the user mouse position,
+*/
 @implementation NUHoverView : CPControl
 {
     BOOL                _animates       @accessors(property=animates);
@@ -57,6 +59,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (id)initWithFrame:(CGRect)aFrame
 {
     if (self = [super initWithFrame:aFrame])
@@ -65,6 +69,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     return self;
 }
 
+/*! @ignore
+*/
 - (void)_init
 {
     _visible = YES;
@@ -109,6 +115,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark Visibility
 
+/*! Hides the view, eventually animates
+*/
 - (void)hideWithAnimation:(BOOL)shouldAnimate
 {
     if (!_visible)
@@ -141,6 +149,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     [self _sendDelegateDidHide];
 }
 
+/*! Shows the view, eventually animates
+*/
 - (void)showWithAnimation:(BOOL)shouldAnimate
 {
     if (_visible)
@@ -173,6 +183,11 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark Delegate Management
 
+/*! Set the delagate
+
+    - (void)hoverViewDidShow:(NUHoverView)aView
+    - (void)hoverViewDidHide:(NUHoverView)aView
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (aDelegate == _delegate)
@@ -188,12 +203,16 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
         _implementedDelegateMethods |= NUHoverViewDelegate_hoverViewDidHide;
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidShow
 {
     if (_implementedDelegateMethods & NUHoverViewDelegate_hoverViewDidShow)
         [_delegate hoverViewDidShow:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidHide
 {
     if (_implementedDelegateMethods & NUHoverViewDelegate_hoverViewDidHide)
@@ -204,6 +223,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark Content Management
 
+/*! Set the document view
+*/
 - (void)setDocumentView:(CPView)aView
 {
     if (aView == _documentView)
@@ -215,6 +236,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     [_contentView addSubview:_documentView];
 }
 
+/*! Retusn the content size.
+*/
 - (CGSize)contentSize
 {
     return [_contentView frameSize];
@@ -224,6 +247,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark Mouse Management
 
+/*! @ignore
+*/
 - (void)timerDidEnd:(CPTimer)aTimer
 {
     if (![self isEnabled])
@@ -232,6 +257,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     [self showWithAnimation:_animates];
 }
 
+/*! @ignore
+*/
 - (void)mouseEntered:(CPEvent)anEvent
 {
     [_timerShow invalidate];
@@ -260,6 +287,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     }
 }
 
+/*! @ignore
+*/
 - (void)mouseExited:(CPEvent)anEvent
 {
     [super mouseExited:anEvent];
@@ -276,6 +305,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
     }
 }
 
+/*! Sets if the view should be enabled or disabled.
+*/
 - (void)setEnabled:(BOOL)isEnabled
 {
     [super setEnabled:isEnabled];
@@ -292,6 +323,8 @@ var NUHoverViewDelegate_hoverViewDidShow = 1 << 1,
 #pragma mark -
 #pragma mark CPCoding
 
+/*! @ignore
+*/
 - (id)initWithCoder:(CPCoder)aCoder
 {
     if (self = [super initWithCoder:aCoder])

@@ -22,11 +22,16 @@
 @global isFloatNumber
 @global isIntegerNumber
 
+
+/*! NUNumericTextField is a textfield that only allows to input number, int or float
+*/
 @implementation NUNumericTextField : CPTextField
 {
     BOOL    _allowDecimals     @accessors(property=allowDecimals);
 }
 
+/*! @ignore
+*/
 - (BOOL)_setStringValue:(CPString)aValue isNewValue:(BOOL)isNewValue errorDescription:(CPStringRef)anError
 {
     var value = [aValue length] && [self objectValue] ? [self objectValue] : @"";
@@ -40,6 +45,8 @@
     return [super _setStringValue:@"" + aValue isNewValue:isNewValue errorDescription:anError];
 }
 
+/*! @ignore
+*/
 - (void)_setObjectValue:(id)aValue useFormatter:(BOOL)useFormatter
 {
     if ([self _shouldNotAcceptValue:aValue])
@@ -48,6 +55,8 @@
     [super _setObjectValue:aValue useFormatter:useFormatter];
 }
 
+/*! @ignore
+*/
 - (BOOL)_shouldNotAcceptValue:(CPString)aValue
 {
     if (!aValue)
@@ -64,6 +73,9 @@
     return !value.match(/^\d+$/);
 }
 
+/*! Returns the object value of the object
+    This will be a float
+*/
 - (id)objectValue
 {
     if ([super objectValue] === nil || [super objectValue] == @"")
@@ -72,6 +84,8 @@
     return [self floatValue];
 }
 
+/*! @ignore
+*/
 - (CPString)stringValue
 {
     return @"" + [super stringValue];
