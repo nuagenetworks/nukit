@@ -19,7 +19,7 @@
 @import <AppKit/CPView.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPButton.j>
-@import <RESTCappuccino/NURESTModelController.j>
+@import <Bambou/NURESTModelController.j>
 
 @import "NUKitObject.j"
 @import "NUObjectsChooser.j"

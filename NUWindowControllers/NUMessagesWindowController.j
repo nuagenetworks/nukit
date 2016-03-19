@@ -23,8 +23,8 @@
 @import <AppKit/CPCheckBox.j>
 
 @import <TNKit/TNTableViewDataSource.j>
-@import <RESTCappuccino/NURESTError.j>
-@import <RESTCappuccino/NURESTConfirmation.j>
+@import <Bambou/NURESTError.j>
+@import <Bambou/NURESTConfirmation.j>
 @import "NUUtilities.j"
 @import "NUSkin.j"
 
@@ -366,4 +366,3 @@ var NUMessagesWindowControllerDefault,
 }
 
 @end
-
