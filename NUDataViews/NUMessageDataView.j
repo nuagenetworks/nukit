@@ -16,7 +16,6 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <Bambou/NUAbstractDataView.j>
 
 @import "NUAbstractDataView.j"
 
