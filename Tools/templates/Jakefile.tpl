@@ -23,7 +23,7 @@ BUILD_INFO["PROJECT_VERSION"]    = "";
 BUILD_INFO["PROJECT_AUTHOR"]     = "Nuage Networks";
 BUILD_INFO["PROJECT_CONTACT"]    = "antoine@nuagenetworks.net";
 BUILD_INFO["PROJECT_SOURCES"]    = new FILELIST("*.j", "Associators/**/*.j", "DataViews/**/*.j", "Models/**/*.j", "Transformers/*.j", "ViewControllers/**/*.j")
-BUILD_INFO["PROJECT_FRAMEWORKS"] = ["TNKit", "NUKit", "RESTCappuccino"];
+BUILD_INFO["PROJECT_FRAMEWORKS"] = ["TNKit", "NUKit", "Bambou"];
 BUILD_INFO["PROJECT_TYPE"]       = "APPLICATION";
 
 require("./Libraries/NUKit/Tools/common.jake");
@@ -59,4 +59,3 @@ TASK ("deploy", ["predeploy"], function()
 TASK ("devdeploy", ["debug"], function(){
     generate_war(BUILD_INFO["PROJECT_NAME"], "Debug", "");
 });
-

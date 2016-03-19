@@ -335,7 +335,7 @@ TASK("test-only", function()
 {
     ENV["OBJJ_INCLUDE_PATHS"] = "Frameworks";
 
-    OS.system("capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force");
+    OS.system("capp gen -fl -F Bambou -F TNKit -F NUKit . --force");
 
     var tests = new FILELIST('Test/*Test.j'),
         manualTests = FILE.list('Test/Manual'),
@@ -352,7 +352,7 @@ TASK("test-only", function()
     {
         if (manualTest.indexOf("Test") != -1)
         {
-            code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F RESTCappuccino -F TNKit -F NUKit . --force; jake cucumber-test")
+            code = OS.system("cd Test/Manual/" + manualTest + "; capp gen -fl -F Bambou -F TNKit -F NUKit . --force; jake cucumber-test")
 
             if (code !== 0)
                 OS.exit(code);

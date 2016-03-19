@@ -30,7 +30,7 @@
 @import <NUKit/NUTransformers.j>
 @import <NUKit/NUUtils.j>
 @import <NUKit/NUWindowControllers.j>
-@import <RESTCappuccino/RESTCappuccino.j>
+@import <Bambou/Bambou.j>
 
 // first import basic things
 @import "Resources/Branding/branding.js"
