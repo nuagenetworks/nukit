@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import sys
+sys.path.append('Libraries/NUKit/Tools')
+import nukit
+
+if __name__ == "__main__":
+
+    additional_libraries = []
+
+    nukit.perform_build(additional_libraries=additional_libraries, war_name="ui")

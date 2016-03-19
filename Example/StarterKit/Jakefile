@@ -1,0 +1,14 @@
+require("./Libraries/NUKit/Tools/config.jake");
+
+BUILD_INFO["PROJECT_NAME"]       = "NUKitApp";
+BUILD_INFO["PROJECT_IDENTIFIER"] = "org.company.application";
+BUILD_INFO["PROJECT_VERSION"]    = "1.0";
+BUILD_INFO["PROJECT_AUTHOR"]     = "You";
+BUILD_INFO["PROJECT_CONTACT"]    = "you@yourcompany.net";
+BUILD_INFO["PROJECT_SOURCES"]    = new FILELIST("*.j", "Associators/**/*.j", "DataViews/**/*.j", "Models/**/*.j", "Transformers/*.j", "ViewControllers/**/*.j")
+BUILD_INFO["PROJECT_FRAMEWORKS"] = ["TNKit", "NUKit", "Bambou"];
+BUILD_INFO["PROJECT_TYPE"]       = "APPLICATION";
+
+require("./Libraries/NUKit/Tools/common.jake");
+
+TASK ("deploy", ["predeploy"]);

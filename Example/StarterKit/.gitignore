@@ -1,0 +1,12 @@
+*.DS_Store
+*Frameworks/*
+*.XcodeSupport*
+*Build/*
+*.sublime-workspace
+*.sublime-project
+*target
+*.xcodeproj
+*.cappenvs/*
+*.cib
+features
+Docker/app

@@ -1,0 +1,3 @@
+Libraries/*
+!Libraries/NUKit/*.j
+.cappenvs/*
