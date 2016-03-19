@@ -22,7 +22,9 @@
 @import "NUKitObject.j"
 @import "NUModuleContext.j"
 
-
+/*! NUAbstractAdvancedObjectAssociator is the class you should use to create
+    association that requires an association object.
+*/
 @implementation NUAbstractAdvancedObjectAssociator : NUAbstractObjectAssociator
 {
     id              _currentAssociationObject    @accessors(property=currentAssociationObject);
@@ -33,6 +35,8 @@
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -45,26 +49,39 @@
 #pragma mark -
 #pragma mark NUAbstractAdvancedObjectAssociator Protocol
 
+/*! Implement this to return the fetcher that must be used to
+    retreieve the association object
+*/
 - (NURESTFetcher)fetcherOfAssociationObject
 {
     throw ("implement me");
 }
 
+/*! Implement this to return the NUModuleContext that should be used
+    to manipulate the association object.
+*/
 - (NUModuleContext)contextForAssociationObject
 {
     throw ("implement me");
 }
 
+/*! Implement this to return the class of the association object.
+*/
 - (Class)classForAssociationObject
 {
     throw ("implement me");
 }
 
+/*! Implement this to update the associatuon object when the user selects an associated object.
+*/
 - (void)updateAssociationObject:(id)anAssociationObject withAssociatedObject:(id)anAssociatedObject
 {
     throw ("implement me");
 }
 
+/*! Internal API that you can override to perform additonal operations
+    after the associated has been updated.
+*/
 - (void)didUpdateAssociatedObject:(id)anAssociatedObject
 {
 
@@ -74,6 +91,8 @@
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (void)setCurrentParent:(id)aParent
 {
     [super setCurrentParent:aParent];
@@ -97,6 +116,8 @@
 #pragma mark -
 #pragma mark Action
 
+/*! @ignore
+*/
 - (@action)removeCurrentAssociatedObject:(id)aSender
 {
     [self _updateDataViewWithAssociatedObject:nil];
@@ -106,6 +127,8 @@
     [self setModified:YES];
 }
 
+/*! @ignore
+*/
 - (@action)save:(id)aSender
 {
     // if we have no associated object, then we check if we have a current association object
@@ -138,6 +161,8 @@
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (void)fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
     _currentAssociationObject = [someContents firstObject];
@@ -153,6 +178,8 @@
 #pragma mark -
 #pragma mark Push Management
 
+/*! @ignore
+*/
 - (BOOL)shouldManagePushForEntityType:(CPString)entityType
 {
     var entityTypes = [[self associatorSettings] allKeys];
@@ -161,6 +188,8 @@
             || entityType == [_currentParent RESTName]);
 }
 
+/*! @ignore
+*/
 - (void)managePushedObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     [super managePushedObject:aJSONObject ofType:aType eventType:anEventType];
@@ -193,6 +222,8 @@
 #pragma mark -
 #pragma mark Delegates
 
+/*! @ignore
+*/
 - (void)didObjectChooser:(NUObjectsChooser)anObjectChooser selectObjects:(CPArray)selectedObjects
 {
     var associatedObject = [selectedObjects firstObject];
@@ -217,11 +248,15 @@
     [anObjectChooser closeModulePopover];
 }
 
+/*! @ignore
+*/
 - (void)moduleContext:(NUModuleContext)aContext didSaveObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     [self setModified:NO];
 }
 
+/*! @ignore
+*/
 - (void)moduleContext:(NUModuleContext)aContext didDeleteObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     [self setModified:NO];

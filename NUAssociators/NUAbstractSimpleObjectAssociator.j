@@ -19,12 +19,16 @@
 
 @import "NUAbstractObjectAssociator.j"
 
-
+/*! NUAbstractSimpleObjectAssociator is teh class you should use for simple one to many
+    associations. This is the most commonly used associator.
+*/
 @implementation NUAbstractSimpleObjectAssociator : NUAbstractObjectAssociator
 
 #pragma mark -
 #pragma mark @action
 
+/*! @ignore
+*/
 - (@action)removeCurrentAssociatedObject:(id)aSender
 {
     [_currentParent setValue:nil forKeyPath:[self keyPathForAssociatedObjectID]];
@@ -37,6 +41,8 @@
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (void)setCurrentParent:(id)aParent
 {
     [super setCurrentParent:aParent];
@@ -52,12 +58,16 @@
 #pragma mark -
 #pragma mark PushManagement
 
+/*! @ignore
+*/
 - (BOOL)shouldManagePushForEntityType:(CPString)entityType
 {
     var entityTypes = [[self associatorSettings] allKeys];
     return [entityTypes containsObject:entityType] || entityType == [_currentParent RESTName];
 }
 
+/*! @ignore
+*/
 - (void)managePushedObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     [super managePushedObject:aJSONObject ofType:aType eventType:anEventType];
@@ -77,6 +87,8 @@
 #pragma mark -
 #pragma mark Delegates
 
+/*! @ignore
+*/
 - (void)didObjectChooser:(NUObjectsChooser)anObjectChooser selectObjects:(CPArray)selectedObjects
 {
     var associatedObject = [selectedObjects firstObject];

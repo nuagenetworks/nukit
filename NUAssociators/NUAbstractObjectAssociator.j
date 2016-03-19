@@ -49,7 +49,14 @@ NUObjectAssociatorSettingsCategoryNameKey                   = @"NUObjectAssociat
 NUObjectAssociatorSettingsDataViewNameKey                   = @"NUObjectAssociatorSettingsDataViewNameKey";
 NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey";
 
+/*! NUAbstractObjectAssociator is the base class of all associators.
+    An associators allows you to provide an control that will
+    let the user select a remote object, and the a key to the ID of
+    the selected object into the current parent.
 
+    You should not use this class directly. Instead, you can use the NUAbstractSimpleObjectAssociator
+    or NUAbstractAdvancedObjectAssociator
+*/
 @implementation NUAbstractObjectAssociator : CPViewController
 {
     BOOL                        _associationButtonHidden    @accessors(property=associationButtonHidden);
@@ -84,6 +91,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -179,56 +188,98 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Protocol
 
+/*! Overrides this to change the mode.
+    You can set NUObjectAssociatorDisplayModeDataView or NUObjectAssociatorDisplayModeText
+*/
 - (CPString)defaultDisplayMode
 {
     return NUObjectAssociatorDisplayModeDataView;
 }
 
+/*! Override this to define what will be display when nothing is associated.
+
+    For instance "no associated object"
+*/
 - (CPString)emptyAssociatorTitle
 {
     throw ("implement me");
 }
 
+/*! Override this to define the title of the NUObjectsChooser
+    used to select the associated object.
+
+    For instance "Select Task"
+*/
 - (CPString)titleForObjectChooser
 {
     throw ("implement me");
 }
 
+/*! Override this to provide what keyPath of the current parent
+    should be used to set the ID of the selected associated object.
+
+    For instance: "associatedTaskID"
+*/
 - (CPString)keyPathForAssociatedObjectID
 {
     throw ("implement me");
 }
 
+/*! Overrides this to provide the object that needs to be
+    used to to fetch the associated object.
+
+    For instance [NURESTUser default]
+*/
 - (id)parentOfAssociatedObjects
 {
     throw ("implement me");
 }
 
+/*! Override this to provide an optional request filter
+*/
 - (CPPredicate)filterObjectPredicate
 {
     return nil;
 }
 
+/*! Override this to provide an optional display filter
+*/
 - (CPPredicate)displayObjectPredicate
 {
     return nil;
 }
 
+/*! @ignore
+*/
 - (@action)removeCurrentAssociatedObject:(id)aSender
 {
     throw ("implement me");
 }
 
+/*! @ignore
+*/
 - (CPString)associatedObjectNameKeyPath
 {
     return @"name";
 }
 
+/*! Override this to provide the identifiers of the active contexts
+*/
 - (CPArray)currentActiveContextIdentifiers
 {
     throw ("implement me");
 }
 
+/*! Override this to provide the associator settings.
+    Settings is a CPDictionary looking like
+
+    @{
+        [SDTask RESTName]: @{
+            NUObjectAssociatorSettingsDataViewNameKey: @"taskDataView",
+            NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey: @"tasks"
+        }
+    }
+*/
 - (CPDictionary)associatorSettings
 {
     throw ("implement me");
@@ -238,14 +289,20 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Internal Subclass Delegates
 
+/*! @ignore
+*/
 - (void)didFetchAssociatedObject:(id)anObject
 {
 }
 
+/*! @ignore
+*/
 - (void)didFetchAvailableAssociatedObjects:(CPArray)someObjects
 {
 }
 
+/*! @ignore
+*/
 - (void)didSetCurrentParent:(id)aParent
 {
 }
@@ -254,6 +311,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Getters and Setters
 
+/*! @ignore
+*/
 - (void)setCurrentParent:(id)aParent
 {
     if (_currentParent == aParent)
@@ -281,22 +340,30 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     }
 }
 
+/*! Sets if the associator should be enabled or disabled
+*/
 - (void)setEnabled:(BOOL)shouldEnable
 {
     [self setEnableAssociation:shouldEnable];
     [self setEnableDisassociation:shouldEnable];
 }
 
+/*! Sets if the association button should be enabled
+*/
 - (void)setEnableAssociation:(BOOL)shouldEnable
 {
     [_buttonChooseAssociatedObject setEnabled:shouldEnable];
 }
 
+/*! Sets if the disassociation button should be enabled
+*/
 - (void)setEnableDisassociation:(BOOL)shouldEnable
 {
     [_buttonCleanAssociatedObject setEnabled:shouldEnable];
 }
 
+/*! @ignore
+*/
 - (void)setCurrentAssociatedObject:(id)anObject
 {
     if (anObject == _currentAssociatedObject)
@@ -309,16 +376,22 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self didChangeValueForKey:@"hasAssociatedObject"];
 }
 
+/*! Returns if the associator has an associated object
+*/
 - (BOOL)hasAssociatedObject
 {
     return !!_currentAssociatedObject;
 }
 
+/*! Close the NUObjectsChooser popover
+*/
 - (CPPopover)closePopover
 {
     [_associatedObjectChooser closeModulePopover];
 }
 
+/*! Sets if the disassociation button should be hidden
+*/
 - (void)setDisassociationButtonHidden:(BOOL)shouldHide
 {
     if (shouldHide == _disassociationButtonHidden)
@@ -332,6 +405,9 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _repositionAssociateButton];
 }
 
+/*! Sets if the control button bar should be hidden
+    This is useful for read only.
+*/
 - (void)setControlButtonsHidden:(BOOL)shouldHide
 {
     if (_controlButtonsHidden == shouldHide)
@@ -344,6 +420,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         [self _layoutAssociator];
 }
 
+/*! Update the displat mode
+*/
 - (void)setDisplayMode:(int)aMode
 {
     if (_displayMode === aMode)
@@ -356,6 +434,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _layoutAssociator];
 }
 
+/*! @ignore
+*/
 - (CPView)_associatorDataViewForCurrentAssociatedObject
 {
     var dataView,
@@ -387,16 +467,18 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return dataView;
 }
 
+/*! Sets if the association is required
+*/
 - (void)setRequired:(BOOL)isRequired
 {
     if (self._isRequired == isRequired)
         return;
 
     self._isRequired = isRequired;
-
-
 }
 
+/*! Checks if the association is required
+*/
 - (BOOL)isRequired
 {
     return !!self._isRequired;
@@ -406,7 +488,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Utilities
 
-
+/*! @ignore
+*/
 - (void)_displayRequiredImage
 {
     var view         = [self view],
@@ -432,6 +515,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     }
 }
 
+/*! @ignore
+*/
 - (void)_configureObjectsChooser
 {
     var settings    = [self associatorSettings],
@@ -466,6 +551,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     }
 }
 
+/*! @ignore
+*/
 - (CPArray)_currentCategories
 {
     if (![_categoriesRegistry count])
@@ -488,6 +575,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return categories
 }
 
+/*! Shows the loading view
+*/
 - (void)showLoading:(BOOL)shouldShow
 {
     if (shouldShow)
@@ -496,6 +585,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:[self view]];
 }
 
+/*! @ignore
+*/
 - (void)_fetchAssociatedObjectWithID:(CPString)anID
 {
     if (!anID)
@@ -550,6 +641,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self showLoading:YES];
 }
 
+/*! @ignore
+*/
 - (void)_didFetchObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
@@ -561,6 +654,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _sendDelegateDidAssociatorFetchAssociatedObject];
 }
 
+/*! @ignore
+*/
 - (void)_fetcher:(id)aFetcher ofObject:(NURESTObject)anObject didFetchContent:(CPArray)someContents
 {
     if (![someContents count])
@@ -575,6 +670,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _sendDelegateDidAssociatorFetchAssociatedObject];
 }
 
+/*! @ignore
+*/
 - (void)_updateDataViewWithAssociatedObject:(id)anAssociatedObject
 {
     if (![_viewAssociatorContainer superview])
@@ -627,6 +724,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _repositionAssociateButton];
 }
 
+/*! @ignore
+*/
 - (void)_repositionAssociateButton
 {
     var frame = [_innerButtonContainer frame];
@@ -642,6 +741,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         [_buttonChooseAssociatedObject setFrameOrigin:CGPointMakeZero()];
 }
 
+/*! @ignore
+*/
 - (void)_layoutAssociator
 {
     var generalFrame  = [[self view] frame],
@@ -683,6 +784,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Actions
 
+/*! Opens the NUObjectsChooser popover
+*/
 - (@action)openAssociatedObjectChooser:(id)aSender
 {
     if (_currentAssociatedObject)
@@ -704,6 +807,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Push Management
 
+/*! @ignore
+*/
 - (void)_registerForPushNotification
 {
     if (_isListeningForPush)
@@ -718,6 +823,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
                                                object:[NURESTPushCenter defaultCenter]];
 }
 
+/*! @ignore
+*/
 - (void)_unregisterFromPushNotification
 {
     if (!_isListeningForPush)
@@ -731,6 +838,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
                                                object:[NURESTPushCenter defaultCenter]];
 }
 
+/*! @ignore
+*/
 - (void)_didReceivePush:(CPNotification)aNotification
 {
     [self _unregisterFromAssociationKeyChanges];
@@ -756,6 +865,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [self _registerForAssociationKeyChanges];
 }
 
+/*! @ignore
+*/
 - (void)managePushedObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     if (aJSONObject.ID == [_currentAssociatedObject ID] && anEventType == NUPushEventTypeUpdate)
@@ -767,6 +878,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     }
 }
 
+/*! @ignore
+*/
 - (void)_registerForAssociationKeyChanges
 {
     if (!_currentParent)
@@ -775,6 +888,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [_currentParent addObserver:self forKeyPath:[self keyPathForAssociatedObjectID] options:CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld context:nil];
 }
 
+/*! @ignore
+*/
 - (void)_unregisterFromAssociationKeyChanges
 {
     if (!_currentParent)
@@ -783,6 +898,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     [_currentParent removeObserver:self forKeyPath:[self keyPathForAssociatedObjectID]];
 }
 
+/*! @ignore
+*/
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)context
 {
     if ([change objectForKey:CPKeyValueChangeOldKey] == [change objectForKey:CPKeyValueChangeNewKey])
@@ -795,21 +912,29 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Object Chooser Delegate
 
+/*! @ignore
+*/
 - (void)didObjectChooser:(NUObjectsChooser)anObjectChooser fetchObjects:(CPArray)someObjects
 {
     [self didFetchAvailableAssociatedObjects:someObjects];
 }
 
+/*! @ignore
+*/
 - (void)didObjectChooser:(NUObjectsChooser)anObjectChooser selectObjects:(CPArray)selectedObjects
 {
     throw ("implement me");
 }
 
+/*! @ignore
+*/
 - (void)didObjectChooserCancelSelection:(NUObjectsChooser)anObjectChooser
 {
     [self closePopover];
 }
 
+/*! @ignore
+*/
 - (NUCategory)categoryForObject:(id)anObject
 {
     if (![_categoriesRegistry count])
@@ -818,6 +943,8 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
     return [_categoriesRegistry objectForKey:[anObject RESTName]];
 }
 
+/*! @ignore
+*/
 - (CPArray)currentActiveContextsForChooser:(NUObjectChooser)anObjectChooser
 {
     var identifiers = [self currentActiveContextIdentifiers],
@@ -843,6 +970,13 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 #pragma mark -
 #pragma mark Delegate
 
+/*! Sets the Delegates
+
+    - (void)didAssociatorFetchAssociatedObject:(NUAbstractObjectAssociator)anAssociator
+    - (void)didAssociatorChangeAssociation:(NUAbstractObjectAssociator)anAssociator
+    - (void)didAssociatorAddAssociation:(NUAbstractObjectAssociator)anAssociator
+    - (void)didAssociatorRemoveAssociation:(NUAbstractObjectAssociator)anAssociator
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (_delegate === aDelegate)
@@ -864,24 +998,32 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         _implementedDelegateMethods |= NUAbstractObjectAssociator_didAssociatorRemoveAssociation_;
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidAssociatorFetchAssociatedObject
 {
     if (_implementedDelegateMethods & NUAbstractObjectAssociator_didAssociatorFetchAssociatedObject_)
         [_delegate didAssociatorFetchAssociatedObject:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidAssociatorChangeAssociation
 {
     if (_implementedDelegateMethods & NUAbstractObjectAssociator_didAssociatorChangeAssociation_)
         [_delegate didAssociatorChangeAssociation:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidAssociatorAddAssociation
 {
     if (_implementedDelegateMethods & NUAbstractObjectAssociator_didAssociatorAddAssociation_)
         [_delegate didAssociatorAddAssociation:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidAssociatorRemoveAssociation
 {
     if (_implementedDelegateMethods & NUAbstractObjectAssociator_didAssociatorRemoveAssociation_)
