@@ -18,7 +18,7 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPWindowController.j>
 @import <AppKit/CPPopover.j>
-@import <RESTCappuccino/RESTCappuccino.j>
+@import <Bambou/Bambou.j>
 @import "NUDataTransferController.j"
 @import "NUKitToolBar.j"
 @import "NUModule.j"

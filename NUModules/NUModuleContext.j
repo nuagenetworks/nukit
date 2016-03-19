@@ -22,10 +22,10 @@
 @import <AppKit/CPPopover.j>
 @import <AppKit/CPProgressIndicator.j>
 @import <AppKit/CPTableView.j>
-@import <RESTCappuccino/NURESTObject.j>
-@import <RESTCappuccino/NURESTConnection.j>
-@import <RESTCappuccino/NURESTFetcher.j>
-@import <RESTCappuccino/NURESTError.j>
+@import <Bambou/NURESTObject.j>
+@import <Bambou/NURESTConnection.j>
+@import <Bambou/NURESTFetcher.j>
+@import <Bambou/NURESTError.j>
 @import <TNKit/TNAlert.j>
 
 @import "NUCheckboxStateToBooleanValueTransformer.j"

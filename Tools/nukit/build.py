@@ -1,12 +1,12 @@
-import os, commands
+import os
+import commands
 from optparse import OptionParser
 import sys
 
-VERBOSE = True;
-
 ROOT_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "..", "..")
 
-### Utilities
+# Utilities
+
 
 def command(command, title=None, expected=0):
     """
@@ -25,9 +25,6 @@ def command(command, title=None, expected=0):
     else:
         print "\033[35m# Running: %s in %s \033[0m" % (command, os.getcwd())
 
-    if not VERBOSE:
-        command = "%s > /tmp/buildProject.log 2>&1" % command
-
     ret = os.system(command)
 
     if not ret == expected:
@@ -37,6 +34,7 @@ def command(command, title=None, expected=0):
         print "\033[32mSUCCESS\033[0m"
 
     return ret
+
 
 def init(install_dir, build_dir):
     """
@@ -51,14 +49,14 @@ def init(install_dir, build_dir):
     os.environ["CAPP_NOSUDO"] = "1"
     os.environ["PATH"] = "%s:%s" % (os.environ["PATH"], "%s/bin" % install_dir)
 
-    if not "NARWHAL_ENGINE" in os.environ:
-        if not 'darwin' in sys.platform:
+    if "NARWHAL_ENGINE" not in os.environ:
+        if "darwin" not in sys.platform:
             os.environ["NARWHAL_ENGINE"] = "rhino"
         else:
             os.environ["NARWHAL_ENGINE"] = "jsc"
 
 
-### Libraries Management
+# Libraries Management
 
 def build_library(name, custom_command=None):
     """
@@ -71,10 +69,15 @@ def build_library(name, custom_command=None):
     os.environ["OBJJ_INCLUDE_PATHS"] = "%s/Frameworks" % ROOT_DIRECTORY
     current_path = os.getcwd()
     os.chdir("Libraries/%s" % name)
-    if custom_command is None: command(command="jake release; jake debug")
-    else: command(command=custom_command)
+
+    if custom_command is None:
+        command(command="jake release; jake debug")
+    else:
+        command(command=custom_command)
+
     os.chdir(current_path)
     command(command="capp gen -fl --force -F %s ." % name)
+
 
 def clean_library(name):
     """
@@ -89,7 +92,7 @@ def clean_library(name):
     os.chdir(current_path)
 
 
-### Theme Management
+# Theme Management
 
 def build_theme(name):
     """
@@ -105,6 +108,7 @@ def build_theme(name):
     os.chdir(current_path)
     command(command="capp gen -fl --force -T %s ." % name)
 
+
 def clean_theme(name):
     """
         Cleans a Theme
@@ -118,7 +122,7 @@ def clean_theme(name):
     os.chdir(current_path)
 
 
-### Cappuccino Management
+# Cappuccino Management
 
 def install_cappuccino(install_dir, local_distrib):
     """
@@ -137,6 +141,7 @@ def install_cappuccino(install_dir, local_distrib):
 
     os.chdir(current_path)
 
+
 def clean_cappuccino(install_dir, build_dir):
     """
         Cleans Cappuccino installation
@@ -150,7 +155,7 @@ def clean_cappuccino(install_dir, build_dir):
     command(command="rm -rf '%s'" % build_dir)
 
 
-### WAR Management
+# WAR Management
 
 def build_war(name):
     """
@@ -171,6 +176,7 @@ def build_war(name):
     command(command="mv %s.war ../Build/%s/" % (name, target))
     os.chdir(current_path)
 
+
 def clean_war():
     """
         Cleans the war file
@@ -181,7 +187,8 @@ def clean_war():
     command(command="rm -rf Application.js *.environment Frameworks Info.plist Resources index.html")
     os.chdir(current_path)
 
-### Project Management
+
+# Project Management
 
 def build_project(build_version="dev"):
     """
@@ -190,7 +197,6 @@ def build_project(build_version="dev"):
         Args:
             build_version: the build version string (eg. 1.2-dev)
     """
-    current_path = os.getcwd()
     git_rev = commands.getoutput("git log --pretty=format:'%h' -n 1")
     git_branch = commands.getoutput("git symbolic-ref HEAD").split("/")[-1]
 
@@ -207,102 +213,102 @@ def build_project(build_version="dev"):
     else:
         command(command="jake deploy")
 
-def clean_dashboard():
+
+def clean_project():
     """
         Cleans the main project
     """
     command(command="rm -rf Build")
 
 
-## Main Function
+# Main Function
 
-def perform_build(additional_libraries=[], war_name="ui"):
+def perform_build(additional_libraries=[], additional_themes=[], war_name="ui"):
     """
     """
 
     parser = OptionParser()
     parser.add_option("-c", "--cappuccino",
-                        dest="cappuccino",
-                        action="store_true",
-                        help="Build and install Cappuccino")
+                      dest="cappuccino",
+                      action="store_true",
+                      help="Build and install Cappuccino")
     parser.add_option("-t", "--tnkit",
-                        dest="tnkit",
-                        action="store_true",
-                        help="Build and install TNKit")
-    parser.add_option("-n", "--nuaristo",
-                        dest="nuaristo",
-                        action="store_true",
-                        help="Build and install NUAristo")
-    parser.add_option("-r", "--restcappuccino",
-                        dest="restcappuccino",
-                        action="store_true",
-                        help="Build and install RESTCappuccino")
+                      dest="tnkit",
+                      action="store_true",
+                      help="Build and install TNKit")
+    parser.add_option("-r", "--bambou",
+                      dest="bambou",
+                      action="store_true",
+                      help="Build and install Bambou")
     parser.add_option("-k", "--nukit",
-                        dest="nukit",
-                        action="store_true",
-                        help="Build and deploy NUKit")
+                      dest="nukit",
+                      action="store_true",
+                      help="Build and deploy NUKit")
 
     for library in additional_libraries:
         parser.add_option("-%s" % library["short_arg"], "--%s" % library["name"].lower(),
-                            dest=library["name"].lower(),
-                            action="store_true",
-                            help="Build and install %s" % library["name"])
+                          dest=library["name"].lower(),
+                          action="store_true",
+                          help="Build and install %s" % library["name"])
+
+    for theme in additional_themes:
+        parser.add_option("-%s" % theme["short_arg"], "--%s" % theme["name"].lower(),
+                          dest=theme["name"].lower(),
+                          action="store_true",
+                          help="Build and install %s" % theme["name"])
 
     parser.add_option("-d", "--project",
-                        dest="project",
-                        action="store_true",
-                        help="Build and deploy project")
+                      dest="project",
+                      action="store_true",
+                      help="Build and deploy project")
     parser.add_option("-a", "--all",
-                        dest="all",
-                        action="store_true",
-                        help="Build and deploy everything without Cappuccino")
+                      dest="all",
+                      action="store_true",
+                      help="Build and deploy everything without Cappuccino")
     parser.add_option("-E", "--everything",
-                        dest="everything",
-                        action="store_true",
-                        help="Build and deploy everything + Cappuccino")
+                      dest="everything",
+                      action="store_true",
+                      help="Build and deploy everything + Cappuccino")
     parser.add_option("-L", "--libraries",
-                        dest="libraries",
-                        action="store_true",
-                        help="Build all libraries")
+                      dest="libraries",
+                      action="store_true",
+                      help="Build all libraries")
     parser.add_option("-w", "--war",
-                        dest="generatewar",
-                        action="store_true",
-                        help="Generate the WAR file for JBOSS deployment")
+                      dest="generatewar",
+                      action="store_true",
+                      help="Generate the WAR file for JBOSS deployment")
     parser.add_option("-v", "--verbose",
-                        dest="verbose",
-                        action="store_true",
-                        help="Print commands output")
+                      dest="verbose",
+                      action="store_true",
+                      help="Print commands output")
     parser.add_option("--setversion",
-                        dest="buildversion",
-                        help="Set the build version")
+                      dest="buildversion",
+                      help="Set the build version")
     parser.add_option("-C", "--clean",
-                        dest="clean",
-                        action="store_true",
-                        help="Clean all libraries and project")
+                      dest="clean",
+                      action="store_true",
+                      help="Clean all libraries and project")
     parser.add_option("--clobber",
-                        dest="clobber",
-                        action="store_true",
-                        help="Clean all libraries, project and cappuccino")
+                      dest="clobber",
+                      action="store_true",
+                      help="Clean all libraries, project and cappuccino")
     parser.add_option("--cappinstalldir",
-                        default="/usr/local/narwhal",
-                        dest="cappuccinoinstalldir",
-                        help="Cappuccino install directory")
+                      default="/usr/local/narwhal",
+                      dest="cappuccinoinstalldir",
+                      help="Cappuccino install directory")
     parser.add_option("--cappbuilddir",
-                        dest="cappuccinobuilddir",
-                        help="Cappuccino build directory")
+                      dest="cappuccinobuilddir",
+                      help="Cappuccino build directory")
     parser.add_option("--nomanifest",
-                        dest="nomanifest",
-                        action="store_true",
-                        help="disable the HTML5 app.manifest generation")
+                      dest="nomanifest",
+                      action="store_true",
+                      help="disable the HTML5 app.manifest generation")
     parser.add_option("--debug",
-                        dest="debug",
-                        action="store_true",
-                        help="Generate a debug deployment build")
+                      dest="debug",
+                      action="store_true",
+                      help="Generate a debug deployment build")
 
     options, args = parser.parse_args()
-
-    if options.verbose:
-        VERBOSE = True
 
     if not options.cappuccinobuilddir and "CAPP_BUILD" in os.environ:
         options.cappuccinobuilddir = os.environ["CAPP_BUILD"]
@@ -317,7 +323,7 @@ def perform_build(additional_libraries=[], war_name="ui"):
     if options.clean or options.clobber:
         clean_library(name="NUKit")
         clean_library(name="TNKit")
-        clean_library(name="RESTCappuccino")
+        clean_library(name="Bambou")
 
         for library in additional_libraries:
             clean_library(name=library["name"])
@@ -337,23 +343,26 @@ def perform_build(additional_libraries=[], war_name="ui"):
     if options.debug:
         os.environ["ARCHITECT_BUILD_DEBUG"] = "1"
 
-    ## Required libraries
+    # Required libraries
     if options.everything or options.cappuccino:
         install_cappuccino(install_dir=options.cappuccinoinstalldir,
                            local_distrib="/usr/local/cappuccino-base/current")
     if options.everything or options.all or options.tnkit or options.libraries:
         build_library(name="TNKit")
-    if options.everything or options.all or options.restcappuccino or options.libraries:
-        build_library(name="RESTCappuccino")
+    if options.everything or options.all or options.bambou or options.libraries:
+        build_library(name="Bambou")
     if options.everything or options.all or options.nukit or options.libraries:
         build_library(name="NUKit")
-    if options.everything or options.all or options.nuaristo or options.libraries:
-        build_theme(name="NUAristo")
 
-    ## Additional User Libraries
+    # Additional User Libraries
     for library in additional_libraries:
         if options.everything or options.all or getattr(options, library["name"].lower()) or options.libraries:
             build_library(name=library["name"])
+
+    # Additional User Themes
+    for theme in additional_themes:
+        if options.everything or options.all or getattr(options, theme["name"].lower()) or options.libraries:
+            build_theme(name=theme["name"])
 
     if options.everything or options.all or options.project:
         build_project(build_version=options.buildversion)
