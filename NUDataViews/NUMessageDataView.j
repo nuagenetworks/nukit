@@ -16,7 +16,7 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <RESTCappuccino/RESTCappuccino.j>
+@import <Bambou/NUAbstractDataView.j>
 
 @import "NUAbstractDataView.j"
 

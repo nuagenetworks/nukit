@@ -17,7 +17,7 @@
 
 @import <Foundation/Foundation.j>
 @import <AppKit/CPArrayController.j>
-@import <RESTCappuccino/RESTCappuccino.j>
+@import <Bambou/NURESTObject.j>
 
 @class NURESTObject
 

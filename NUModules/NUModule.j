@@ -30,7 +30,7 @@
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPView.j>
 @import <AppKit/CPViewController.j>
-@import <RESTCappuccino/RESTCappuccino.j>
+@import <Bambou/Bambou.j>
 @import <TNKit/TNTableViewDataSource.j>
 @import <TNKit/TNTabView.j>
 

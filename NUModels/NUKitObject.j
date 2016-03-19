@@ -16,7 +16,7 @@
 */
 
 @import <Foundation/Foundation.j>
-@import <RESTCappuccino/NURESTObject.j>
+@import <Bambou/NURESTObject.j>
 
 @implementation NUKitObject : NURESTObject
 

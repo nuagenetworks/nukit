@@ -19,7 +19,7 @@
 @import <AppKit/CPViewController.j>
 @import <AppKit/CPTableView.j>
 @import <AppKit/CPView.j>
-@import <RESTCappuccino/NURESTObject.j>
+@import <Bambou/NURESTObject.j>
 
 @import "NUSkin.j"
 

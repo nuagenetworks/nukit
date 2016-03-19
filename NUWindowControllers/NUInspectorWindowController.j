@@ -22,9 +22,9 @@
 @import <AppKit/CPWebView.j>
 @import <TNKit/TNTableViewDataSource.j>
 @import <TNKit/TNTabView.j>
-@import <RESTCappuccino/NURESTPushCenter.j>
-@import <RESTCappuccino/NURESTLoginController.j>
-@import <RESTCappuccino/NURESTModelController.j>
+@import <Bambou/NURESTPushCenter.j>
+@import <Bambou/NURESTLoginController.j>
+@import <Bambou/NURESTModelController.j>
 
 @import "NUKitObject.j"
 @import "NUSkin.j"

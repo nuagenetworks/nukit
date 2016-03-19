@@ -23,7 +23,7 @@
 @import <AppKit/CPProgressIndicator.j>
 @import <AppKit/CPTextField.j>
 @import <AppKit/CPView.j>
-@import <RESTCappuccino/NURESTObject.j>
+@import <Bambou/NURESTObject.j>
 
 @import "NUUtilities.j"
 @import "NUSkin.j"
