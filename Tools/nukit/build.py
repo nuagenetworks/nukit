@@ -236,7 +236,7 @@ def perform_build(additional_libraries=[], additional_themes=[], war_name="ui"):
                       dest="tnkit",
                       action="store_true",
                       help="Build and install TNKit")
-    parser.add_option("-r", "--bambou",
+    parser.add_option("-b", "--bambou",
                       dest="bambou",
                       action="store_true",
                       help="Build and install Bambou")

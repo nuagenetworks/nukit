@@ -104,7 +104,7 @@ var NUKitDelegate_didLogin_             = 1 << 1,
 
         [self installStyleSheetOnDocument:document];
 
-        _APIPrefix                   = @"nuage/api/";
+        _APIPrefix                   = @"api/";
         _sharedModules               = @{};
 
         _toolbarBackgroundColor      = NUSkinColorGreyLight;
