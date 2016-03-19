@@ -1,7 +1,10 @@
 #!/usr/bin/env python
-import sys, os, argparse
+import sys
+import os
+import argparse
 import shutil
 import jinja2
+
 
 def _init_structure(prefix, args):
     """
@@ -30,11 +33,13 @@ def _init_structure(prefix, args):
     os.chdir(prefix)
     os.system('capp gen -fl .')
 
+
 def _write_code_folder(prefix, class_prefix, name):
     """
     """
     os.makedirs(os.path.join(prefix, name))
     open(os.path.join(prefix, name, '%s%s.j' % (class_prefix, name)), 'a').close()
+
 
 def _write_template(template_name, destination_path, **kwargs):
     """
@@ -44,6 +49,7 @@ def _write_template(template_name, destination_path, **kwargs):
 
         with open(destination_path, 'w') as file:
             file.write(template.render(kwargs))
+
 
 def main(argv=sys.argv):
     '''
