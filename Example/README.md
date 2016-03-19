@@ -512,10 +512,6 @@ Edit the `AppController.j`, and make it look like:
 @global APP_BUILDVERSION
 @global APP_GITVERSION
 
-// We need to make that more generic
-NURESTUserRoleCSPRoot = 1;
-NURESTUserRoleOrgAdmin = 2;
-
 
 @implementation AppController : CPObject
 {

@@ -32,24 +32,54 @@
 @import "NUWindowControllers.j"
 
 
-var NUKitDataViewsRegistryDataViewsRegistry = @{},
-    NUKitDefaultKit;
-
-NUKitUserLoggedInNotification  = @"NUKitUserLoggedInNotification";
-NUKitUserLoggedOutNotification = @"NUKitUserLoggedOutNotification";
-
-NUKitParameterShowDebugToolTips    = NO;
-NUKitParameterCat                  = NO;
-NUKitParameterExperimentalMode     = NO;
-NUKitParameterVeryExperimentalMode = NO;
-
-var NUKitDelegate_didLogin_             = 1 << 1,
+var NUKitDefaultKit ,
+    NUKitDataViewsRegistryDataViewsRegistry = @{},
+    NUKitDelegate_didLogin_             = 1 << 1,
     NUKitDelegate_willLogout_           = 1 << 2,
     NUKitDelegate_shouldLogin_          = 1 << 3,
     NUKitDelegate_improperLoginReason_  = 1 << 4,
     NUKitDelegate_shouldLogout_         = 1 << 5,
     NUKitDelegate_improperLogoutReason_ = 1 << 6;
 
+NUKitUserLoggedInNotification      = @"NUKitUserLoggedInNotification";
+NUKitUserLoggedOutNotification     = @"NUKitUserLoggedOutNotification";
+
+NUKitParameterShowDebugToolTips    = NO;
+NUKitParameterCat                  = NO;
+NUKitParameterExperimentalMode     = NO;
+NUKitParameterVeryExperimentalMode = NO;
+
+NUPermissionLevelSystem            = @"system";
+NUPermissionLevelRoot              = @"root";
+NUPermissionLevelOperator          = @"operator";
+NUPermissionLevelAdmin             = @"admin";
+NUPermissionLevelPowerUser         = @"poweruser";
+NUPermissionLevelUser              = @"user";
+
+
+function nukit_set_permission_level_system_value(value) {
+    NUPermissionLevelSystem = value;
+}
+
+function nukit_set_permission_level_root_value(value) {
+    NUPermissionLevelRoot = value;
+}
+
+function nukit_set_permission_level_operator_value(value) {
+    NUPermissionLevelOperator = value;
+}
+
+function nukit_set_permission_level_admin_value(value) {
+    NUPermissionLevelAdmin = value;
+}
+
+function nukit_set_permission_level_power_user_value(value) {
+    NUPermissionLevelPowerUser = value;
+}
+
+function nukit_set_permission_level_user_value_value(value) {
+    NUPermissionLevelUser = value;
+}
 
 
 @implementation NUKit : CPObject

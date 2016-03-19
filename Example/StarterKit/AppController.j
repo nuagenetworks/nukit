@@ -28,9 +28,6 @@
 @global APP_BUILDVERSION
 @global APP_GITVERSION
 
-NURESTUserRoleCSPRoot = 1;
-NURESTUserRoleOrgAdmin = 2;
-
 
 @implementation AppController : CPObject
 {

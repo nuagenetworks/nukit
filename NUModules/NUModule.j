@@ -52,33 +52,33 @@
 
 @global CPApp
 @global NUKitUserLoggedOutNotification
-@global NURESTUserRoleCSPRoot
-@global NURESTUserRoleOrgAdmin
+@global NUPermissionLevelRoot
+@global NUPermissionLevelAdmin
 @global _CPWindowDidChangeFirstResponderNotification
 
+var NUModuleRESTPageLoadingTrigger     = 500,
+    NUModuleArchiveMaxSize             = 100,
+    NUModuleSplitViewEditorMaxSize     = 300,
+    NUModuleSplitViewEditorMinSize     = 100;
 
-NUModuleRESTPageSize               = 50;
-
-var NUModuleRESTPageLoadingTrigger = 500,
-    NUModuleArchiveMaxSize         = 100,
-    NUModuleSplitViewEditorMaxSize = 300,
-    NUModuleSplitViewEditorMinSize = 100;
+NUModuleRESTPageSize                   = 50;
 
 NUModuleAutoValidation                 = NO;
 NUModuleUpdateMechanismRefetch         = @"REFETCH";
 NUModuleUpdateMechanismRefetchHierachy = @"REFETCH_HIERARCHY";
 
 
-NUModuleActionAdd                 = 1;
-NUModuleActionDelete              = 2;
-NUModuleActionEdit                = 3;
-NUModuleActionExport              = 4;
-NUModuleActionImport              = 5;
-NUModuleActionInstantiate         = 6;
-NUModuleActionInspect             = 7;
+NUModuleActionAdd                      = 1;
+NUModuleActionDelete                   = 2;
+NUModuleActionEdit                     = 3;
+NUModuleActionExport                   = 4;
+NUModuleActionImport                   = 5;
+NUModuleActionInstantiate              = 6;
+NUModuleActionInspect                  = 7;
 
-NUModuleTabViewModeText = 1;
-NUModuleTabViewModeIcon = 2;
+NUModuleTabViewModeText                = 1;
+NUModuleTabViewModeIcon                = 2;
+
 
 /*! NUModule is the basic class that is used to show and manipulate ReSTObjects
 */
@@ -1464,7 +1464,7 @@ NUModuleTabViewModeIcon = 2;
 */
 - (CPSet)permittedActionsForObject:(id)anObject
 {
-    var conditionAdministrator  = _currentUserHasRoles([NURESTUserRoleCSPRoot, NURESTUserRoleOrgAdmin]),
+    var conditionAdministrator  = _currentUserHasRoles([NUPermissionLevelRoot, NUPermissionLevelAdmin]),
         conditionParentIsOwned  = [_currentParent isOwnedByCurrentUser],
         conditionObjectIsOwned  = [anObject isOwnedByCurrentUser],
         conditionCanAdd         = conditionAdministrator || conditionParentIsOwned || conditionObjectIsOwned,
