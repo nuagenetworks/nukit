@@ -115,7 +115,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField toolTip="Your enterprise name" verticalHuggingPriority="750" id="12">
-                    <rect key="frame" x="123" y="0.0" width="238" height="22"/>
+                    <rect key="frame" x="123" y="2" width="238" height="22"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Organization" drawsBackground="YES" id="15">
                         <font key="font" metaFont="system"/>
@@ -127,7 +127,7 @@
                     </connections>
                 </textField>
                 <textField verticalHuggingPriority="750" id="13">
-                    <rect key="frame" x="18" y="3" width="95" height="17"/>
+                    <rect key="frame" x="18" y="5" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="charWrapping" sendsActionOnEndEditing="YES" alignment="left" title="Organization" id="14">
                         <font key="font" metaFont="system"/>
@@ -174,7 +174,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField verticalHuggingPriority="750" id="35">
-                    <rect key="frame" x="18" y="3" width="95" height="17"/>
+                    <rect key="frame" x="18" y="5" width="95" height="17"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="charWrapping" sendsActionOnEndEditing="YES" alignment="left" title="Server" id="38">
                         <font key="font" metaFont="system"/>
@@ -183,7 +183,7 @@
                     </textFieldCell>
                 </textField>
                 <textField toolTip="URL of the VSD server API. Leave it blank for automatic discovery" verticalHuggingPriority="750" id="39">
-                    <rect key="frame" x="123" y="0.0" width="238" height="22"/>
+                    <rect key="frame" x="123" y="2" width="238" height="22"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="API Endpoint" drawsBackground="YES" id="40">
                         <font key="font" metaFont="system"/>

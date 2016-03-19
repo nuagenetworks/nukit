@@ -22,6 +22,7 @@
 @import "DataViews/DataViewsLoader.j"
 @import "Models/Models.j"
 @import "ViewControllers/ViewControllers.j"
+@import "Transformers/Transformers.j"
 
 @global BRANDING_INFORMATION
 @global SERVER_AUTO_URL
@@ -52,9 +53,10 @@
     [[NUKit kit] setCopyright:@"copyright me forever"];
     [[NUKit kit] setAutoServerBaseURL:SERVER_AUTO_URL];
     [[NUKit kit] setDelegate:self];
-
     [[NUKit kit] parseStandardApplicationArguments];
     [[NUKit kit] loadFrameworkDataViews];
+
+    [[[NUKit kit] loginWindowController] setShowsEnterpriseField:NO];
 
     // the root object here
     // [[NUKit kit] setRESTUser:[MyRootObject defaultUser]];

@@ -374,12 +374,12 @@ Create a new file `ViewControllers/SKListsModule.j` and make it look like:
 
 - (BOOL)shouldManagePushOfType:(CPString)aType forEntityType:(CPString)entityType
 {
-    return entityType === [NUEnterprise RESTName];
+    return entityType === [SKLit RESTName];
 }
 
 - (BOOL)shouldProcessJSONObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
-    return (aType === [NUEnterprise RESTName]);
+    return (aType === [SKLit RESTName]);
 }
 
 @end

@@ -88,6 +88,8 @@ function nukit_set_permission_level_user_value_value(value) {
     CPBundle                        _bundle                         @accessors(getter=bundle);
     CPColor                         _toolbarBackgroundColor         @accessors(property=toolbarBackgroundColor);
     CPColor                         _toolbarForegroundColor         @accessors(property=toolbarForegroundColor);
+    CPColor                         _footerBackgroundColor          @accessors(property=footerBackgroundColor);
+    CPColor                         _footerForegroundColor          @accessors(property=footerForegroundColor);
     CPImage                         _applicationLogo                @accessors(property=applicationLogo);
     CPImage                         _companyLogo                    @accessors(property=companyLogo);
     CPString                        _APIPrefix                      @accessors(property=APIPrefix);
@@ -139,6 +141,8 @@ function nukit_set_permission_level_user_value_value(value) {
 
         _toolbarBackgroundColor      = NUSkinColorGreyLight;
         _toolbarForegroundColor      = NUSkinColorBlack;
+        _footerBackgroundColor       = NUSkinColorGreyLight;
+        _footerForegroundColor       = NUSkinColorBlack;
         _loginWindowController       = [NULoginWindowController new];
         _mainWindowController        = [NUMainWindowController new];
         _messagesWindowController    = [NUMessagesWindowController new];

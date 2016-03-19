@@ -93,7 +93,7 @@ var NUMainWindowControllerDefault,
     // Footer
     [fieldAboutBuildVersion setStringValue:[[NUKit kit] copyright]];
 
-    [viewFooter setBackgroundColor:NUSkinColorGreyLight];
+    [viewFooter setBackgroundColor:[[NUKit kit] footerBackgroundColor]];
 
     [imageViewCurrentUserAvatar setImageScaling:CPScaleToFit];
     [imageViewCurrentUserAvatar setBackgroundColor:NUSkinColorBlue];

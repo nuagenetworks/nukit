@@ -1,6 +1,6 @@
 BRANDING_INFORMATION = {
 
-    "label-application-name"    : "NUKitApp",
-    "label-company-name"        : ""
+    "label-application-name"    : "Todo List",
+    "label-company-name"        : "Monolithe Inc"
 
 };

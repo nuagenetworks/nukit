@@ -18,17 +18,13 @@
 @import <Foundation/Foundation.j>
 @import <AppKit/CPImage.j>
 
+@global NUImageInKit
+
 var NUBoolToPilTransformerPilGreen,
     NUBoolToPilTransformerPilGrey;
 
 
 @implementation NUBoolToPil2Transformer: CPValueTransformer
-
-+ (void)initialize
-{
-    NUBoolToPilTransformerPilGreen = CPImageInBundle(@"pil-green.png", CGSizeMake(16.0, 16.0));
-    NUBoolToPilTransformerPilGrey = CPImageInBundle(@"pil-square-grey.png", CGSizeMake(16.0, 16.0));
-}
 
 + (Class)transformedValueClass
 {
@@ -42,6 +38,12 @@ var NUBoolToPilTransformerPilGreen,
 
 - (id)transformedValue:(id)value
 {
+    if (!NUBoolToPilTransformerPilGreen)
+    {
+        NUBoolToPilTransformerPilGreen = NUImageInKit(@"pil-green.png", CGSizeMake(16.0, 16.0));
+        NUBoolToPilTransformerPilGrey = NUImageInKit(@"pil-square-grey.png", CGSizeMake(16.0, 16.0));
+    }
+
     return value ? NUBoolToPilTransformerPilGreen : NUBoolToPilTransformerPilGrey;
 }
 
