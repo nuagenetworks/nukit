@@ -19,7 +19,10 @@
 
 @import "NUModule.j"
 
-
+/*! Very simple generic implementation of a ready to NUModule dedicated to
+    show a read only list of objects.
+    YOU MUST CREATE THIS MODULE PROGRAMMATICALLY using the + (id)new API
+*/
 @implementation NUModuleMultipleObjectsShower : NUModule
 {
     CGSize  _defaultSize;
@@ -29,6 +32,8 @@
 #pragma mark -
 #pragma mark Initialization
 
+/*! Create a new NUModuleMultipleObjectsShower
+*/
 + (id)new
 {
     var obj = [[self alloc] initWithCibName:@"ObjectsShower" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
@@ -43,6 +48,8 @@
     return @"No Name";
 }
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -54,6 +61,9 @@
 #pragma mark -
 #pragma mark Configuration
 
+/*! Configures the module to show the children of the given class from the given parent, using the given fetcher keypath, and showing them in the given dataview
+    with a given title in a given content size (optional, only used if you decide to show it in a popover.).
+*/
 - (void)configureWithParentObject:(id)aParent childrenClass:(Class)aChildrenClass fetcherKeyPath:(CPString)aFetcherKeyPath dataView:(CPView)aDataView title:(CPString)aTitle contentSize:(CGSize)aSize
 {
     // load view is needed
@@ -73,6 +83,8 @@
     [self setModulePopoverBaseSize:aSize || _defaultSize];
 }
 
+/*! @ignore
+*/
 - (CPSet)permittedActionsForObject:(id)anObject
 {
     var permissions = [CPSet new];
@@ -86,6 +98,8 @@
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     return [[self _dataViewForObject:[_dataSource objectAtIndex:aRow]] duplicate];

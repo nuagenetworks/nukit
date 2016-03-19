@@ -43,7 +43,11 @@ var NULibraryViewControllerImageCollapseShow,
     NULibraryViewControllerImageCollapseHidePressed;
 
 
-
+/*! NULibraryViewController is a class that allows to create and manipulate
+    a library of objects, a la Xcode.
+    NULibraryViewController MUST NOT be created from a XIB file.
+    They MUST be created using [NULibraryViewController new] API programatically.
+*/
 @implementation NULibraryViewController : CPViewController
 {
     @outlet CPTextField                 labelTitle;
@@ -66,6 +70,8 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Class Methods
 
+/*! Creates and returns a new NULibraryViewController
+*/
 + (id)new
 {
     var obj = [[self alloc] initWithCibName:@"Library" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
@@ -75,6 +81,8 @@ var NULibraryViewControllerImageCollapseShow,
     return obj;
 }
 
+/*! Creates and returns a new NULibraryViewController with a given delegate and a given split view container.
+*/
 + (id)libraryControllerWithSplitViewInnerView:(CPView)aContainer delegate:(id)aDelegate
 {
     var obj   = [self new],
@@ -93,6 +101,8 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (void)awakeFromCib
 {
     _contentRegistry = @{};
@@ -125,6 +135,9 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Content Management
 
+/*! Sets the content of the library.
+    It must be a CPArray of NULibraryItems
+*/
 - (void)setContent:(CPArray)someContent
 {
     if (someContent && [someContent count])
@@ -142,25 +155,33 @@ var NULibraryViewControllerImageCollapseShow,
     [tableViewLibrary reloadData];
 }
 
-- (void)setCurrentContentWithIdentifier:(CPString)anIdentifier
-{
-    [self setContent:[self registeredContentWithIdentifier:anIdentifier]];
-}
-
+/*! Registers an array of CPLibraryItems for a given identifier
+*/
 - (void)registerContent:(CPArray)aContent forIdentifier:(CPString)anIdentifier
 {
     [_contentRegistry setObject:aContent forKey:anIdentifier];
 }
 
+/*! Returns the registered content associated with the given identifier
+*/
 - (CPArray)registeredContentWithIdentifier:(CPString)anIdentifier
 {
     return [_contentRegistry objectForKey:anIdentifier];
+}
+
+/*! Make the registered content associated with the given identifier the current content.
+*/
+- (void)setCurrentContentWithIdentifier:(CPString)anIdentifier
+{
+    [self setContent:[self registeredContentWithIdentifier:anIdentifier]];
 }
 
 
 #pragma mark -
 #pragma mark Multiplier Management
 
+/*! Hides the multiplier field
+*/
 - (void)setMultiplierHidden:(BOOL)shouldHide
 {
     [fieldMultiplier setHidden:shouldHide];
@@ -168,6 +189,8 @@ var NULibraryViewControllerImageCollapseShow,
     [labelMultiplier setHidden:shouldHide];
 }
 
+/*! Returns the multiplier value
+*/
 - (int)multiplierValue
 {
     var multiplier = [fieldMultiplier intValue];
@@ -178,6 +201,8 @@ var NULibraryViewControllerImageCollapseShow,
     return MIN(20, multiplier);
 }
 
+/*! Sets the multiplier value
+*/
 - (void)setMultiplierValue:(int)aValue
 {
     [fieldMultiplier setIntValue:aValue];
@@ -187,6 +212,8 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Split View Management
 
+/*! Set the split view containing the library
+*/
 - (void)setSplitView:(CPSplitView)aSplitView
 {
     _splitView = aSplitView;
@@ -197,6 +224,8 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Visibility Management
 
+/*! Shows the library (uncollapse the split view)
+*/
 - (void)showLibrary:(BOOL)shouldShow
 {
     if (_isVisible === shouldShow)
@@ -218,6 +247,10 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Delegate Management
 
+/*! Sets the Delegate
+
+    - (void)libraryController:(NULibraryViewController)aLibrary addLibraryObject:(NULibraryItem)anItem count:(CPNumber)aCount
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (aDelegate == _delegate)
@@ -240,6 +273,8 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Actions
 
+/*! @ignore
+*/
 - (void)_didDoubleClickOnTableView:(id)aSender
 {
     var selectedObject = [_dataSourceLibrary objectAtIndex:[tableViewLibrary selectedRow]],
@@ -250,6 +285,8 @@ var NULibraryViewControllerImageCollapseShow,
     [self setMultiplierValue:1];
 }
 
+/*! @ignore
+*/
 - (@action)updateFieldMultiplier:(id)aSender
 {
     if ([aSender intValue] > 20)
@@ -265,11 +302,15 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Table View Delegates and DataSources
 
+/*! @ignore
+*/
 - (int)tableView:(CPTabView)aTableView heightOfRow:(int)aRow
 {
     return [[[NUKit kit] registeredDataViewWithIdentifier:@"libraryItemDataView"] frameSize].height;
 }
 
+/*! @ignore
+*/
 - (CPView)tableView:(CPTabView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     var key = @"NULibraryItem",
@@ -285,6 +326,8 @@ var NULibraryViewControllerImageCollapseShow,
     return view;
 }
 
+/*! @ignore
+*/
 - (void)dataSource:(TNTableViewDataSource)aDataSource writeRowsWithIndexes:(CPIndexSet)indexes toPasteboard:(CPPasteboard)aPasteboard
 {
     var draggedObject = [[aDataSource objectsAtIndexes:indexes] firstObject];
@@ -299,11 +342,15 @@ var NULibraryViewControllerImageCollapseShow,
 #pragma mark -
 #pragma mark Split View Delegates
 
+/*! @ignore
+*/
 - (float)splitView:(CPSplitView)aSplitView constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)subviewIndex
 {
     return _isVisible ? [aSplitView frameSize].height - 19 : [aSplitView frameSize].height;
 }
 
+/*! @ignore
+*/
 - (float)splitView:(CPSplitView)aSplitView constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)subviewIndex
 {
     return _isVisible ? 24 : [aSplitView frameSize].height;
@@ -312,7 +359,8 @@ var NULibraryViewControllerImageCollapseShow,
 @end
 
 
-
+/*! @ignore
+*/
 @implementation NULibraryTableView : CPTableView
 
 - (CPView)dragViewForRowsWithIndexes:(CPIndexSet)theDraggedRows tableColumns:(CPArray)theTableColumns event:(CPEvent)theDragEvent offset:(CGPoint)dragViewOffset

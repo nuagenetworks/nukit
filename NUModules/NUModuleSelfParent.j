@@ -25,7 +25,11 @@
 @import "NUOverlayTextField.j"
 @import "NUStackView.j"
 
-
+/*! NUModuleSelfParent is a module used to edit a single object.
+    It is often used as an editor. It doesn't use a popover to edit the object,
+    but rather a set of views that the context will use to bind and
+    edit the currentParent directly.
+*/
 @implementation NUModuleSelfParent : NUModule
 {
     @outlet CPButton        buttonSave;
@@ -43,21 +47,29 @@
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 + (BOOL)isTableBasedModule
 {
     return NO;
 }
 
+/*! @ignore
+*/
 + (BOOL)automaticChildrenListsDiscard
 {
     return NO;
 }
 
+/*! @ignore
+*/
 + (BOOL)automaticSelectionSaving
 {
     return NO;
 }
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -98,6 +110,8 @@
 #pragma mark -
 #pragma mark NUModule API
 
+/*! @ignore
+*/
 - (void)moduleDidShow
 {
     [super moduleDidShow];
@@ -119,17 +133,23 @@
     [self _installOverlayFieldError];
 }
 
+/*! @ignore
+*/
 - (BOOL)moduleShouldHide
 {
     return ![_currentContext modified];
 }
 
+/*! @ignore
+*/
 - (void)moduleDidSetCurrentParent:(id)aParent
 {
     [super moduleDidSetCurrentParent:aParent];
     [self setCurrentContextWithIdentifier:[aParent RESTName]];
 }
 
+/*! @ignore
+*/
 - (CPResponder)initialFirstResponder
 {
     return [[self view] subviewWithTag:@"name" recursive:YES];
@@ -139,12 +159,19 @@
 #pragma mark -
 #pragma mark NUModuleSelfParent API
 
+/*! Internal API that you can override to give the list of active edition view.
+    By default, NUModuleSelfParent will use only one edition view: viewEditionMain.
+    If you use more, you'll need to override this.
+*/
 - (CPArray)moduleCurrentVisibleEditionViews
 {
     if (viewEditionMain)
         return [viewEditionMain];
 }
 
+/*! Internal API that is called when the user interface
+    may need to be updated (after setting a current parent, or after a push)
+*/
 - (void)moduleUpdateEditorInterface
 {
 }
@@ -153,6 +180,8 @@
 #pragma mark -
 #pragma mark Utilities
 
+/*! @ignore
+*/
 - (void)_installOverlayFieldError
 {
     if (_overlayFieldError)
@@ -173,12 +202,17 @@
     _cucappID([self view], @"editor-" + [[self class] moduleIdentifier]);
 }
 
+/*! Set the UI to be readonly. If readonly tje labelReadOnlyReason will be shown
+    and the save button will be disabled.
+*/
 - (void)setReadOnly:(BOOL)isReadOnly
 {
     _readOnly = isReadOnly;
     [labelReadOnlyReason setHidden:!_readOnly];
 }
 
+/*! Reload the stack view containing the edition views.
+*/
 - (void)reloadStackView
 {
     if (_stackViewMain)
@@ -191,6 +225,8 @@
 #pragma mark -
 #pragma mark Actions
 
+/*! Saves the current edited object.
+*/
 - (@action)saveCurrentParent:(id)aSender
 {
     if (_currentContext && [[_currentContext currentValidation] success])
@@ -210,6 +246,8 @@
 #pragma mark -
 #pragma mark Custom Push
 
+/*! @ignore
+*/
 - (BOOL)shouldProcessJSONObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     if (aJSONObject.ID == [_currentParent ID])
@@ -226,6 +264,8 @@
     return NO;
 }
 
+/*! @ignore
+*/
 - (id)createObjectWithRESTName:(CPString)anIdenfier
 {
     return [[_currentParent class] new];
@@ -235,6 +275,8 @@
 #pragma mark -
 #pragma mark Delegates
 
+/*! @ignore
+*/
 - (void)overlayTextFieldDidHide:(NUOverlayTextField)anOverlayTextField
 {
     var currentValidation = [_currentContext currentValidation];

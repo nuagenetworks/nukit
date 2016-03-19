@@ -29,7 +29,9 @@
 
 var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 1;
 
-
+/*! NUEditorsViewController the class responsible for managing
+    a set of NUModules that will be shown as editor.
+*/
 @implementation NUEditorsViewController : CPViewController
 {
     @outlet CPImageView     imageTitle;
@@ -71,6 +73,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 #pragma mark -
 #pragma mark Custom Getter / Setter
 
+/*! Sets the title image, if any
+*/
 - (void)setImage:(CPImage)anImage
 {
     if (_isLocked || !imageTitle)
@@ -79,6 +83,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [imageTitle setImage:anImage];
 }
 
+/*! Set the keypath of the given object with the given transformer to use a title.
+*/
 - (void)setTitleFromKeyPath:(CPString)aKeyPath ofObject:(id)anObject transformer:(id)aTransformer
 {
     if (_isLocked)
@@ -99,12 +105,16 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 #pragma mark -
 #pragma mark Utilities
 
+/*! Reset the label title
+*/
 - (void)resetLabelTitle
 {
     [labelTitle unbind:CPValueBinding];
     [labelTitle setObjectValue:@""];
 }
 
+/*! Register the given NUModule as an editor for objects with the given RESTName
+*/
 - (void)registerEditor:(NUModule)anEditor forObjectsWithRESTName:(CPString)aRESTName
 {
     if (!_editorsRegistry)
@@ -114,6 +124,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [_editorsRegistry setObject:anEditor forKey:aRESTName];
 }
 
+/*! Sets the currentParent that will be given to all root editors.
+*/
 - (void)setCurrentParent:(NURESTObject)anObject
 {
     if (_isLocked || anObject == [self currentParent])
@@ -134,11 +146,15 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
         [self _showController:nil forEditedObject:nil];
 }
 
+/*! Returns the currentParent
+*/
 - (void)currentParent
 {
     return [_currentController currentParent];
 }
 
+/*! Used to check if all editors managed by the controller agree to hide
+*/
 - (BOOL)checkIfEditorAgreeToHide
 {
     return _currentController ? [_currentController shouldHide] : YES;
@@ -180,6 +196,9 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     [[self view] addSubview:[_currentController view]];
 }
 
+/*! @ignore.
+    That's weird...
+*/
 - (void)setDataViewForObject:(id)anObject highlighted:(BOOL)shouldHighlight
 {
     var module = [self parentModule];
@@ -195,6 +214,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     }
 }
 
+/*! Shows the no selection view.
+*/
 - (void)showNoSelectionView:(BOOL)shouldShow
 {
     if (!viewNoSelection)
@@ -219,6 +240,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
     }
 }
 
+/*! Shows the multiple selection view
+*/
 - (void)showMultipleSelectionView:(BOOL)shouldShow
 {
     if (!viewMultipleSelection)
@@ -245,6 +268,10 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 #pragma mark -
 #pragma mark Delegate Management
 
+/*! Set the delegate
+
+    - (BOOL)editorController:(NUEditorsViewController)anEditorController shouldShowEditor:(NUModule)anEditor forObject:(NURESTObject)anObject
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (aDelegate == _delegate)
@@ -257,6 +284,8 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
         _implementedDelegateMethods |= NUEditorsViewController_editorController_shouldShowEditor_forObject_;
 }
 
+/*! @ignore
+*/
 - (BOOL)_sendDelegateShouldShowEditor:(NUModel)anEditor forObject:(NURESTObject)anObject
 {
     if (_implementedDelegateMethods & NUEditorsViewController_editorController_shouldShowEditor_forObject_)
@@ -269,6 +298,9 @@ var NUEditorsViewController_editorController_shouldShowEditor_forObject_ = 1 << 
 #pragma mark -
 #pragma mark Responder Chain
 
+/*! Returns the initial first reponder for the editor.
+    That will be the initialFirstResponder of the current visible editor.
+*/
 - (CPResponder)initialFirstResponder
 {
     if (!_currentController)

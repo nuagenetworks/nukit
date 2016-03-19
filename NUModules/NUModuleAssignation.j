@@ -28,7 +28,9 @@
 NUModuleAssignationActionAssign   = @"NUModuleAssignationActionAssign";
 NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 
-
+/*! NUModuleAssignation is a variant of NUModule. Its goal is to manage assignation
+    instead of CRUD operations.
+*/
 @implementation NUModuleAssignation : NUModule
 {
     NUObjectsChooser    _chooser;
@@ -41,6 +43,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark Initialization
 
+/*! Called when the view is loaded
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -50,6 +54,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [self configureObjectsChooser:_chooser];
 }
 
+/*! Configures additional controls for actions NUModuleAssignationActionAssign and NUModuleAssignationActionUnassign
+*/
 - (void)configureAdditionalControls
 {
     if (buttonBarMain)
@@ -92,6 +98,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     }
 }
 
+/*! Configure contextual menu for NUModuleAssignationActionAssign and NUModuleAssignationActionUnassign
+*/
 - (CPArray)configureContextualMenu
 {
     var menuItemAssign = [[CPMenuItem alloc] initWithTitle:@"Assign..." action:@selector(openAssignObjectPopover:) keyEquivalent:@""];
@@ -107,6 +115,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     return actionOrder;
 }
 
+/*! Configure the cucappID prefix for NUModuleAssignationActionAssign and NUModuleAssignationActionUnassign
+*/
 - (void)configureCucappIDs
 {
     [super configureCucappIDs];
@@ -115,7 +125,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [self setCuccapPrefix:@"unassign" forAction:NUModuleAssignationActionUnassign];
 }
 
-
+/*! Correctly update the cucappIDs
+*/
 - (void)updateCucappIDsAccordingToContext:(NUModuleContext)aContext
 {
     [super updateCucappIDsAccordingToContext:aContext];
@@ -131,21 +142,30 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark NUModuleAssignation API
 
+/*! This needs to be implemented by your module.
+    You usually set the mandatory value for the NUObjectChooser.
+*/
 - (void)configureObjectsChooser:(NUObjectChooser)anObjectChooser
 {
     throw "Not implemented";
 }
 
+/*! This is called to actually perform the assignation
+*/
 - (void)assignObjects:(CPArray)someObjects
 {
     throw "Not implemented";
 }
 
+/*! This is called to when the parent of the associated objects is needed
+*/
 - (id)parentOfAssociatedObject
 {
     throw "Not implemented";
 }
 
+/*! Custom implementation of the shouldManagePushForEventualInnerObject:
+*/
 - (BOOL)shouldManagePushForEventualInnerObject:(id)aJSONObject
 {
     return [[[self flattenedDataSourceContent] filteredArrayUsingPredicate:[CPPredicate predicateWithFormat:@"ID == %@", aJSONObject.ID]] count];
@@ -155,6 +175,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark NUModule API
 
+/*! Define the default permitted actions
+*/
 - (CPSet)permittedActionsForObject:(id)anObject
 {
     var permittedActions = [super permittedActionsForObject:anObject];
@@ -177,11 +199,15 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     return permittedActions;
 }
 
+/*! @ignore
+*/
 - (BOOL)shouldManagePushOfType:(CPString)aType forEntityType:(CPString)entityType
 {
     return (entityType == [_currentParent RESTName] && NUPushEventTypeUpdate) || [super shouldManagePushOfType:aType forEntityType:entityType];
 }
 
+/*! @ignore
+*/
 - (BOOL)shouldProcessJSONObject:(id)aJSONObject ofType:(CPString)aType eventType:(CPString)anEventType
 {
     if (anEventType == NUPushEventTypeUpdate && aJSONObject.ID == [_currentParent ID])
@@ -195,8 +221,28 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 
 
 #pragma mark -
-#pragma mark Overrides
+#pragma mark Assignation & Unassignation
 
+/*! Opens the assign object chooser
+*/
+- (@action)openAssignObjectPopover:(id)aSender
+{
+    var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
+
+    if ([aSender isKindOfClass:CPMenuItem])
+        aSender = [self controlsForAction:action][0];
+
+    [self setCurrentContext:[self defaultContextForAction:action]];
+
+    var context = [self currentContext];
+
+    [_chooser setIgnoredObjects:[[self flattenedDataSourceContent] copy]];
+    [_chooser configureFetcherKeyPath:[context fetcherKeyPath] forClass:[context managedObjectClass]];
+    [_chooser showOnView:aSender forParentObject:[self parentOfAssociatedObject]];
+}
+
+/*! Opens the unassign popover
+*/
 - (@action)openUnassignObjectPopover:(id)aSender
 {
     if (NUModuleAutoValidation || [[CPApp currentEvent] modifierFlags] & CPShiftKeyMask)
@@ -226,6 +272,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [popoverConfirmation setDefaultButton:buttonConfirm];
 }
 
+/*! @ignore
+*/
 - (@action)_performUnassignObjects:(id)aSender
 {
     var content = [CPArray arrayWithArray:[self flattenedDataSourceContent]];
@@ -237,28 +285,10 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 
 
 #pragma mark -
-#pragma mark NUModuleContext Delegates
-
-- (@action)openAssignObjectPopover:(id)aSender
-{
-    var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
-
-    if ([aSender isKindOfClass:CPMenuItem])
-        aSender = [self controlsForAction:action][0];
-
-    [self setCurrentContext:[self defaultContextForAction:action]];
-
-    var context = [self currentContext];
-
-    [_chooser setIgnoredObjects:[[self flattenedDataSourceContent] copy]];
-    [_chooser configureFetcherKeyPath:[context fetcherKeyPath] forClass:[context managedObjectClass]];
-    [_chooser showOnView:aSender forParentObject:[self parentOfAssociatedObject]];
-}
-
-
-#pragma mark -
 #pragma mark Delegates
 
+/*! @ignore
+*/
 - (void)didObjectChooser:(NUObjectsChooser)anObjectChooser selectObjects:(CPArray)selectedObjects
 {
     var content = [CPArray arrayWithArray:[[self flattenedDataSourceContent] copy]];

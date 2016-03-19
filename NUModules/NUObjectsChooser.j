@@ -25,7 +25,16 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     NUObjectsChooser_didObjectChooserCancelSelection_   = 1 << 3,
     NUObjectsChooser_didObjectChooser_selectObjects_    = 1 << 4;
 
+/*! NUObjectChooser is a module used to retrieve a set of objects,
+    and let the user select one or more objects. When the selection is
+    done, a delegate method will be called to let it decide what to do
+    with the selected objects.
 
+    This often only used internally by modules like NUModuleAssignation
+    or by the Associators.
+
+    YOU MUST CREATE THIS MODULE PROGRAMMATICALLY using the + (id)new API
+*/
 @implementation NUObjectsChooser : NUModule
 {
     @outlet CPButton        buttonSelect;
@@ -45,6 +54,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Initialization
 
+/*! Creates a new NUObjectsChooser
+*/
 + (id)new
 {
     var obj = [[self alloc] initWithCibName:@"ObjectSelector" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
@@ -54,16 +65,22 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     return obj;
 }
 
+/*! @ignore
+*/
 + (BOOL)automaticSelectionSaving
 {
     return NO;
 }
 
+/*! @ignore
+*/
 + (BOOL)commitFetchedObjects
 {
     return NO;
 }
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -89,6 +106,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     [self view]._DOMElement.style.borderRadius = "5px";
 }
 
+/*! @ignore
+*/
 - (CPArray)configureContextualMenu
 {
     return nil;
@@ -98,6 +117,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Configuration
 
+/*! Add CPMenuItem to the option additional info button
+*/
 - (void)setAdditionalInfoItems:(CPArray)someItems
 {
     [buttonAdditionalInfo removeAllItems];
@@ -113,16 +134,22 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
         [buttonAdditionalInfo addItem:someItems[i]];
 }
 
+/*! Returns the selected CPMenuItem from the additional info button
+*/
 - (CPMenuItem)selectedAdditionalInfo
 {
     return [buttonAdditionalInfo selectedItem];
 }
 
+/*! Sets if multiple selection should be allowed
+*/
 - (void)setAllowsMultipleSelection:(BOOL)isMultipleSelections
 {
     [tableView setAllowsMultipleSelection:isMultipleSelections];
 }
 
+/*! Sets the title of the selection button
+*/
 - (void)setButtonTitle:(CPString)aTitle
 {
     [buttonSelect setTitle:aTitle];
@@ -132,6 +159,9 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark NUObjectsChooser API
 
+/*! configure the fetcher key path to use in the currentParent in order to retrieve the list
+    of children with the given class.
+*/
 - (void)configureFetcherKeyPath:(CPString)aKeyPath forClass:(Class)aClass
 {
     if (![self containsContextWithIdentifier:[aClass RESTName]])
@@ -144,6 +174,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     [self setCurrentContextWithIdentifier:[aClass RESTName]];
 }
 
+/*! @ignore
+*/
 - (void)fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
     [someContents removeObjectsInArray:_ignoredObjects];
@@ -158,6 +190,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Actions
 
+/*! @ignore
+*/
 - (@action)selectCurrentObjects:(id)aSender
 {
     if ([tableView numberOfSelectedRows] == 0)
@@ -174,22 +208,30 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark NUModule Delegates
 
+/*! @ignore
+*/
 - (void)moduleDidSelectObjects:(CPArray)someObject
 {
     [super moduleDidSelectObjects:someObject];
     [buttonSelect setEnabled:[someObject count] >= 1];
 }
 
+/*! @ignore
+*/
 - (void)didShowGettingStartedView:(BOOL)didShow
 {
     [buttonSelect setHidden:didShow];
 }
 
+/*! @ignore
+*/
 - (NUCategory)categoryForObject:(NUVSDObject)anObject
 {
     return [self _sendDelegateCategoryForObject:anObject];
 }
 
+/*! @ignore
+*/
 - (CPArray)moduleCurrentActiveContexts
 {
     return [self _sendDelegateCurrentActiveContextsForChooser];
@@ -199,18 +241,24 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (void)setCurrentParent:(id)aParent
 {
     // we create a copy, so we won't be discarding the real parent objects when we close the popover
     [super setCurrentParent:[aParent duplicate]];
 }
 
+/*! @ignore
+*/
 - (void)popoverWillShow:(CPPopover)aPopover
 {
     [super popoverWillShow:aPopover];
     [buttonSelect setEnabled:NO];
 }
 
+/*! @ignore
+*/
 - (void)popoverDidClose:(CPPopover)aPopover
 {
     [super popoverDidClose:aPopover];
@@ -225,6 +273,13 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 #pragma mark -
 #pragma mark Delegate
 
+/*! Sets the Delegate
+
+    - (NUCategory)categoryForObject:(NUObjectChooser)aChooser
+    - (CPArray)currentActiveContextsForChooser:(NUObjectChooser)aChooser
+    - (void)didObjectChooserCancelSelection:(NUObjectChooser)aChooser
+    - (void)didObjectChooser:(NUObjectChooser)aChooser selectObjects:(CPArray)selectedObjects
+*/
 - (void)setDelegate:(id)aDelegate
 {
     if (_delegate === aDelegate)
@@ -246,6 +301,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
         _implementedDelegateMethods |= NUObjectsChooser_didObjectChooser_selectObjects_;
 }
 
+/*! @ignore
+*/
 - (CPArray)_sendDelegateCategoryForObject:(NURESTObject)anObject
 {
     if (_implementedDelegateMethods & NUObjectsChooser_categoryForObject_)
@@ -254,6 +311,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     return [super categoryForObject:anObject];
 }
 
+/*! @ignore
+*/
 - (CPArray)_sendDelegateCurrentActiveContextsForChooser
 {
     if (_implementedDelegateMethods & NUObjectsChooser_currentActiveContextsForChooser_)
@@ -262,17 +321,20 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     return [super moduleCurrentActiveContexts];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidObjectChooserCancelSelection
 {
     if (_implementedDelegateMethods & NUObjectsChooser_didObjectChooserCancelSelection_)
         [_delegate didObjectChooserCancelSelection:self];
 }
 
+/*! @ignore
+*/
 - (void)_sendDelegateDidObjectChooserSelectedObjects:(CPArray)selectedObjects
 {
     if (_implementedDelegateMethods & NUObjectsChooser_didObjectChooser_selectObjects_)
         [_delegate didObjectChooser:self selectObjects:selectedObjects];
 }
-
 
 @end

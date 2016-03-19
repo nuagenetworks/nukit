@@ -274,7 +274,6 @@ var NUMainWindowControllerDefault,
     if ([[self window] isVisible])
         return;
 
-    [[NUDataTransferController defaultDataTransferController] hideApplicationLogging];
     [[[NUKit kit] messagesWindowController] hideBlurView];
 
     [self _performWindowAnimation:@"scaleIn" endFunction:function()

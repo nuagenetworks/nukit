@@ -23,6 +23,10 @@
 @global CPApp
 
 
+/*! NUModuleSingleObjectShower is a ready to use module to show one single object
+    in a data view in a popover.
+    YOU MUST CREATE THIS MODULE PROGRAMMATICALLY using the + (id)new API
+*/
 @implementation NUModuleSingleObjectShower : NUModule
 {
     @outlet CPView      viewContainer;
@@ -36,6 +40,8 @@
 #pragma mark -
 #pragma mark Initialization
 
+/*! Creates a new NUModuleSingleObjectShower
+*/
 + (id)new
 {
     var obj = [[self alloc] initWithCibName:@"SingleObjectShower" bundle:[CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]];
@@ -45,11 +51,15 @@
     return obj;
 }
 
+/*! @ignore
+*/
 + (CPString)moduleName
 {
     return @"No Name";
 }
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -65,6 +75,8 @@
 #pragma mark -
 #pragma mark Configuration
 
+/*! Fetch the given object and show it in the given dataview in a popover with the given title
+*/
 - (void)showObject:(id)anObject dataView:(CPView)aDataView view:(id)aView title:(CPString)aTitle
 {
     // load view if needed;
@@ -79,6 +91,8 @@
     [anObject fetchAndCallSelector:@selector(_didFetchObject:connection:) ofObject:self];
 }
 
+/*! @ignore
+*/
 - (void)_didFetchObject:(id)anObject connection:(NURESTConnection)aConnection
 {
     if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
@@ -100,11 +114,15 @@
 #pragma mark -
 #pragma mark Overrides
 
+/*! @ignore
+*/
 - (@action)openInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForObject:_currentParent];
 }
 
+/*! @ignore
+*/
 - (void)_didReceivePush:(CPNotification)aNotification
 {
     var JSONObject = [aNotification userInfo],

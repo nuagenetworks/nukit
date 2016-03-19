@@ -26,7 +26,9 @@ NUModuleLoaderModuleLoadedNotification     = @"NUModuleLoaderModuleLoadedNotific
 NUModuleLoaderAllModulesLoadedNotification = @"NUModuleLoaderAllModulesLoadedNotification";
 
 
-
+/*! @ignore
+    This is deprectated
+*/
 @implementation NUModuleLoader : CPObject
 {
     int             _numberOfModulesLoaded  @accessors(property=numberOfModulesLoaded);

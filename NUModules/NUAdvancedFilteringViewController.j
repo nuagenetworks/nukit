@@ -31,7 +31,10 @@
 
 var NUAdvancedFilteringViewControllerDefault;
 
-
+/*! NUAdvancedFilteringViewControllerDefault is the class that is responsible
+    For building the advanced search interface.
+    You should never need to use this by yourself. NUModule will use it when needed.
+*/
 @implementation NUAdvancedFilteringViewController : CPViewController
 {
     @outlet     CPPredicateEditor   predicateEditorSearch;

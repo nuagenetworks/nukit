@@ -26,7 +26,9 @@
 
 @global CPApp
 
-
+/*! NUModuleItemized is a module that won't be managing any entity.
+    It's used to display a list of submodules in a vertical tool bar.
+*/
 @implementation NUModuleItemized : NUModule
 {
     @outlet CPOutlineView   tableViewItems;
@@ -44,56 +46,78 @@
 #pragma mark -
 #pragma mark Class Methods
 
+/*! @ignore
+*/
 + (BOOL)isTableBasedModule
 {
     return NO;
 }
 
+/*! @ignore
+*/
 + (BOOL)automaticContextManagement
 {
     return NO;
 }
 
+/*! @ignore
+*/
 + (CPNumber)defaultExpandState
 {
     return CPOffState;
 }
 
+/*! Overrides this to change the color of the bar
+*/
 + (CPColor)backgroundColor
 {
     return NUSkinColorBlack;
 }
 
+/*! Overrides this to change the color of the grouping highlight
+*/
 + (CPColor)groupingViewBackgroundColor
 {
     return [NUSkinColorWhite colorWithAlphaComponent:0.15];
 }
 
+/*! Overrides this to change the color of the header of grouping view background color
+*/
 + (CPColor)groupingViewHeaderBackgroundColor
 {
     return [NUSkinColorWhite colorWithAlphaComponent:0.05];
 }
 
+/*! Overrides this to change the selection color
+*/
 + (CPColor)selectionColor
 {
     return [CPColor colorWithHexString:@"A6A6A6"];
 }
 
+/*! Overrides this to change the item border color
+*/
 + (CPColor)itemBorderColor
 {
     return NUSkinColorWhite;
 }
 
+/*! Overrides this to change the item text color
+*/
 + (CPColor)itemTextColor
 {
     return NUSkinColorWhite;
 }
 
+/*! Overrides this to change the item text color when selected
+*/
 + (CPColor)itemSelectedTextColor
 {
     return NUSkinColorWhite;
 }
 
+/*! Overrides this to change the separator color.
+*/
 + (CPColor)separatorColor
 {
     return [CPColor colorWithHexString:@"7C7C7C"];
@@ -103,6 +127,8 @@
 #pragma mark -
 #pragma mark Initialization
 
+/*! @ignore
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -164,6 +190,8 @@
 #pragma mark -
 #pragma mark NUModule API
 
+/*! @ignore
+*/
 - (void)moduleDidSetSubModules:(CPArray)someModules
 {
     for (var i = 0, c = [someModules count]; i < c; i++)
@@ -175,6 +203,8 @@
     }
 }
 
+/*! @ignore
+*/
 - (void)moduleDidShow
 {
     [super moduleDidShow];
@@ -193,6 +223,8 @@
         [tableViewItems expandItem:[self _moduleItemForModule:_lastExpandedRootModule]];
 }
 
+/*! @ignore
+*/
 - (void)moduleDidReload
 {
     [super moduleDidReload];
@@ -200,16 +232,22 @@
     [self _selectItemizedModule:[[tabViewContent selectedTabViewItem] representedObject]];
 }
 
+/*! @ignore
+*/
 - (CPSet)permittedActionsForObject:(id)anObject
 {
     return [CPSet new];
 }
 
+/*! @ignore
+*/
 - (CPResponder)initialFirstResponder
 {
     return tableViewItems;
 }
 
+/*! @ignore
+*/
 - (CPArray)currentActiveSubModules
 {
     var items   = [_dataSourceModules flattenedContent],
@@ -226,6 +264,8 @@
     return modules;
 }
 
+/*! @ignore
+*/
 - (void)moduleDidChangeVisibleSubmodule
 {
     [tableViewItems setNextKeyView:[[self visibleSubModule] initialFirstResponder]];
@@ -235,6 +275,8 @@
 #pragma mark -
 #pragma mark NUModuleItemized API
 
+/*! @ignore
+*/
 - (CPArray)moduleItemizedCurrentItems
 {
     return [];
@@ -244,6 +286,8 @@
 #pragma mark -
 #pragma mark Utilities
 
+/*! @ignore
+*/
 - (void)_showItemTable:(BOOL)shouldShow
 {
     if (shouldShow)
@@ -252,12 +296,16 @@
         [self _setItemTableWidth:0];
 }
 
+/*! @ignore
+*/
 - (void)_expandItemTable:(BOOL)shouldExpand
 {
     [self _setItemTableWidth:shouldExpand ? 250 : 50];
     [tableViewItems setIndentationPerLevel:shouldExpand ? 10 : 0];
 }
 
+/*! @ignore
+*/
 - (void)_setItemTableWidth:(int)aWidth
 {
     var scrollView   = [tableViewItems enclosingScrollView],
@@ -276,6 +324,8 @@
     [viewControlsContainer setFrame:frame];
 }
 
+/*! @ignore
+*/
 - (void)_selectItemizedModule:(NUModule)aModule
 {
     var indexToSelect = [tableViewItems rowForItem:[self _moduleItemForModule:aModule]];
@@ -284,11 +334,15 @@
         [tableViewItems selectRowIndexes:[CPIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:0];
 }
 
+/*! @ignore
+*/
 - (NUModuleItem)_moduleItemForModule:(NUModule)aModule
 {
     return [_moduleItemsCache objectForKey:[aModule UID]];
 }
 
+/*! @ignore
+*/
 - (CPArray)_generateCurrentModuleItemsFromInfo:(id)someInfos
 {
     var ret = [];
@@ -316,6 +370,8 @@
     return ret;
 }
 
+/*! @ignore
+*/
 - (void)_showGroupingView:(BOOL)shouldShow forItem:(NUModuleItem)aModuleItem
 {
     if (!shouldShow)
@@ -333,6 +389,8 @@
     [tableViewItems addSubview:_viewItemGroup positioned:CPWindowBelow relativeTo:nil];
 }
 
+/*! @ignore
+*/
 - (void)_continueTableViewItemsSelectionChange:(CPIndexSet)selectionIndexes
 {
     _overrideShouldHide = YES;
@@ -344,6 +402,8 @@
 #pragma mark -
 #pragma mark Actions
 
+/*! @ignore
+*/
 - (@action)_changeSelection:(id)aSender
 {
     var index       = [tableViewItems selectedRow],
@@ -373,6 +433,8 @@
     }
 }
 
+/*! @ignore
+*/
 - (@action)_updateItemTableVisibility:(id)aSender
 {
     [[CPUserDefaults standardUserDefaults] setObject:[_checkBoxShowName state] forKey:_itemsVisibilitySaveKey];
@@ -383,11 +445,15 @@
 #pragma mark -
 #pragma mark Delegate
 
+/*! @ignore
+*/
 - (int)outlineView:(CPOutlineView)anOutlineView heightOfRowByItem:(id)anItem
 {
     return [anItem isSeparator] ? 10 : 50;
 }
 
+/*! @ignore
+*/
 - (CPView)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
 {
     var key  = [anItem UID],
@@ -411,6 +477,8 @@
     return view;
 }
 
+/*! @ignore
+*/
 - (CPIndexSet)outlineView:(CPOutlineView)anOutlineView selectionIndexesForProposedSelection:(CPIndexSet)proposedIndexes
 {
     if ([[tableViewItems itemAtRow:[proposedIndexes firstIndex]] isSeparator])
@@ -425,6 +493,8 @@
     return proposedIndexes;
 }
 
+/*! @ignore
+*/
 - (void)outlineViewSelectionDidChange:(CPNotification)aNotification
 {
     var character = [[CPApp currentEvent] charactersIgnoringModifiers];
@@ -439,6 +509,8 @@
     }
 }
 
+/*! @ignore
+*/
 - (BOOL)outlineView:(CPOutlineView)anOutlineView shouldCollapseItem:(id)anItem
 {
     return YES;
