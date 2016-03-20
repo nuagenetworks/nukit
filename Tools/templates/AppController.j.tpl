@@ -72,7 +72,7 @@
     [[NUKit kit] setDelegate:self];
 
     // set the root object here
-    // [[NUKit kit] setRESTUser:[TODOMyRootObject defaultUser]];
+    // [[NUKit kit] setRootAPI:[TODOMyRootObject defaultUser]];
 
     [[NUKitToolBar defaultToolBar] setBorderBottomColor:NUSkinColorGreyDark];
 

@@ -97,7 +97,7 @@ function nukit_set_permission_level_user_value_value(value) {
     CPString                        _autoServerBaseURL              @accessors(property=autoServerBaseURL);
     CPString                        _companyName                    @accessors(property=companyName);
     CPString                        _copyright                      @accessors(property=copyright);
-    id                              _RESTUser                       @accessors(property=RESTUser);
+    id                              _rootAPI                        @accessors(property=rootAPI);
     NULoginWindowController         _loginWindowController          @accessors(getter=loginWindowController);
     NUMainWindowController          _mainWindowController           @accessors(property=mainWindowController);
     NUMessagesWindowController      _messagesWindowController       @accessors(getter=messagesWindowController);
@@ -544,7 +544,7 @@ function nukit_set_permission_level_user_value_value(value) {
 
 - (void)_continueLogin
 {
-    [[NURESTLoginController defaultController] setAPIKey:[[self RESTUser] APIKey]];
+    [[NURESTLoginController defaultController] setAPIKey:[[self rootAPI] APIKey]];
     [[NURESTPushCenter defaultCenter] start];
 
     [[self serverFaultWindowController] close];
@@ -580,8 +580,8 @@ function nukit_set_permission_level_user_value_value(value) {
     [[NURESTLoginController defaultController] setURL:finalURL];
     [[NURESTLoginController defaultController] setAPIKey:nil];
 
-    [[self RESTUser] setID:nil];
-    [[self RESTUser] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
+    [[self rootAPI] setID:nil];
+    [[self rootAPI] fetchAndCallSelector:@selector(_didFetchUser:connection:) ofObject:self];
 }
 
 - (void)performAutoLoginWithUserInfo:(CPString)someUserInfo organization:(CPString)anOrganization url:(CPString)anURL
@@ -591,13 +591,13 @@ function nukit_set_permission_level_user_value_value(value) {
     var URL      = [self RESTBaseURL],
         JSONinfo = JSON.parse(atob(someUserInfo));
 
-    [[self RESTUser] objectFromJSON:JSONinfo];
+    [[self rootAPI] objectFromJSON:JSONinfo];
 
-    [[NURESTLoginController defaultController] setUser:[[self RESTUser] userName]];
+    [[NURESTLoginController defaultController] setUser:[[self rootAPI] userName]];
     [[NURESTLoginController defaultController] setCompany:anOrganization];
     [[NURESTLoginController defaultController] setPassword:nil];
     [[NURESTLoginController defaultController] setURL:URL];
-    [[NURESTLoginController defaultController] setAPIKey:[[self RESTUser] APIKey]];
+    [[NURESTLoginController defaultController] setAPIKey:[[self rootAPI] APIKey]];
 
     if ([self _sendDelegateShouldLogin])
         [self _continueLogin];

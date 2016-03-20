@@ -59,7 +59,7 @@
     [[[NUKit kit] loginWindowController] setShowsEnterpriseField:NO];
 
     // the root object here
-    // [[NUKit kit] setRESTUser:[MyRootObject defaultUser]];
+    // [[NUKit kit] setRootAPI:[MyRootObject defaultUser]];
 
     // Modules Registration
     // [[NUKit kit] registerCoreModule:coreModule];

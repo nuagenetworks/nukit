@@ -96,7 +96,7 @@ function _generateRandomMAC()
 
 function _currentUserHasRoles(someRoles)
 {
-    return [[[NUKit kit] RESTUser] hasRoles:someRoles];
+    return [[[NUKit kit] rootAPI] hasRoles:someRoles];
 }
 
 function _currentUserOwnerOfParentDomain(anObject)

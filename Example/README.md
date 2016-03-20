@@ -540,7 +540,7 @@ Edit the `AppController.j`, and make it look like:
     [[NUKit kit] parseStandardApplicationArguments];
     [[NUKit kit] loadFrameworkDataViews];
 
-    [[NUKit kit] setRESTUser:[SKRoot defaultUser]];
+    [[NUKit kit] setRootAPI:[SKRoot defaultUser]];
 
     // Modules Registration
     [[NUKit kit] registerCoreModule:listsModule];

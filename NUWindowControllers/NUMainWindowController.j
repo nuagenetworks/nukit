@@ -255,7 +255,7 @@ var NUMainWindowControllerDefault,
     if (_visiblePrincipalModule == module)
         [self _hideCurrentPrincipalModule];
     else
-        [self _showPrincipalModule:module withCurrentParent:[[NUKit kit] RESTUser]];
+        [self _showPrincipalModule:module withCurrentParent:[[NUKit kit] rootAPI]];
 }
 
 - (@action)ignoreWindowSizeWarning:(id)aSender
@@ -286,11 +286,11 @@ var NUMainWindowControllerDefault,
         [self _hideCurrentPrincipalModule];
         [self _manageVisibilityOfWindowSizeWarning];
 
-        [_coreModule setCurrentParent:[[NUKit kit] RESTUser]];
+        [_coreModule setCurrentParent:[[NUKit kit] rootAPI]];
         [_coreModule willShow];
 
-        [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"displayDescription" options:nil];
-        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] RESTUser] withKeyPath:@"icon" options:nil];
+        [fieldCurrentUser bind:CPValueBinding toObject:[[NUKit kit] rootAPI] withKeyPath:@"displayDescription" options:nil];
+        [imageViewCurrentUserAvatar bind:CPValueBinding toObject:[[NUKit kit] rootAPI] withKeyPath:@"icon" options:nil];
 
         [[self window] setDelegate:self];
         [[NUKitToolBar defaultToolBar] setNeedsLayout];
