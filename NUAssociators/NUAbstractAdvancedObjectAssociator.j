@@ -19,7 +19,6 @@
 @import <AppKit/CPButton.j>
 
 @import "NUAbstractObjectAssociator.j"
-@import "NUKitObject.j"
 @import "NUModuleContext.j"
 
 /*! NUAbstractAdvancedObjectAssociator is the class you should use to create

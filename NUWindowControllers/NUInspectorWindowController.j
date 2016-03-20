@@ -26,7 +26,6 @@
 @import <Bambou/NURESTLoginController.j>
 @import <Bambou/NURESTModelController.j>
 
-@import "NUKitObject.j"
 @import "NUSkin.j"
 @import "NUModule.j"
 
@@ -398,7 +397,7 @@ var NUInspectorWindowsRegistry = @{},
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     var item = [_dataSourceGenealogy objectAtIndex:aRow],
-        key  = [item isKindOfClass:NUKitObject] ? [item RESTName] : [item UID],
+        key  = [item isKindOfClass:NURESTObject] ? [item RESTName] : [item UID],
         view = [aTableView makeViewWithIdentifier:key owner:self];
 
     if (!view)

@@ -1,7 +1,6 @@
 @import "NUCategory.j"
 @import "NUJobExport.j"
 @import "NUJobImport.j"
-@import "NUKitObject.j"
 @import "NULibraryItem.j"
 @import "NUModuleItem.j"
 @import "NUValidation.j"

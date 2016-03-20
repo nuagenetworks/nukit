@@ -21,7 +21,6 @@
 @import <AppKit/CPButton.j>
 @import <Bambou/NURESTModelController.j>
 
-@import "NUKitObject.j"
 @import "NUObjectsChooser.j"
 
 @class NUKit

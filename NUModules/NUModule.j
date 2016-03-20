@@ -41,7 +41,6 @@
 @import "NUExpandableSearchField.j"
 @import "NUJobExport.j"
 @import "NUJobImport.j"
-@import "NUKitObject.j"
 @import "NUModuleContext.j"
 @import "NUOutlineViewDataSource.j"
 @import "NUSkin.j"
@@ -3250,7 +3249,7 @@ NUModuleTabViewModeIcon                = 2;
         // we create a dummy object for table view because it will be faster.
         // wiht outline view, it's not working because of the item cache.
 
-        var dummyObject = isTableView ? [NUKitObject RESTObjectWithID:IDs[i]] : [_dataSource objectWithID:IDs[i]];
+        var dummyObject = isTableView ? [NURESTObject RESTObjectWithID:IDs[i]] : [_dataSource objectWithID:IDs[i]];
         [dummyObjects addObject:dummyObject];
     }
 
@@ -3901,7 +3900,7 @@ NUModuleTabViewModeIcon                = 2;
 - (CPView)outlineView:(CPOutlineView)anOutlineView viewForTableColumn:(CPTableColumn)aColumn item:(id)anItem
 {
     var dataView = [self _dataViewForObject:anItem],
-        key = _dataViewIdentifierPrefix + @"_" + ([anItem isKindOfClass:NUKitObject] ? [anItem RESTName] : [anItem UID]),
+        key = _dataViewIdentifierPrefix + @"_" + ([anItem isKindOfClass:NURESTObject] ? [anItem RESTName] : [anItem UID]),
         view = [anOutlineView makeViewWithIdentifier:key owner:self];
 
     if (!view)
@@ -4024,7 +4023,7 @@ NUModuleTabViewModeIcon                = 2;
 - (CPView)tableView:(CPTableView)aTableView viewForTableColumn:(CPTableColumn)aColumn row:(int)aRow
 {
     var item = [_dataSource objectAtIndex:aRow],
-        key  = _dataViewIdentifierPrefix + @"_" + ([item isKindOfClass:NUKitObject] ? [item RESTName] : [item UID]),
+        key  = _dataViewIdentifierPrefix + @"_" + ([item isKindOfClass:NURESTObject] ? [item RESTName] : [item UID]),
         view = [aTableView makeViewWithIdentifier:key owner:self];
 
     if (!view)
