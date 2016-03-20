@@ -216,7 +216,7 @@ var NUKitToolBarDefault;
         var button = [_buttonsRegistry allKeys][i],
             roles = [_buttonsRegistry objectForKey:button];
 
-        if (roles == [CPNull null] || [roles containsObject:[[[NUKit kit] RESTUser] role]])
+        if (roles == [CPNull null] || [roles containsObject:[[[NUKit kit] rootAPI] role]])
             [buttonsList addObject:button];
     }
 
