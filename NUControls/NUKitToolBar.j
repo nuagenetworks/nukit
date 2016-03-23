@@ -108,6 +108,7 @@ var NUKitToolBarDefault;
     [self setBackgroundColor:[[NUKit kit] toolbarBackgroundColor]];
 
     [fieldApplicationName setStringValue:[[NUKit kit] companyName]];
+    [imageApplicationIcon setImage:[[NUKit kit] companyLogo]];
     [fieldApplicationName setTextColor:[[NUKit kit] toolbarForegroundColor]]
 
     _cucappID(fieldApplicationName, @"toolbar-application-name");
