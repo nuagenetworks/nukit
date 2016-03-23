@@ -136,7 +136,11 @@ def install_cappuccino(install_dir, local_distrib):
     current_path = os.getcwd()
     os.chdir("Libraries/Cappuccino")
     command(command="rm -rf %s" % install_dir)
-    command(command="./bootstrap.sh --noprompt --directory %s --copy-local %s" % (install_dir, local_distrib))
+
+    if os.path.exists(local_distrib):
+        command(command="./bootstrap.sh --noprompt --directory %s --copy-local %s" % (install_dir, local_distrib))
+    else:
+        command(command="./bootstrap.sh --noprompt --directory %s" % install_dir)
     command(command="jake install")
 
     os.chdir(current_path)
