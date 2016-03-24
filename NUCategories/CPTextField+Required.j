@@ -30,7 +30,7 @@
 @import <AppKit/CPImageView.j>
 
 @class NUKit
-
+@global NUImageInKit
 
 var CPTextFieldImageRequired = nil;
 
