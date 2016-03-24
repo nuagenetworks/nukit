@@ -115,11 +115,11 @@ var NUKitToolBarDefault;
     [stackViewButtons setMode:NUStackViewModeHorizontal];
     [stackViewButtons setMargin:CGInsetMake(0, 5, 0, 5)];
 
-    [self setBackgroundColor:[[NUKit kit] toolbarBackgroundColor]];
+    [self setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"toolbar-background"]];
 
     [fieldApplicationName setStringValue:[[NUKit kit] companyName]];
     [imageApplicationIcon setImage:[[NUKit kit] companyLogo]];
-    [fieldApplicationName setTextColor:[[NUKit kit] toolbarForegroundColor]]
+    [fieldApplicationName setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"toolbar-foreground"]];
 
     _cucappID(fieldApplicationName, @"toolbar-application-name");
 

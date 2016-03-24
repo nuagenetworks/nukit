@@ -314,7 +314,7 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)viewDidLoad
 {
-    [[self view] setBackgroundColor:NUSkinColorGreyLighter];
+    [[self view] setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"main-view-background"]];
 
     _activeSubModules                                   = [];
     _activeTransactionsIDs                              = [];
@@ -381,7 +381,7 @@ NUModuleTabViewModeIcon                = 2;
         _cucappID(tableView, [self className]);
 
         [tableView setIntercellSpacing:CGSizeMakeZero()];
-        [tableView setBackgroundColor:NUSkinColorWhite];
+        [tableView setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"tableview-view-background"]]; // white
         [tableView setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
 
         [_dataSource setTable:tableView];
@@ -510,16 +510,16 @@ NUModuleTabViewModeIcon                = 2;
     }
 
     if (maskingView)
-        [maskingView setBackgroundColor:NUSkinColorGreyLighter];
+        [maskingView setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"masking-view-background"]];
 
     if (multipleSelectedObjectsMaskingView)
-        [multipleSelectedObjectsMaskingView setBackgroundColor:NUSkinColorGreyLighter];
+        [multipleSelectedObjectsMaskingView setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"masking-view-background"]];
 
     if (viewTitleContainer)
-        [viewTitleContainer setBackgroundColor:NUSkinColorGreyLight];
+        [viewTitleContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"title-container-view-background"]];
 
     if (viewSubtitleContainer)
-        [viewSubtitleContainer setBackgroundColor:NUSkinColorGreyLight];
+        [viewSubtitleContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"subtitle-container-view-background"]];
 
     if (splitViewMain)
     {
@@ -531,9 +531,9 @@ NUModuleTabViewModeIcon                = 2;
     {
         var opts = @{CPValueTransformerNameBindingOption: NUTotalNumberValueTransformerName};
         [fieldTotalEntities bind:CPValueBinding toObject:self withKeyPath:"formatedTotalNumberOfEntities" options:opts];
-        [fieldTotalEntities setTextColor:NUSkinColorBlack];
+        [fieldTotalEntities setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"total-entities-field-foreground"]];
 
-        [[fieldTotalEntities superview] setBackgroundColor:NUSkinColorGreyLighter];
+        [[fieldTotalEntities superview] setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"total-entities-field-background"]];
 
         _cucappID(fieldTotalEntities, @"field_total_" + [self className]);
     }
@@ -541,14 +541,14 @@ NUModuleTabViewModeIcon                = 2;
     if (fieldModuleTitle)
     {
         [self setModuleTitle:[fieldModuleTitle stringValue]];
-        [fieldModuleTitle setTextColor:NUSkinColorBlack];
+        [fieldModuleTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"title-field-foreground"]];
         [fieldModuleTitle bind:CPValueBinding toObject:self withKeyPath:@"moduleTitle" options:nil];
     }
 
     if (fieldModuleSubtitle)
     {
         [self setModuleSubtitle:[fieldModuleSubtitle stringValue]];
-        [fieldModuleSubtitle setTextColor:NUSkinColorBlack];
+        [fieldModuleSubtitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"subtitle-field-foreground"]];
         [fieldModuleSubtitle bind:CPValueBinding toObject:self withKeyPath:@"moduleSubtitle" options:nil];
     }
 
@@ -565,8 +565,8 @@ NUModuleTabViewModeIcon                = 2;
 
     if (viewPopoverModuleTitleContainer)
     {
-        [fieldModuleTitle setTextColor:NUSkinColorWhite];
-        [viewPopoverModuleTitleContainer setBackgroundColor:NUSkinColorBlack];
+        [fieldModuleTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"popover-title-field-foreground"]];
+        [viewPopoverModuleTitleContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"module-popover-title-view-background"]];
     }
 
     if (tabViewContent)
@@ -599,13 +599,13 @@ NUModuleTabViewModeIcon                = 2;
         {
             [self showModuleEditor:_stickyEditor];
             [editorController setParentModule:self];
-            [viewEditorContainer setBackgroundColor:NUSkinColorGreyLight];
+            [viewEditorContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"editor-container-view-background"]];
 
             if (splitViewEditor)
                 [splitViewEditor setDelegate:self];
 
             if (viewEditorContainer)
-                viewEditorContainer._DOMElement.style.boxShadow = "0 0 10px " + [NUSkinColorGrey cssString];
+                viewEditorContainer._DOMElement.style.boxShadow = "0 0 10px " + [[[[NUKit kit] moduleColorConfiguration] objectForKey:@"editor-container-shadow-color"] cssString];
         }
     }
 
@@ -775,7 +775,7 @@ NUModuleTabViewModeIcon                = 2;
     [_modulePopover setBehavior:CPPopoverBehaviorTransient];
     [_modulePopover setDelegate:self];
 
-    [viewMainTableViewContainer setBorderColor:NUSkinColorGreyLight];
+    [viewMainTableViewContainer setBorderColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"main-table-view-container-background"]];
 }
 
 /*! See - (void)showOnView:(CPView)aView relativeToRect:(CGRect)aRect forParentObject:(id)aParentObject

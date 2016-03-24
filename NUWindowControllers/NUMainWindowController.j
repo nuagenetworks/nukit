@@ -103,7 +103,7 @@ var NUMainWindowControllerDefault,
     // Footer
     [fieldAboutBuildVersion setStringValue:[[NUKit kit] copyright]];
 
-    [viewFooter setBackgroundColor:[[NUKit kit] footerBackgroundColor]];
+    [viewFooter setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"footer-background"]];
 
     [imageViewCurrentUserAvatar setImageScaling:CPScaleToFit];
     [imageViewCurrentUserAvatar setBackgroundColor:NUSkinColorBlue];
@@ -111,7 +111,7 @@ var NUMainWindowControllerDefault,
     imageViewCurrentUserAvatar._DOMElement.style.borderRadius = @"2px";
     imageViewCurrentUserAvatar._DOMImageElement.style.borderRadius = @"2px";
 
-    [fieldCurrentUser setTextColor:NUSkinColorGreyDarker];
+    [fieldCurrentUser setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"toolbar-foreground"]];
 
     // view too small
     [viewTooSmallWindowSize setBackgroundColor:NUSkinColorGreyLight];

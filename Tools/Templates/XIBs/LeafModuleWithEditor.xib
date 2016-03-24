@@ -8,6 +8,7 @@
             <connections>
                 <outlet property="buttonBarMain" destination="mMf-Cg-1b1" id="tPF-fy-Mh3"/>
                 <outlet property="editorController" destination="lyF-ze-23v" id="3mW-TH-cp0"/>
+                <outlet property="fieldModuleTitle" destination="Hvi-u0-QBZ" id="wnh-6P-atk"/>
                 <outlet property="fieldTotalEntities" destination="oN7-8S-3WJ" id="s3w-Ma-Uqh"/>
                 <outlet property="filterField" destination="NH8-4s-vHN" id="HfA-ba-7Bp"/>
                 <outlet property="popover" destination="7Ws-EB-dJo" id="I67-yB-qRe"/>
@@ -138,6 +139,7 @@
                     </holdingPriorities>
                 </splitView>
             </subviews>
+            <point key="canvasLocation" x="1013.5" y="470"/>
         </customView>
         <customView id="sjE-F5-ueU">
             <rect key="frame" x="0.0" y="0.0" width="438" height="284"/>

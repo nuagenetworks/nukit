@@ -45,6 +45,8 @@
 @import "NUUtilities.j"
 @import "NUValidation.j"
 
+@class NUKit
+
 @global CPApp
 @global NUModuleActionEdit
 @global NUModuleActionInstantiate
@@ -270,7 +272,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
         _fieldTitle = [self _controlForProperty:@"title"];
 
     if (_fieldTitle)
-        [_fieldTitle setTextColor:NUSkinColorBlueDark];
+        [_fieldTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"edition-popover-title-foreground"]];
 
     if (!_buttonSave)
         [self setButtonSave:[self _controlForProperty:@"save"]];

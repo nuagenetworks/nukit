@@ -96,10 +96,7 @@ function nukit_set_permission_level_user_value_value(value) {
 {
     BOOL                            _usesPoweredBy                  @accessors(property=usesPoweredBy);
     CPBundle                        _bundle                         @accessors(getter=bundle);
-    CPColor                         _toolbarBackgroundColor         @accessors(property=toolbarBackgroundColor);
-    CPColor                         _toolbarForegroundColor         @accessors(property=toolbarForegroundColor);
-    CPColor                         _footerBackgroundColor          @accessors(property=footerBackgroundColor);
-    CPColor                         _footerForegroundColor          @accessors(property=footerForegroundColor);
+    CPDictionary                    _moduleColorConfiguration       @accessors(property=moduleColorConfiguration);
     CPImage                         _applicationLogo                @accessors(property=applicationLogo);
     CPImage                         _companyLogo                    @accessors(property=companyLogo);
     CPString                        _APIPrefix                      @accessors(property=APIPrefix);
@@ -119,7 +116,6 @@ function nukit_set_permission_level_user_value_value(value) {
     CPView                          _lockedPopoverView;
     id                              _delegate;
     unsigned                        _implementedDelegateMethods;
-
 }
 
 
@@ -142,6 +138,39 @@ function nukit_set_permission_level_user_value_value(value) {
 {
     if (self = [super init])
     {
+        _moduleColorConfiguration = @{
+            @"main-view-background": NUSkinColorGreyLighter,
+            @"tableview-view-background": NUSkinColorWhite,
+            @"masking-view-background": NUSkinColorGreyLighter,
+
+            @"title-container-view-background": NUSkinColorGreyLight,
+            @"title-field-foreground": NUSkinColorBlack,
+
+            @"subtitle-container-view-background": NUSkinColorGreyLight,
+            @"subtitle-field-foreground": NUSkinColorBlack,
+
+            @"total-entities-field-foreground": NUSkinColorBlack,
+            @"total-entities-field-background": NUSkinColorGreyLighter,
+
+            @"edition-popover-title-foreground": NUSkinColorBlue,
+
+            @"module-popover-title-view-background": NUSkinColorBlack,
+
+            @"editor-container-view-background": NUSkinColorGreyLight,
+            @"editor-container-shadow-color": NUSkinColorGrey,
+
+            @"main-table-view-container-background": NUSkinColorGreyLight,
+
+            @"toolbar-background": NUSkinColorGreyLight,
+            @"toolbar-foreground": NUSkinColorBlack,
+
+            @"footer-background": NUSkinColorGreyLight,
+            @"footer-foreground": NUSkinColorBlack,
+
+            @"chooser-popover-banner-background": NUSkinColorBlack,
+            @"chooser-popover-banner-foreground": NUSkinColorWhite,
+        }
+
         _bundle = [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"];
 
         [self installStyleSheetOnDocument:document];
@@ -149,10 +178,6 @@ function nukit_set_permission_level_user_value_value(value) {
         _APIPrefix                   = @"api/";
         _sharedModules               = @{};
 
-        _toolbarBackgroundColor      = NUSkinColorGreyLight;
-        _toolbarForegroundColor      = NUSkinColorBlack;
-        _footerBackgroundColor       = NUSkinColorGreyLight;
-        _footerForegroundColor       = NUSkinColorBlack;
         _loginWindowController       = [NULoginWindowController new];
         _mainWindowController        = [NUMainWindowController new];
         _messagesWindowController    = [NUMessagesWindowController new];

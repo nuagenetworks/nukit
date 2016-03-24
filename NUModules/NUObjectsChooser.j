@@ -30,6 +30,8 @@
 
 @import "NUModule.j"
 
+@class NUKit
+
 var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     NUObjectsChooser_currentActiveContextsForChooser_   = 1 << 2,
     NUObjectsChooser_didObjectChooserCancelSelection_   = 1 << 3,
@@ -98,8 +100,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     _currentActiveContextIdentifiers   = []
     _hidesDataViewsControls     = YES;
 
-    [fieldModuleTitle setTextColor:NUSkinColorWhite];
-    [[fieldModuleTitle superview] setBackgroundColor:NUSkinColorBlack];
+    [fieldModuleTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"chooser-popover-banner-foreground"]];
+    [[fieldModuleTitle superview] setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"chooser-popover-banner-background"]];
 
     _ignoredObjects = [CPArray array];
     [_dataSource setSearchableKeyPaths:_searchableKeyPaths || []];
