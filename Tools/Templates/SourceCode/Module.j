@@ -26,7 +26,7 @@
     [super viewDidLoad];
 
     // register your data view
-    [self registerDataViewWithName:@"objectDataView" forClass:SKList];
+    [self registerDataViewWithName:@"objectDataView" forClass:ObjectClass];
 
     // register your submodules
     [self setSubModules:[subModule1]];
