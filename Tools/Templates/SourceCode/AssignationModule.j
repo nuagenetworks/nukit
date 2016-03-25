@@ -42,7 +42,7 @@
 - (NUVSDObject)parentOfAssociatedObject
 {
     // set the parent of AssociatedObjectClass
-    return [NURESTUser defaultUser];
+    return [NURESTUser current];
 }
 
 - (void)assignObjects:(CPArray)someObjects
