@@ -19,10 +19,11 @@
 @import <NUKit/NUWindowControllers.j>
 @import <Bambou/Bambou.j>
 
-@import "DataViews/DataViewsLoader.j"
 @import "Models/Models.j"
-@import "ViewControllers/ViewControllers.j"
 @import "Transformers/Transformers.j"
+@import "Associators/Associators.j"
+@import "DataViews/DataViewsLoader.j"
+@import "ViewControllers/ViewControllers.j"
 
 @global BRANDING_INFORMATION
 @global SERVER_AUTO_URL

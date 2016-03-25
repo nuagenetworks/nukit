@@ -1,5 +1,7 @@
 @import <Foundation/Foundation.j>
 @import <NUKit/NUAbstractSimpleObjectAssociator.j>
+@import "../Models/Models.j"
+
 
 @implementation Associator : NUAbstractSimpleObjectAssociator
 

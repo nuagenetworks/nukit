@@ -2,8 +2,10 @@
 @import <NUKit/NUModule.j>
 @import "../Models/Models.j"
 
+@class SubModule
 
-@implementation CoreModule : NUModule
+
+@implementation Module : NUModule
 {
     // declare your sub modules
     @outlet SubModule subModule1;
