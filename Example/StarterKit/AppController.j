@@ -66,12 +66,20 @@
 
     // Make NUKit listening to internal notifications.
     [[NUKit kit] startListenNotification];
+
+    // Shows the login window
     [[NUKit kit] manageLoginWindow];
 }
 
 - (IBAction)openInspector:(id)aSender
 {
     [[NUKit kit] openInspectorForSelectedObject];
+}
+
+- (void)applicationDidLogin:(NUKit)aKit
+{
+    // makes everyone a super user!
+    // [[MyRootObject current] setRole:NUPermissionLevelRoot];
 }
 
 @end

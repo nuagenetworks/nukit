@@ -1,12 +1,8 @@
-*.DS_Store
-*Frameworks/*
-*.XcodeSupport*
-*Build/*
-*.sublime-workspace
-*.sublime-project
-*target
+.DS_Store
+Frameworks
+.XcodeSupport
+Build
 *.xcodeproj
-*.cappenvs/*
+.cappenvs
 *.cib
-features
 Docker/app
