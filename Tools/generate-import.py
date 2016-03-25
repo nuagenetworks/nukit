@@ -26,20 +26,17 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-from optparse import OptionParser
-
 import os
 import re
-import datetime
+from optparse import OptionParser
 
 
-def generate_file(output_file, subfolder):
+def generate_file(output_file, subfolder, classprefix):
 
     if not output_file:
         output_file = os.getcwd().split("/")[-1]
-        if not output_file.startswith("NU"):
-            output_file = "NU%s" % output_file
+        if not output_file.startswith(classprefix):
+            output_file = "%s%s" % (classprefix, output_file)
 
     files = list()
 
@@ -64,20 +61,10 @@ def generate_file(output_file, subfolder):
             if objective_j_file and name != "%s.j" % output_file:
                 files.append(name)
 
-    date = datetime.datetime.now()
-
-    headers = """/*
-*
-*   Header
-*
-*/""" % (output_file, date.strftime('%a %b %d %H:%M:%S %Z %Y'))
-
     destination_file = open(output_file + ".j", 'w')
-    destination_file.write(headers)
     destination_file.write("\n\n")
 
     for f in files:
-
         import_string = "@import \"%s\"\n" % f
         destination_file.write(import_string)
 
@@ -88,11 +75,14 @@ if __name__ == "__main__":
     parser.add_option("-o", "--output",
                       dest="output",
                       help="Name of the file to generate")
-    parser.add_option("-r", "--recursice",
+    parser.add_option("-r", "--recursive",
                       action="store_true",
                       dest="recursive",
                       help="Import the files find in the subfolder")
+    parser.add_option("-p", "--class-prefix",
+                      dest="classprefix",
+                      help="Set the class prefix to use")
 
     options, args = parser.parse_args()
 
-    generate_file(options.output, options.recursive)
+    generate_file(options.output, options.recursive, options.classprefix)
