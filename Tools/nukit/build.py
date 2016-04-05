@@ -359,7 +359,9 @@ def perform_build(additional_libraries=[], additional_themes=[], war_name="ui"):
         for library in additional_libraries:
             clean_library(name=library["name"])
 
-        clean_theme(name="NUAristo")
+        for theme in additional_themes:
+            clean_theme(theme["name"])
+
         clean_project()
         clean_war()
 
