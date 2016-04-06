@@ -154,6 +154,7 @@ function nukit_set_permission_level_user_value_value(value) {
 
             @"edition-popover-title-foreground": NUSkinColorBlue,
 
+            @"moddule-popover-title-field-foreground": NUSkinColorWhite,
             @"module-popover-title-view-background": NUSkinColorBlack,
 
             @"editor-container-view-background": NUSkinColorGreyLight,

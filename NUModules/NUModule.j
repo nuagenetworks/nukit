@@ -565,7 +565,7 @@ NUModuleTabViewModeIcon                = 2;
 
     if (viewPopoverModuleTitleContainer)
     {
-        [fieldModuleTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"popover-title-field-foreground"]];
+        [fieldModuleTitle setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"moddule-popover-title-field-foreground"]];
         [viewPopoverModuleTitleContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"module-popover-title-view-background"]];
     }
 
