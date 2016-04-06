@@ -66,10 +66,10 @@ function createDownload(content, filename, extension)
     delete a;
 }
 
-function NUImageInKit()
+NUImageInKit = function()
 {
     var args = Array.prototype.slice.call(arguments);
-    args.push([[NUKit kit] bundle]);
+    args.push([CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
     return CPImageInBundle.apply(this, args);
 }
 
