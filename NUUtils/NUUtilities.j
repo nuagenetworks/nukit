@@ -47,9 +47,13 @@ function _json_to_query_parameters(json)
 
 function createDownload(content, filename, extension)
 {
-    var contentType = 'application/octet-stream',
+    createDownloadFromBlob(new Blob([content], {'type': 'application/octet-stream'}), filename, extension)
+}
+
+function createDownloadFromBlob(blob, filename, extension)
+{
+    var blob = blob,
         a = document.createElement('a'),
-        blob = new Blob([content], {'type':contentType}),
         url = window.URL.createObjectURL(blob);
 
     a.style = "display: none";
@@ -64,6 +68,29 @@ function createDownload(content, filename, extension)
     }, 100);
 
     delete a;
+}
+
+function base64DataToBlob(b64Data, contentType)
+{
+    b64Data = b64Data.replace(/^[^,]+,/, '');
+    b64Data = b64Data.replace(/\s/g, '');
+
+    var sliceSize = 512,
+        byteCharacters = window.atob(b64Data),
+        byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize)
+    {
+        var slice = byteCharacters.slice(offset, offset + sliceSize),
+            byteNumbers = new Array(slice.length);
+
+        for (var i = 0; i < slice.length; i++)
+            byteNumbers[i] = slice.charCodeAt(i);
+
+        byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    return new Blob(byteArrays, {type: contentType || 'application/octet-stream'});
 }
 
 NUImageInKit = function()
