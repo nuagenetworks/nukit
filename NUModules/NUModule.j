@@ -384,6 +384,9 @@ NUModuleTabViewModeIcon                = 2;
         [tableView setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"tableview-view-background"]]; // white
         [tableView setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
 
+        if ([[tableView tableColumns] count])
+            [[[tableView tableColumns] firstObject] setMaxWidth:1000000];
+
         [_dataSource setTable:tableView];
         [tableView setDataSource:_dataSource];
         [tableView setDelegate:self];
