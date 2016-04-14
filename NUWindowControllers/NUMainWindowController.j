@@ -111,7 +111,7 @@ var NUMainWindowControllerDefault,
     imageViewCurrentUserAvatar._DOMElement.style.borderRadius = @"2px";
     imageViewCurrentUserAvatar._DOMImageElement.style.borderRadius = @"2px";
 
-    [fieldCurrentUser setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"toolbar-foreground"]];
+    [fieldCurrentUser setTextColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"footer-foreground"]];
 
     // view too small
     [viewTooSmallWindowSize setBackgroundColor:NUSkinColorGreyLight];

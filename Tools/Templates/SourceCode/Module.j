@@ -2,8 +2,10 @@
 @import <NUKit/NUModule.j>
 @import "../Models/Models.j"
 
+@class SubModule
 
-@implementation CoreModule : NUModule
+
+@implementation Module : NUModule
 {
     // declare your sub modules
     @outlet SubModule subModule1;
@@ -26,7 +28,7 @@
     [super viewDidLoad];
 
     // register your data view
-    [self registerDataViewWithName:@"objectDataView" forClass:SKList];
+    [self registerDataViewWithName:@"objectDataView" forClass:ObjectClass];
 
     // register your submodules
     [self setSubModules:[subModule1]];

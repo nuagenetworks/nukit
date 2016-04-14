@@ -1,0 +1,8 @@
+.DS_Store
+Frameworks
+.XcodeSupport
+Build
+*.xcodeproj
+.cappenvs
+*.cib
+Docker/app
