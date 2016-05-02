@@ -527,7 +527,7 @@
 
   ipaddr.IPv6.isValid = function(string) {
     var e, error;
-    if (string.indexOf(":") === -1) {
+    if (!string || string.indexOf(":") === -1) {
       return false;
     }
     try {
