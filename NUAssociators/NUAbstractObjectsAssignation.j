@@ -42,10 +42,8 @@ var NUAbstractObjectsAssignationLinkImage          = CPImageInBundle("button-lin
     NUAbstractObjectsAssignationUnLinkImage        = CPImageInBundle("button-unlink.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]),
     NUAbstractObjectsAssignationUnLinkPressedImage = CPImageInBundle("button-unlink-pressed.png", 12.0, 12.0, [CPBundle bundleWithIdentifier:@"net.nuagenetworks.nukit"]);
 
-var NUAbstractObjectsAssignation_didAssociatorFetchAssociatedObject_          = 1 << 1,
-    NUAbstractObjectsAssignation_didAssociatorAddAssociation_                 = 1 << 2,
-    NUAbstractObjectsAssignation_didAssociatorRemoveAssociation_              = 1 << 3,
-    NUAbstractObjectsAssignation_didAssociatorChangeAssociation_              = 1 << 4;
+var NUAbstractObjectsAssignation_didAssignObjects_      = 1 << 1,
+    NUAbstractObjectsAssignation_didUnassignObjects_    = 1 << 2;
 
 NUObjectsAssignationDisplayModeDataView = 1;
 NUObjectsAssignationDisplayModeText     = 2;
@@ -55,19 +53,18 @@ var BUTTONS_SIZE = 12;
 NUObjectsAssignationSettingsDataViewNameKey   = @"NUObjectsAssignationSettingsDataViewNameKey";
 NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFetcherKeyPathKey";
 
-/*! NUAbstractObjectsAssignation is the base class of all associators.
-    An associators allows you to provide an control that will
-    let the user select a remote object, and the a key to the ID of
-    the selected object into the current parent.
+/*! NUAbstractObjectsAssignation is the base class of assignation control
+    An Assignation is a control that can let the user select one or multiple objects,
+    and add IDs of selected objects in an array of its current parent.
 
-    You should not use this class directly. Instead, you can use the NUAbstractSimpleObjectAssociator
-    or NUAbstractAdvancedObjectAssociator
+    You should not use this class directly. Instead, you should implement this class
+    and define all protocol methods.
 */
 @implementation NUAbstractObjectsAssignation : CPViewController <CPTableViewDelegate>
 {
     @outlet CPTableView         tableView;
-    @outlet CPView              viewEmptyAssignationMask;
     @outlet CPView              viewAssignationContainer;
+    @outlet CPView              viewEmptyAssignationMask;
     @outlet CPView              viewTableViewContainer;
 
     BOOL                        _assignationButtonHidden    @accessors(property=assignationButtonHidden);
@@ -82,8 +79,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     id                          _delegate                   @accessors(property=delegate);
     int                         _displayMode                @accessors(property=displayMode);
 
-    BOOL                        _isListeningForPush;
     BOOL                        _isFetching;
+    BOOL                        _isListeningForPush;
     CPArray                     _activeTransactionsIDs;
     CPButton                    _buttonChooseAssignObjects;
     CPButton                    _buttonUnassignObjects;
@@ -106,9 +103,9 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 {
     [super viewDidLoad];
 
-    _hidesDataViewsControls = YES;
-    _currentSelectedObjects = [];
     _currentAssignedObjects = [];
+    _currentSelectedObjects = [];
+    _hidesDataViewsControls = YES;
 
     var view      = [self view],
         frameSize = [view frameSize];
@@ -220,7 +217,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     throw ("implement me");
 }
 
-/*! TODO
+/*! Override this to define the name of the attribute that holds
+    the IDs in the current parent.
 */
 - (CPString)keyPathForAssignedObjectIDs
 {
@@ -493,6 +491,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
         [[NUDataTransferController defaultDataTransferController] hideFetchingViewFromView:[self view]];
 }
 
+/*! @ignore
+*/
 - (void)_removeDeletedObject:(id)anObject
 {
     [_dataSource removeObject:anObject];
@@ -505,17 +505,23 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [self _manageEmptyAssignationMask];
 }
 
+/*! @ignore
+*/
 - (void)_updateCurrentSelection
 {
     _currentSelectedObjects = [_dataSource objectsAtIndexes:[tableView selectedRowIndexes]];
     [_buttonUnassignObjects setHidden:![_currentSelectedObjects count]];
 }
 
+/*! @ignore
+*/
 - (void)_fetchObjects:(CPArray)anArray
 {
     [self _fetchObjects:anArray fromObjects:[]];
 }
 
+/*! @ignore
+*/
 - (void)_fetchObjects:(CPArray)anArray fromObjects:(CPArray)previousArray
 {
     [self showLoading:YES];
@@ -528,17 +534,14 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
     for (var index = [anArray count] - 1 ; index >= 0; index--)
     {
-        var anID = [anArray objectAtIndex:index],
-            anObject;
+        var anID = [anArray objectAtIndex:index];
 
         if ([previousArray containsObject:anID])
             continue;
 
         [self _fetchAssignedObjectWithID:anID];
     }
-    // TODO finish previousArray
-
-    // [self showLoading:NO];
+    // TODO: Should we remove objects from previousArray that are not present in anArray ?
 }
 
 /*! @ignore
@@ -593,17 +596,15 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     if (![NURESTConnection handleResponseForConnection:aConnection postErrorMessage:YES])
         return;
 
-    // [self _updateDataViewWithAssociatedObject:anObject];
-    // [self didFetchAssignedObject:anObject];
-    // [self _sendDelegateDidAssociatorFetchAssociatedObject];
-
+    [self didFetchAssignedObject:anObject];
     [_currentAssignedObjects addObject:anObject];
-
 
     // if (!_isFetching)
     [self setDataSourceContent:_currentAssignedObjects];
 }
 
+/*! @ignore
+*/
 - (void)setDataSourceContent:(CPArray)contents
 {
     [self showLoading:NO];
@@ -613,9 +614,9 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [tableView reloadData];
 }
 
-//
-// /*! @ignore
-// */
+
+/*! @ignore
+*/
 - (void)_fetcher:(id)aFetcher ofObject:(NURESTObject)anObject didFetchContent:(CPArray)someContents
 {
     [self setDataSourceContent:someContents];
@@ -712,6 +713,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [_assignedObjectChooser showOnView:aSender forParentObject:parentObject];
 }
 
+/*! @ignore
+*/
 - (@action)removeSelectedObjects:(id)aSender
 {
     if (![_currentSelectedObjects count])
@@ -724,7 +727,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     }
 
     [_currentSelectedObjects removeAllObjects];
-    [tableView deselectAll]
+    [tableView deselectAll];
+    [self _sendDelegateDidUnassignObjects];
 }
 
 
@@ -902,76 +906,52 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
         [currentIDs addObjectsFromArray:IDsToAdd];
         [self _fetchObjects:currentIDs fromObjects:previousIDs];
-        // [self _sendDelegateDidAssociatorChangeAssociation];
-        // [self _sendDelegateDidAssociatorAddAssociation];
+        [self _sendDelegateDidAssignObjects];
     }
 
     [anObjectChooser closeModulePopover];
 }
 
 
-// #pragma mark -
-// #pragma mark Delegate
-//
-// /*! Sets the Delegates
-//
-//     - (void)didAssociatorFetchAssociatedObject:(NUAbstractObjectsAssignation)anAssociator
-//     - (void)didAssociatorChangeAssociation:(NUAbstractObjectsAssignation)anAssociator
-//     - (void)didAssociatorAddAssociation:(NUAbstractObjectsAssignation)anAssociator
-//     - (void)didAssociatorRemoveAssociation:(NUAbstractObjectsAssignation)anAssociator
-// */
-// - (void)setDelegate:(id)aDelegate
-// {
-//     if (_delegate === aDelegate)
-//         return;
-//
-//     _delegate = aDelegate;
-//     _implementedDelegateMethods = 0;
-//
-//     if ([_delegate respondsToSelector:@selector(didAssociatorFetchAssociatedObject:)])
-//         _implementedDelegateMethods |= NUAbstractObjectsAssignation_didAssociatorFetchAssociatedObject_;
-//
-//     if ([_delegate respondsToSelector:@selector(didAssociatorChangeAssociation:)])
-//         _implementedDelegateMethods |= NUAbstractObjectsAssignation_didAssociatorChangeAssociation_;
-//
-//     if ([_delegate respondsToSelector:@selector(didAssociatorAddAssociation:)])
-//         _implementedDelegateMethods |= NUAbstractObjectsAssignation_didAssociatorAddAssociation_;
-//
-//     if ([_delegate respondsToSelector:@selector(didAssociatorRemoveAssociation:)])
-//         _implementedDelegateMethods |= NUAbstractObjectsAssignation_didAssociatorRemoveAssociation_;
-// }
-//
-// /*! @ignore
-// */
-// - (void)_sendDelegateDidAssociatorFetchAssociatedObject
-// {
-//     if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didAssociatorFetchAssociatedObject_)
-//         [_delegate didAssociatorFetchAssociatedObject:self];
-// }
-//
-// /*! @ignore
-// */
-// - (void)_sendDelegateDidAssociatorChangeAssociation
-// {
-//     if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didAssociatorChangeAssociation_)
-//         [_delegate didAssociatorChangeAssociation:self];
-// }
-//
-// /*! @ignore
-// */
-// - (void)_sendDelegateDidAssociatorAddAssociation
-// {
-//     if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didAssociatorAddAssociation_)
-//         [_delegate didAssociatorAddAssociation:self];
-// }
-//
-// /*! @ignore
-// */
-// - (void)_sendDelegateDidAssociatorRemoveAssociation
-// {
-//     if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didAssociatorRemoveAssociation_)
-//         [_delegate didAssociatorRemoveAssociation:self];
-// }
+#pragma mark -
+#pragma mark Delegate
+
+/*! Sets the Delegates
+
+    - (void)didAssignObjects:(NUAbstractObjectsAssignation)anAssignation
+    - (void)didUnassignObjects:(NUAbstractObjectsAssignation)anAssignation
+*/
+- (void)setDelegate:(id)aDelegate
+{
+    if (_delegate === aDelegate)
+        return;
+
+    _delegate = aDelegate;
+    _implementedDelegateMethods = 0;
+
+    if ([_delegate respondsToSelector:@selector(didAssignObjects:)])
+        _implementedDelegateMethods |= NUAbstractObjectsAssignation_didAssignObjects_;
+
+    if ([_delegate respondsToSelector:@selector(didUnassignObjects:)])
+        _implementedDelegateMethods |= NUAbstractObjectsAssignation_didUnassignObjects_;
+
+}
+
+/*! @ignore
+*/
+- (void)_sendDelegateDidAssignObjects
+{
+    if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didAssignObjects_)
+        [_delegate didAssignObjects:self];
+}
+
+/*! @ignore
+*/
+- (void)_sendDelegateDidUnassignObjects
+{
+    if (_implementedDelegateMethods & NUAbstractObjectsAssignation_didUnassignObjects_)
+        [_delegate didUnassignObjects:self];
+}
 
 
 #pragma mark -
@@ -1015,6 +995,5 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
     return view;
 }
-
 
 @end
