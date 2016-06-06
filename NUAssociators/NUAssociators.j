@@ -27,4 +27,5 @@
 
 @import "NUAbstractAdvancedObjectAssociator.j"
 @import "NUAbstractObjectAssociator.j"
+@import "NUAbstractObjectsAssignation.j"
 @import "NUAbstractSimpleObjectAssociator.j"
