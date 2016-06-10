@@ -288,10 +288,14 @@
 */
 - (void)overlayTextFieldDidHide:(NUOverlayTextField)anOverlayTextField
 {
-    var currentValidation = [_currentContext currentValidation];
+    var currentValidation = [_currentContext currentValidation],
+        context           = [self currentContext];
 
     if (currentValidation)
         [currentValidation removeErrorForProperty:@"serverError"];
+
+    if (context)
+        [context setSavingEnabled:YES];
 }
 
 @end
