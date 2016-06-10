@@ -36,7 +36,7 @@ color_print = function(message, color)
 
 exit = function (message, code)
 {
-    color_print("FATAL ERROR: unable to run flatten correctly.", "red");
+    color_print("FATAL ERROR: " + message, "red");
     OS.exit(code || 1);
 }
 
@@ -49,7 +49,7 @@ press_app = function(project_name)
     if (OS.system(["press", "-f", FILE.join("Build", "Release", project_name), FILE.join("Build", "Deployment", project_name + ".pressed")]))
         exit("unable to run press correctly.");
 
-    color_print("SUCCESS: Application successfuly pressed", "green");
+    color_print("SUCCESS: Application successfully pressed", "green");
 }
 
 flatten_app = function(project_name, additional_frameworks)
@@ -98,7 +98,7 @@ flatten_app = function(project_name, additional_frameworks)
     if (OS.system(flatten_command))
         exit("unable to run flatten correctly.");
 
-    color_print("SUCCESS: Application successfuly flattened", "green");
+    color_print("SUCCESS: Application successfully flattened", "green");
 }
 
 cleanup_app = function(project_name, additional_frameworks)
@@ -112,7 +112,7 @@ cleanup_app = function(project_name, additional_frameworks)
     OS.system("rm -f " + FILE.join(application_path, "Resources", "*.png"));
     OS.system("rm -f " + FILE.join(application_path, "Resources", "*.jpg"));
     OS.system("rm -f " + FILE.join(application_path, "Resources", "*.gif"));
-    color_print("SUCCESS: Application successfuly cleaned up", "green");
+    color_print("SUCCESS: Application successfully cleaned up", "green");
 
     color_print("* Cleaning Frameworks", "blue");
     var frameworks_path = FILE.join(application_path, "Frameworks");
@@ -133,7 +133,7 @@ cleanup_app = function(project_name, additional_frameworks)
             OS.system("rm -rf " + FILE.join(frameworks_path, framework_name, "Resources", "*.blend"));
     }
 
-    color_print("SUCCESS: Frameworks successfuly cleaned up", "green");
+    color_print("SUCCESS: Frameworks successfully cleaned up", "green");
 }
 
 compress_app = function(project_name)
@@ -146,7 +146,7 @@ compress_app = function(project_name)
      if (OS.system(compressor_command + " && " + "mv '" + application_js + ".compiled' '" + application_js + "'"))
          exit("unable to run flatten correctly.");
 
-    color_print("SUCCESS: Application successfuly compressed", "green");
+    color_print("SUCCESS: Application successfully compressed", "green");
 }
 
 print_result = function(configuration)
