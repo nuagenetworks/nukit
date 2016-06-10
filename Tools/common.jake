@@ -141,7 +141,7 @@ compress_app = function(project_name)
     color_print("* Compressing the application with yui compressor...", "blue");
 
     var application_js     = FILE.join("Build", "Deployment", project_name + ".ready", "Application.js"),
-        compressor_command = "java -Xmx512M -jar Libraries/NUKit/Tools/yuicompressor-2.4.8.jar --type js --charset UTF-8 '" + application_js +  "' > '" +  application_js + ".compiled'";
+        compressor_command = "java -Xmx1g -jar Libraries/NUKit/Tools/yuicompressor-2.4.8.jar --type js --charset UTF-8 '" + application_js +  "' > '" +  application_js + ".compiled'";
 
      if (OS.system(compressor_command + " && " + "mv '" + application_js + ".compiled' '" + application_js + "'"))
          exit("unable to run flatten correctly.");
