@@ -388,10 +388,12 @@ function _positiveNumber(string, canBeNull, canBeZero)
     var success;
 
     if (canBeZero)
+    {
         success = !_number(string) && parseInt(string) >= 0;
-    else
-        success = !_number(string) && parseInt(string) > 0;
+        return success ? null : "Not a valid number";
+    }
 
+    success = !_number(string) && parseInt(string) > 0;
     return success ? null : "Not a valid positive number";
 }
 
