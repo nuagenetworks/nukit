@@ -329,6 +329,9 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
         [self _fetchObjects:[_currentParent valueForKeyPath:[self keyPathForAssignedObjectIDs]]];
         [_buttonUnassignObjects setHidden:YES];
     }
+    else
+        [self _reset];
+
 
     [self didSetCurrentParent:_currentParent];
 }
@@ -505,6 +508,26 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [self _manageEmptyAssignationMask];
 }
 
+- (void)_removeObjectWithID:(CPString)anID
+{
+    var predicate       = [CPPredicate predicateWithFormat:@"ID = = %@", anID],
+        filteredObjects = [_currentAssignedObjects filteredArrayUsingPredicate:predicate];
+
+    if (![filteredObjects count])
+        return;
+
+    [_currentAssignedObjects removeObject:[filteredObjects first]];
+    [_currentSelectedObjects removeObject:[filteredObjects first]];
+    [tableView reloadData];
+    [self _manageEmptyAssignationMask];
+}
+
+- (void)_reset
+{
+    [_currentAssignedObjects removeAllObjects];
+    [_currentSelectedObjects removeAllObjects];
+}
+
 /*! @ignore
 */
 - (void)_updateCurrentSelection
@@ -528,6 +551,7 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
     if (!anArray || ![anArray count])
     {
+        [self _reset];
         [self setDataSourceContent:_currentAssignedObjects];
         return;
     }
@@ -542,6 +566,16 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
         [self _fetchAssignedObjectWithID:anID];
     }
     // TODO: Should we remove objects from previousArray that are not present in anArray ?
+
+    for (var index = [previousArray count] - 1 ; index >= 0; index--)
+    {
+        var anID = [previousArray objectAtIndex:index];
+
+        if ([anArray containsObject:anID])
+            continue;
+
+        [self _removeObjectWithID:anID];
+    }
 }
 
 /*! @ignore
