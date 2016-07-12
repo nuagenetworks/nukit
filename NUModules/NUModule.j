@@ -602,6 +602,7 @@ NUModuleTabViewModeIcon                = 2;
         {
             [self showModuleEditor:_stickyEditor];
             [editorController setParentModule:self];
+            [editorController setDelegate:self];
             [viewEditorContainer setBackgroundColor:[[[NUKit kit] moduleColorConfiguration] objectForKey:@"editor-container-view-background"]];
 
             if (splitViewEditor)
