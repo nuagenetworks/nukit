@@ -69,7 +69,12 @@
 
 - (void)_cacheColoredControls
 {
-    var subviews = [self subviews];
+    [self _cacheColoredControlsForView:self];
+}
+
+- (void)_cacheColoredControlsForView:(CPView)aView
+{
+    var subviews = [aView subviews];
 
     for (var i = [subviews count] - 1; i >= 0; i--)
     {
