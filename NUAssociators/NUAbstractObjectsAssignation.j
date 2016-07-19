@@ -181,7 +181,10 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
     // View empty mask
     if (viewEmptyAssignationMask)
+    {
         [viewEmptyAssignationMask setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+        [viewEmptyAssignationMask setBackgroundColor:NUSkinColorWhite];
+    }
 
     // Field that displays the a textual mode
     _fieldAssignedObjectText = [CPTextField labelWithTitle:@""];
@@ -505,7 +508,7 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
         [currentIDs removeObject:[anObject ID]];
 
     [tableView reloadData];
-    [self _manageEmptyAssignationMask];
+    [self shouldShowEmptyMask:![currentIDs count]];
 }
 
 - (void)_removeObjectWithID:(CPString)anID
@@ -519,7 +522,7 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [_currentAssignedObjects removeObject:[filteredObjects first]];
     [_currentSelectedObjects removeObject:[filteredObjects first]];
     [tableView reloadData];
-    [self _manageEmptyAssignationMask];
+    [self shouldShowEmptyMask:![_currentAssignedObjects count]];
 }
 
 - (void)_reset
@@ -642,7 +645,7 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 - (void)setDataSourceContent:(CPArray)contents
 {
     [self showLoading:NO];
-    [self _manageEmptyAssignationMask];
+    [self shouldShowEmptyMask:![contents count]];
 
     [_dataSource setContent:contents];
     [tableView reloadData];
@@ -656,12 +659,12 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
     [self setDataSourceContent:someContents];
 }
 
-- (void)_manageEmptyAssignationMask
+- (void)shouldShowEmptyMask:(BOOL)shouldShow
 {
     if (!viewEmptyAssignationMask)
         return;
 
-    if (![_currentAssignedObjects count])
+    if (shouldShow)
     {
         if (![viewEmptyAssignationMask superview])
             [tableView addSubview:viewEmptyAssignationMask];
