@@ -175,3 +175,49 @@ function lastIPInNetwork(network)
         return nil;
     }
 }
+
+function _randomIPv6FromBase(base)
+{
+    var digit2 = Math.floor(Math.random() * 65535).toString(16);
+        digit3 = Math.floor(Math.random() * 65535).toString(16);
+        digit4 = Math.floor(Math.random() * 65535).toString(16);
+        digit5 = Math.floor(Math.random() * 65535).toString(16);
+        digit6 = Math.floor(Math.random() * 65535).toString(16);
+        digit7 = Math.floor(Math.random() * 65535).toString(16);
+
+    return base + @":" + digit2 + @":" + digit3 + @":" + digit4 + @":" + digit5 + @":" + digit6 + @":" + digit7 + @":0/64";
+}
+
+function firstValidIPv6From(existingCIDRs)
+{
+    if (!existingCIDRs || existingCIDRs.length == 0)
+        return _randomIPv6FromBase(2001);
+
+    var candidateCIDR,
+        tryNumber = 0,
+        base = 2001;
+
+    while (tryNumber < 1000) // set a very hard limit just in case
+    {
+        candidateCIDR = _randomIPv6FromBase(base);
+
+        if (!_isNetworkOverlapsAny(existingCIDRs, candidateCIDR))
+            break;
+
+        tryNumber++;
+
+        if (tryNumber == 30)
+            base = 0000;
+
+        if (tryNumber == 60)
+            base = Math.floor(Math.random() * 65535).toString(16);
+    }
+
+    return candidateCIDR;
+}
+
+function firstIPv6InNetwork(network)
+{
+    var index = network.lastIndexOf(":");
+    return network.substring(0, index) + ":1";
+}
