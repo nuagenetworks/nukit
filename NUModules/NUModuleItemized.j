@@ -230,6 +230,8 @@
 
     if (_lastExpandedRootModule)
         [tableViewItems expandItem:[self _moduleItemForModule:_lastExpandedRootModule]];
+    else
+        [tableViewItems expandItem:[content firstObject]];
 }
 
 /*! @ignore
