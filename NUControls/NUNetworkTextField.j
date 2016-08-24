@@ -42,8 +42,8 @@
 
 var CPZeroKeyCode = 48,
     CPNineKeyCode = 57,
-    CPAKeyCode = 97,
-    CPFKeyCode = 102,
+    CPAKeyCode    = 97,
+    CPFKeyCode    = 102,
     SELECTING_COLOR;
 
 NUNetworkIPV4Mode = 0;
@@ -376,10 +376,32 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
     var ips = (_mode === NUNetworkIPV6Mode) ? anObjectValue.split(@":") : anObjectValue.split(@"."),
         numberDigits = [ips count];
 
-    if (_mode === NUNetworkIPV6Mode && numberDigits != 8)
+    if (_mode === NUNetworkIPV6Mode)
     {
-        [self _errorMessage:[CPString stringWithFormat:"ERROR: Invalid ip format IPV6: %@", anObjectValue]];
-        return [];
+        var count = (anObjectValue.match(/\:{2,}/g) || []).length;
+
+        // an IPv6 with more than one '::' is invalid
+        if (numberDigits == 8 && count < 2)
+            return ips;
+
+        var doubleSeparator     = _separatorValue + _separatorValue,
+            replacementString   = doubleSeparator,
+            index               = anObjectValue.indexOf(doubleSeparator),
+            nbMissingDigits     = 8 - numberDigits,
+            newObjectValue;
+
+        if (index < 0 || count > 1)
+        {
+            [self _errorMessage:[CPString stringWithFormat:"ERROR: Invalid ip format IPV6: %@", anObjectValue]];
+            return [];
+        }
+
+        for (var i = 0; i < nbMissingDigits; i++)
+            replacementString += _separatorValue;
+
+        // Replace '::'' by '::::' if necessary and compute ips
+        newObjectValue = anObjectValue.replace(doubleSeparator, replacementString);
+        ips = newObjectValue.split(_separatorValue);
     }
 
     if (_mode === NUNetworkIPV4Mode && numberDigits != 4)
@@ -591,6 +613,7 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
             if (numberDigits && [self _checkValueWithRegex])
             {
                 _IPDigits = ips;
+                var newObjectValue = @"";
 
                 for (var i = 0; i < numberDigits; i++)
                 {
@@ -601,6 +624,20 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
                     {
                         [self setObjectValue:_internObjectValue];
                         return;
+                    }
+
+                    // In case of IPv6, replace ':::::' by '::'
+                    if (_mode == NUNetworkIPV6Mode)
+                    {
+                        var isLastIndex     = i == numberDigits - 1,
+                            doubleSeparator = _separatorValue + _separatorValue,
+                            nextSeparator       = isLastIndex ? "" : _separatorValue;
+
+                        if (digit != "" || !newObjectValue.endsWith(doubleSeparator))
+                            newObjectValue += digit + nextSeparator;
+
+                        if (isLastIndex)
+                            anObjectValue = newObjectValue;
                     }
                 }
             }

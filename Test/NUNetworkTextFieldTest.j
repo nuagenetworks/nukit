@@ -164,11 +164,15 @@
 {
     [_networkTextField setMode:NUNetworkIPV6Mode];
 
-    [_networkTextField setStringValue:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001/120"];
-    [self assert:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
-
+    // Valid cases
     [_networkTextField setStringValue:nil];
     [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""];
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001/120"];
+    [self assert:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
 
     [_networkTextField setStringValue:@"2001:db8:0000:85a3:0000:0000:ac1f:8001/120"];
     [self assert:@"2001:db8:0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
@@ -176,40 +180,51 @@
     [_networkTextField setStringValue:@"2001:0:0000:85a3:0000:0000:ac1f:8001/120"];
     [self assert:@"2001:0:0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@""];
-    [self assert:@"" equals:[_networkTextField stringValue]];
-
     [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/120"];
     [self assert:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
-
-    [_networkTextField setStringValue:@""];
-    [self assert:@"" equals:[_networkTextField stringValue]];
-
-    [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/129"];
-    [self assert:@"" equals:[_networkTextField stringValue]];
-
-    [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001"];
-    [self assert:@"" equals:[_networkTextField stringValue]];
 
     [_networkTextField setStringValue:@"2001::0000:85a3:0000:0000:ac1f:8001/120"];
     [self assert:@"2001::0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@""];
+    [_networkTextField setStringValue:@"2001::8001/120"];
+    [self assert:@"2001::8001/120" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"2001:0:0000:85a3:1:0000:0000:ac1f:8001/120"];
+    [_networkTextField setStringValue:@"2001:::::::8001/120"];
+    [self assert:@"2001::8001/120" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"2001:::85a3::0000:ac1f:8001/120"];
-    [self assert:@"2001:::85a3::0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
+    [_networkTextField setStringValue:@"2001:0:0:0:0:0:0:8001/120"];
+    [self assert:@"2001:0:0:0:0:0:0:8001/120" equals:[_networkTextField stringValue]];
 
     [_networkTextField setStringValue:@":::::::/"];
-    [self assert:@":::::::/" equals:[_networkTextField stringValue]];
+    [self assert:@"::/" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@""];
+    [_networkTextField setStringValue:@":::::/"];
+    [self assert:@"::/" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"::/"];
+    [self assert:@"::/" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"::::::::/"];
+    // Invalid cases
+    [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001"]; // no netmask
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"2001:0:0000:85a3:1:0000:0000:ac1f:8001/120"]; // too many blocks
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"2001:::85a3::0000:ac1f:8001/120"]; // too many ::
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    // Failure
+    [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/129"]; // netmask > 128
     [self assert:@"" equals:[_networkTextField stringValue]];
 }
 
@@ -218,11 +233,15 @@
     [_networkTextField setMode:NUNetworkIPV6Mode];
     [_networkTextField setMask:NO];
 
-    [_networkTextField setStringValue:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001"];
-    [self assert:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001" equals:[_networkTextField stringValue]];
-
+    // Valid cases
     [_networkTextField setStringValue:nil];
     [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:""];
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001"];
+    [self assert:@"2001:0db8:0000:85a3:0000:0000:ac1f:8001" equals:[_networkTextField stringValue]];
 
     [_networkTextField setStringValue:@"2001:db8:0000:85a3:0000:0000:ac1f:8001"];
     [self assert:@"2001:db8:0000:85a3:0000:0000:ac1f:8001" equals:[_networkTextField stringValue]];
@@ -230,35 +249,46 @@
     [_networkTextField setStringValue:@"2001:0:0000:85a3:0000:0000:ac1f:8001"];
     [self assert:@"2001:0:0000:85a3:0000:0000:ac1f:8001" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@""];
-    [self assert:@"" equals:[_networkTextField stringValue]];
-
     [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001"];
     [self assert:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001" equals:[_networkTextField stringValue]];
-
-    [_networkTextField setStringValue:@""];
-    [self assert:@"" equals:[_networkTextField stringValue]];
 
     [_networkTextField setStringValue:@"2001::0000:85a3:0000:0000:ac1f:8001"];
     [self assert:@"2001::0000:85a3:0000:0000:ac1f:8001" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@""];
+    [_networkTextField setStringValue:@"2001::8001"];
+    [self assert:@"2001::8001" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"2001:0:0000:85a3:1:0000:0000:ac1f:8001"];
+    [_networkTextField setStringValue:@"2001:::::::8001"];
+    [self assert:@"2001::8001" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"2001:::85a3::0000:ac1f:8001"];
-    [self assert:@"2001:::85a3::0000:ac1f:8001" equals:[_networkTextField stringValue]];
+    [_networkTextField setStringValue:@"2001:0:0:0:0:0:0:8001"];
+    [self assert:@"2001:0:0:0:0:0:0:8001" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@":::::::"];
-    [self assert:@":::::::" equals:[_networkTextField stringValue]];
-
-    [_networkTextField setStringValue:@""];
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
 
-    [_networkTextField setStringValue:@"::::::::"];
+    [_networkTextField setStringValue:@"::"];
+    [self assert:@"::" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@":::"];
+    [self assert:@"::" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@""]; // Reset case
     [self assert:@"" equals:[_networkTextField stringValue]];
+
+    // Invalid cases
+    [_networkTextField setStringValue:@"2001:::85a3::0000:ac1f:8001"]; // too many ::
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
+    [_networkTextField setStringValue:@"2001:0:0000:85a3:1:0000:0000:ac1f:8001"]; // too many blocks
+    [self assert:@"" equals:[_networkTextField stringValue]];
+
 }
 
 - (void)testSetStringValueWithNoMask_IPV4
