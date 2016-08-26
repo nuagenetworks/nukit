@@ -180,6 +180,9 @@
     [_networkTextField setStringValue:@"2001:0:0000:85a3:0000:0000:ac1f:8001/120"];
     [self assert:@"2001:0:0000:85a3:0000:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
 
+    [_networkTextField setStringValue:@"::0:a:b:c:d:e:f/64"];
+    [self assert:@"::0:a:b:c:d:e:f/64" equals:[_networkTextField stringValue]];
+
     [_networkTextField setStringValue:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/120"];
     [self assert:@"2001:ffff:0000:85a3:9999:0000:ac1f:8001/120" equals:[_networkTextField stringValue]];
 

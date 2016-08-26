@@ -396,6 +396,12 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
             return [];
         }
 
+        if (index == 0 && nbMissingDigits < 0)
+        {
+            ips.shift();
+            return ips;
+        }
+
         for (var i = 0; i < nbMissingDigits; i++)
             replacementString += _separatorValue;
 
@@ -631,13 +637,19 @@ var NUNextFirstResponderNotification = "_NUNextFirstResponderNotification";
                     {
                         var isLastIndex     = i == numberDigits - 1,
                             doubleSeparator = _separatorValue + _separatorValue,
-                            nextSeparator       = isLastIndex ? "" : _separatorValue;
+                            nextSeparator   = isLastIndex ? "" : _separatorValue;
 
                         if (digit != "" || !newObjectValue.endsWith(doubleSeparator))
                             newObjectValue += digit + nextSeparator;
 
                         if (isLastIndex)
+                        {
+                            if (newObjectValue.startsWith(_separatorValue) && !newObjectValue.startsWith(doubleSeparator) && numberDigits == 8) //  '::0:a:b:c:d:e:f/64' case
+                                newObjectValue = _separatorValue + newObjectValue;
+
                             anObjectValue = newObjectValue;
+                        }
+
                     }
                 }
             }
