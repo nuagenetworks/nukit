@@ -323,6 +323,7 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
     _currentParent = aParent;
 
+    [self _reset];
     [self setModified:NO];
 
     if (_currentParent)
@@ -332,8 +333,6 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
         [self _fetchObjects:[_currentParent valueForKeyPath:[self keyPathForAssignedObjectIDs]]];
         [_buttonUnassignObjects setHidden:YES];
     }
-    else
-        [self _reset];
 
 
     [self didSetCurrentParent:_currentParent];
@@ -502,10 +501,14 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 - (void)_removeDeletedObject:(id)anObject
 {
     [_dataSource removeObject:anObject];
-    var currentIDs = [_currentParent valueForKeyPath:[self keyPathForAssignedObjectIDs]];
+
+    var keyPath    = [self keyPathForAssignedObjectIDs],
+        currentIDs = [[_currentParent valueForKeyPath:keyPath] copy];
 
     if ([currentIDs containsObject:[anObject ID]])
         [currentIDs removeObject:[anObject ID]];
+
+    [_currentParent performSelector:CPSelectorFromString("set" + keyPath.charAt(0).toUpperCase() + keyPath.substring(1) + ":") withObjects:currentIDs];
 
     [tableView reloadData];
     [self shouldShowEmptyMask:![currentIDs count]];
@@ -579,6 +582,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 
         [self _removeObjectWithID:anID];
     }
+
+    [self showLoading:NO];
 }
 
 /*! @ignore
@@ -934,7 +939,8 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
 {
     if ([selectedObjects count])
     {
-        var currentIDs  = [_currentParent valueForKeyPath:[self keyPathForAssignedObjectIDs]],
+        var keyPath     = [self keyPathForAssignedObjectIDs],
+            currentIDs  = [[_currentParent valueForKeyPath:keyPath] copy],
             previousIDs = [currentIDs copy],
             IDsToAdd    = [];
 
@@ -942,7 +948,9 @@ NUObjectsAssignationSettingsFetcherKeyPathKey = @"NUObjectsAssignationSettingsFe
             [IDsToAdd addObject:[[selectedObjects objectAtIndex:index] ID]];
 
         [currentIDs addObjectsFromArray:IDsToAdd];
-        [self _fetchObjects:currentIDs fromObjects:previousIDs];
+        [_currentParent performSelector:CPSelectorFromString("set" + keyPath.charAt(0).toUpperCase() + keyPath.substring(1) + ":") withObjects:currentIDs];
+
+        // [self _fetchObjects:currentIDs fromObjects:previousIDs];
         [self _sendDelegateDidAssignObjects];
     }
 
