@@ -200,6 +200,8 @@ var NUMainWindowControllerDefault,
     if (_visiblePrincipalModule)
         [self _hideCurrentPrincipalModule];
 
+    [_coreModule closeAllPopovers];
+    
     [[aModule view] setFrame:[viewMainContainer bounds]];
     [viewMainContainer addSubview:[aModule view]];
     _visiblePrincipalModule = aModule;
