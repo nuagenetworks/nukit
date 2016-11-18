@@ -400,5 +400,5 @@ def perform_build(additional_libraries=[], additional_themes=[], war_name="ui"):
     if options.everything or options.all or options.project:
         build_project(build_version=options.buildversion)
 
-    if options.everything or options.all or options.generatewar:
+    if options.generatewar:
         build_war(name=war_name)
