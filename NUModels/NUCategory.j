@@ -33,7 +33,7 @@
     BOOL        _dataSourceFilterShouldIgnore   @accessors(getter=dataSourceFilterShouldIgnore);
     CPArray     _children                       @accessors(property=children);
     CPString    _name                           @accessors(property=name);
-    CPString    _contextName                    @accessors(property=contexts);
+    CPString    _contextIdentifier              @accessors(property=contextIdentifier);
     id          _filter                         @accessors(property=filter);
 }
 
@@ -42,10 +42,10 @@
     return [[NUCategory alloc] initWithName:aName];
 }
 
-+ (id)categoryWithName:(CPString)aName contextName:(CPString)aContext filter:(id)aFilter
++ (id)categoryWithName:(CPString)aName contextIdentifier:(CPString)aContext filter:(id)aFilter
 {
     return [[NUCategory alloc] initWithName:aName
-                                contextName:aContext
+                          contextIdentifier:aContext
                                      filter:aFilter];
 }
 
@@ -61,10 +61,10 @@
     return self;
 }
 
-- (id)initWithName:(CPString)aName contextName:(CPString)aContext filter:(id)aFilter
+- (id)initWithName:(CPString)aName contextIdentifier:(CPString)aContext filter:(id)aFilter
 {
     [self initWithName:aName]
-    _contextName = aContext;
+    _contextIdentifier = aContext;
     _filter = aFilter;
     return self;
 }
