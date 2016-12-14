@@ -1180,6 +1180,33 @@ NUModuleTabViewModeIcon                = 2;
 
 /*! @ignore
 */
+- (CPPredicate)_categoryFilterWithFetcher:(NURESTFetcher)aFetcher
+{
+    var userPredicate = [self filter],
+        filter = userPredicate;
+
+    var categoryFilter = [_categories[_latestCategoryLoadedIndex] filter];
+    if (categoryFilter)
+    {
+        if (!userPredicate)
+            return categoryFilter;
+
+        // try to make a predicate from the given filter
+        if (![userPredicate isKindOfClass:CPPredicate])
+            userPredicate = [CPPredicate predicateWithFormat:userPredicate];
+        // if it didn't work, create full text search predicate
+        if (!userPredicate)
+            userPredicate = [[aFetcher newManagedObject] fullTextSearchPredicate:filter];
+
+        filter = [[CPCompoundPredicate alloc] initWithType:CPAndPredicateType
+                                             subpredicates:[userPredicate, categoryFilter]];
+    }
+
+    return filter;
+}
+
+/*! @ignore
+*/
 - (void)_loadPage:(CPNumber)aPage usingFetcher:(NURESTFetcher)aFetcher
 {
     if (aPage === nil)
@@ -1195,7 +1222,13 @@ NUModuleTabViewModeIcon                = 2;
 
     CPLog.debug("PAGINATION: Loading page #%@ using fetcher %@", aPage, aFetcher);
 
-    var ID = [aFetcher fetchWithMatchingFilter:[self filter]
+    var filter;
+    if ([_categories count])
+        filter = [self _categoryFilterWithFetcher:aFetcher]
+    else
+        filter = [self filter]
+
+    var ID = [aFetcher fetchWithMatchingFilter:filter
                                   masterFilter:[self masterFilter]
                                      orderedBy:[self masterOrdering]
                                      groupedBy:[self masterGrouping]

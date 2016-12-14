@@ -34,7 +34,7 @@
     CPArray     _children                       @accessors(property=children);
     CPString    _name                           @accessors(property=name);
     CPString    _contextIdentifier              @accessors(property=contextIdentifier);
-    id          _filter                         @accessors(property=filter);
+    CPPredicate _filter                         @accessors(property=filter);
 }
 
 + (id)categoryWithName:(CPString)aName
