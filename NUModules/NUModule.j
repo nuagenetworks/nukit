@@ -135,6 +135,7 @@ NUModuleTabViewModeIcon                = 2;
     CPDictionary                    _dataViews                              @accessors(property=dataViews);
     CPNumber                        _autoResizeSplitViewSize                @accessors(property=autoResizeSplitViewSize);
     CPNumber                        _latestPageLoaded                       @accessors(property=latestPageLoaded);
+    CPNumber                        _latestCategoryLoadedIndex              @accessors(property=latestCategoryLoadedIndex)
     CPNumber                        _multipleSelectionMaskingViewTrigger    @accessors(property=multipleSelectionMaskingViewTrigger);
     CPNumber                        _totalNumberOfEntities                  @accessors(property=totalNumberOfEntities);
     CPPredicate                     _masterFilter                           @accessors(property=masterFilter);
@@ -336,6 +337,7 @@ NUModuleTabViewModeIcon                = 2;
     _isListeningForEditorSelectionChangeNotification    = NO;
     _isObservingScrollViewBounds                        = NO;
     _latestPageLoaded                                   = -1;
+    _latestCategoryLoadedIndex                          = -1;
     _masterGrouping                                     = nil;
     _masterOrdering                                     = nil;
     _modulePopoverBaseSize                              = [[self view] frameSize];
@@ -1140,7 +1142,13 @@ NUModuleTabViewModeIcon                = 2;
     if (!_isProcessingPush)
         [self showLoading];
 
-    if ([[self class] automaticContextManagement])
+    if (_usesPagination && [_categories count])
+    {
+        _latestCategoryLoadedIndex = 0;
+        var context = [_contextRegistry valueForKey:[_categories[0] contextIdentifier]];
+        [self _reloadUsingContext:context];
+    }
+    else if ([[self class] automaticContextManagement])
     {
         var contexts = [self moduleCurrentActiveContexts];
 
@@ -1235,11 +1243,33 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)_loadNextPage
 {
-    // CS 01/11/2016: For now, we don't deal with pagination when using categories...
-    // Meaning that if we deal with pagination, we have only one context!
-    var contexts       = [self moduleCurrentActiveContexts],
-        fetcherKeyPath = [[contexts firstObject] fetcherKeyPath],
-        fetcher        = [_currentParent valueForKeyPath:fetcherKeyPath];
+    var fetcher;
+
+    if ([_categories count])
+    {
+        if (_maxPossiblePage != -1 && _latestPageLoaded >= _maxPossiblePage)
+        {
+            _latestCategoryLoadedIndex++;
+            _maxPossiblePage = -1;
+            _latestPageLoaded = -1;
+        }
+
+        if (_latestCategoryLoadedIndex >= [_categories count])
+            return;
+
+        var category       = _categories[_latestCategoryLoadedIndex],
+            context        = [_contextRegistry valueForKey:[category contextIdentifier]],
+            fetcherKeyPath = [context fetcherKeyPath];
+
+        fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
+    }
+    else
+    {
+        var contexts       = [self moduleCurrentActiveContexts],
+            fetcherKeyPath = [[contexts firstObject] fetcherKeyPath];
+
+        fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
+    }
 
     if (fetcher)
         [self _loadNextPageUsingFetcher:fetcher];
@@ -1298,9 +1328,20 @@ NUModuleTabViewModeIcon                = 2;
     if (_latestPageLoaded == -1)
         return;
 
-    _maxPossiblePage    = MAX(Math.ceil(_totalNumberOfEntities / NUModuleRESTPageSize) - 1, 0);
-    _latestPageLoaded   = MAX(Math.ceil([_dataSource count] / NUModuleRESTPageSize) - 1, 0);
+    if ([_categories count])
+    {
+        var category       = _categories[_latestCategoryLoadedIndex],
+            context        = [_contextRegistry valueForKey:[category contextIdentifier]],
+            fetcher        = [_currentParent valueForKeyPath:[context fetcherKeyPath]];
 
+        _maxPossiblePage    = MAX(Math.ceil([fetcher currentTotalCount] / NUModuleRESTPageSize) - 1, 0);
+        _latestPageLoaded   = MAX(Math.ceil([[fetcher array] count] / NUModuleRESTPageSize) - 1, 0);
+    }
+    else
+    {
+        _maxPossiblePage    = MAX(Math.ceil(_totalNumberOfEntities / NUModuleRESTPageSize) - 1, 0);
+        _latestPageLoaded   = MAX(Math.ceil([_dataSource count] / NUModuleRESTPageSize) - 1, 0);
+    }
     CPLog.debug("PAGINATION: Synchronized pagination is now %@/%@ (objects: %@/%@)", _latestPageLoaded, _maxPossiblePage, [_dataSource count], _totalNumberOfEntities);
 }
 
@@ -3339,7 +3380,16 @@ NUModuleTabViewModeIcon                = 2;
     _categories = someCategories;
     [self didChangeValueForKey:@"categories"];
 
-    _usesPagination = ![_categories count];
+    // Use pagination only if all categories specify a context
+    _usesPagination = YES;
+    for (var i = 0; i < [_categories count]; i++)
+    {
+        if (![_categories[i] contextIdentifier])
+        {
+            _usesPagination = NO;
+            break;
+        }
+    }
 }
 
 /*! @ignore
@@ -3862,7 +3912,7 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
 {
-    if (_latestPageLoaded >= _maxPossiblePage)
+    if (_latestPageLoaded >= _maxPossiblePage && _latestCategoryLoadedIndex > [_categories count])
         return;
 
     var scrollPosition = CGRectGetMaxY([object bounds]);
