@@ -3470,13 +3470,22 @@ NUModuleTabViewModeIcon                = 2;
     {
         var categorizedContent = [_categories copy];
 
-        for (var i = [someContents count] - 1; i >= 0; i--)
+        // When using pagination, add the results to the current category
+        if (_usesPagination)
         {
-            var object = someContents[i],
-                currentCategory = [self categoryForObject:object];
+            var currentCategory = _categories[_latestCategoryLoadedIndex];
+            [[currentCategory children] addObjectsFromArray:someContents];
+        }
+        else
+        {
+            for (var i = [someContents count] - 1; i >= 0; i--)
+            {
+                var object = someContents[i],
+                    currentCategory = [self categoryForObject:object];
 
-            if (currentCategory && ![[currentCategory children] containsObject:object])
-                [[currentCategory children] addObject:object];
+                if (currentCategory && ![[currentCategory children] containsObject:object])
+                    [[currentCategory children] addObject:object];
+            }
         }
 
         [self setDataSourceContent:categorizedContent];
