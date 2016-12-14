@@ -33,11 +33,20 @@
     BOOL        _dataSourceFilterShouldIgnore   @accessors(getter=dataSourceFilterShouldIgnore);
     CPArray     _children                       @accessors(property=children);
     CPString    _name                           @accessors(property=name);
+    CPString    _contextName                    @accessors(property=contexts);
+    id          _filter                         @accessors(property=filter);
 }
 
 + (id)categoryWithName:(CPString)aName
 {
     return [[NUCategory alloc] initWithName:aName];
+}
+
++ (id)categoryWithName:(CPString)aName contextName:(CPString)aContext filter:(id)aFilter
+{
+    return [[NUCategory alloc] initWithName:aName
+                                contextName:aContext
+                                     filter:aFilter];
 }
 
 - (id)initWithName:(CPString)aName
@@ -49,6 +58,14 @@
         _dataSourceFilterShouldIgnore = YES;
     }
 
+    return self;
+}
+
+- (id)initWithName:(CPString)aName contextName:(CPString)aContext filter:(id)aFilter
+{
+    [self initWithName:aName]
+    _contextName = aContext;
+    _filter = aFilter;
     return self;
 }
 
