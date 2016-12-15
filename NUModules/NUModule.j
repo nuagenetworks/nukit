@@ -1295,6 +1295,10 @@ NUModuleTabViewModeIcon                = 2;
             fetcherKeyPath = [context fetcherKeyPath];
 
         fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
+
+        // when switching category flush the fetcher in case it was used in a previous category
+        if (_maxPossiblePage == -1 && _latestPageLoaded == -1)
+            [fetcher flush];
     }
     else
     {
