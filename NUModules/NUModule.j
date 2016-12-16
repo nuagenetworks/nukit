@@ -1180,29 +1180,32 @@ NUModuleTabViewModeIcon                = 2;
 
 /*! @ignore
 */
-- (CPPredicate)_categoryFilterWithFetcher:(NURESTFetcher)aFetcher
+- (id)_currentPaginationFilterForFetcher:(NURESTFetcher)aFetcher
 {
-    var userPredicate = [self filter],
-        filter = userPredicate;
+    var userFilter        = [self filter],
+        categoryPredicate = [_categories[_currentPaginatedCategoryIndex] filter],
+        userPredicate,
+        resultPredicate;
 
-    var categoryFilter = [_categories[_currentPaginatedCategoryIndex] filter];
-    if (categoryFilter)
-    {
-        if (!userPredicate)
-            return categoryFilter;
+    if (!categoryPredicate)
+        return userFilter;
 
-        // try to make a predicate from the given filter
-        if (![userPredicate isKindOfClass:CPPredicate])
-            userPredicate = [CPPredicate predicateWithFormat:userPredicate];
-        // if it didn't work, create full text search predicate
-        if (!userPredicate)
-            userPredicate = [[aFetcher newManagedObject] fullTextSearchPredicate:filter];
+    if (!userFilter)
+        return categoryPredicate;
 
-        filter = [[CPCompoundPredicate alloc] initWithType:CPAndPredicateType
-                                             subpredicates:[userPredicate, categoryFilter]];
-    }
+    // try to make a predicate from the given filter
+    if ([userFilter isKindOfClass:CPPredicate])
+        userPredicate = userFilter
+    else
+        userPredicate = [CPPredicate predicateWithFormat:userFilter];
+    // if it didn't work, create full text search predicate
+    if (!userPredicate)
+        userPredicate = [[aFetcher newManagedObject] fullTextSearchPredicate:userFilter];
 
-    return filter;
+    resultPredicate = [[CPCompoundPredicate alloc] initWithType:CPAndPredicateType
+                                                  subpredicates:[userPredicate, categoryPredicate]];
+
+    return resultPredicate;
 }
 
 /*! @ignore
@@ -1224,7 +1227,7 @@ NUModuleTabViewModeIcon                = 2;
 
     var filter;
     if ([_categories count])
-        filter = [self _categoryFilterWithFetcher:aFetcher]
+        filter = [self _currentPaginationFilterForFetcher:aFetcher]
     else
         filter = [self filter]
 
