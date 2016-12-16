@@ -51,21 +51,21 @@
 
 - (id)initWithName:(CPString)aName
 {
-    if (self = [super init])
-    {
-        _name = aName;
-        _children = [];
-        _dataSourceFilterShouldIgnore = YES;
-    }
-
+    [self initWithName:aName contextIdentifier:nil filter:nil];
     return self;
 }
 
 - (id)initWithName:(CPString)aName contextIdentifier:(CPString)aContext filter:(id)aFilter
 {
-    [self initWithName:aName]
-    _contextIdentifier = aContext;
-    _filter = aFilter;
+    if (self = [super init])
+    {
+        _name = aName;
+        _children = [];
+        _dataSourceFilterShouldIgnore = YES;
+        _contextIdentifier = aContext;
+        _filter = aFilter;
+    }
+
     return self;
 }
 
