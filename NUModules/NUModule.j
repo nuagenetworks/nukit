@@ -1145,7 +1145,7 @@ NUModuleTabViewModeIcon                = 2;
     if (_usesPagination && [_categories count])
     {
         _latestCategoryLoadedIndex = 0;
-        var context = [_contextRegistry valueForKey:[_categories[0] contextIdentifier]];
+        var context = [_contextRegistry valueForKey:[_categories[_latestCategoryLoadedIndex] contextIdentifier]];
         [self _reloadUsingContext:context];
     }
     else if ([[self class] automaticContextManagement])
