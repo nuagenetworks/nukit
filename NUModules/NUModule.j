@@ -3515,7 +3515,7 @@ NUModuleTabViewModeIcon                = 2;
             var object = someContents[i],
                 currentCategory;
 
-            if (_currentPaginatedCategoryIndex != -1)
+            if (_usesPagination)
                 currentCategory = _categories[_currentPaginatedCategoryIndex];
             else
                 currentCategory = [self categoryForObject:object];
