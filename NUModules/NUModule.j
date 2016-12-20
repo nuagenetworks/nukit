@@ -3517,10 +3517,10 @@ NUModuleTabViewModeIcon                = 2;
             var object = someContents[i],
                 currentCategory;
 
-            if (_usesPagination)
+            currentCategory = [self categoryForObject:object];
+
+            if (_usesPagination && !currentCategory)
                 currentCategory = _categories[_currentPaginatedCategoryIndex];
-            else
-                currentCategory = [self categoryForObject:object];
 
             if (currentCategory && ![[currentCategory children] containsObject:object])
                 [[currentCategory children] addObject:object];
