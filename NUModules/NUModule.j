@@ -3550,6 +3550,9 @@ NUModuleTabViewModeIcon                = 2;
         [self restoreArchivedSelection];
 
     [self performPostFetchOperation];
+
+    if (_usesPagination && [_categories count] && [someContents count] < NUModuleRESTPageSize)
+        [self _loadNextPage];
 }
 
 /*! Performs the sorting of the data source
