@@ -1128,6 +1128,8 @@ NUModuleTabViewModeIcon                = 2;
     _removedObjectsIDs               = [];
     _numberOfRemainingContextsToLoad = [_contextRegistry count];
 
+    [self _removeScrollViewObservers];
+
     [_activeTransactionsIDs removeAllObjects];
     [self setTotalNumberOfEntities:-1];
     [self _setPaginationSynchronizing:NO];
