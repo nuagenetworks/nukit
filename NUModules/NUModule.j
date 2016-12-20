@@ -1279,6 +1279,27 @@ NUModuleTabViewModeIcon                = 2;
 
 /*! @ignore
 */
+- (BOOL)_isResourceAlreadyFetched
+{
+    var currentCategory = _categories[_currentPaginatedCategoryIndex],
+        currentFilter = [[currentCategory filter] isKindOfClass:CPPredicate] ? [[currentCategory filter] predicateFormat] : [currentCategory filter],
+        currentContextId = [currentCategory contextIdentifier];
+
+    for (var i = 0; i < _currentPaginatedCategoryIndex; i++)
+    {
+        var category = _categories[i],
+            filter = [[category filter] isKindOfClass:CPPredicate] ? [[category filter] predicateFormat] : [category filter],
+            contextId = [category contextIdentifier];
+
+        if (filter == currentFilter && contextId == currentContextId)
+            return YES;
+    }
+
+    return NO;
+}
+
+/*! @ignore
+*/
 - (void)_loadNextPage
 {
     var fetcher;
@@ -1288,12 +1309,16 @@ NUModuleTabViewModeIcon                = 2;
         if (_maxPossiblePage != -1 && _latestPageLoaded >= _maxPossiblePage)
         {
             _currentPaginatedCategoryIndex++;
+
+            if (_currentPaginatedCategoryIndex >= [_categories count])
+                return;
+
+            if ([self _isResourceAlreadyFetched])
+                return [self _loadNextPage]
+
             _maxPossiblePage = -1;
             _latestPageLoaded = -1;
         }
-
-        if (_currentPaginatedCategoryIndex >= [_categories count])
-            return;
 
         var category       = _categories[_currentPaginatedCategoryIndex],
             context        = [_contextRegistry valueForKey:[category contextIdentifier]],
