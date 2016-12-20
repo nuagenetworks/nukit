@@ -1127,6 +1127,7 @@ NUModuleTabViewModeIcon                = 2;
     _maxPossiblePage                 = -1;
     _removedObjectsIDs               = [];
     _numberOfRemainingContextsToLoad = [_contextRegistry count];
+    _currentPaginatedCategoryIndex   = (_usesPagination && [_categories count]) ? 0 : -1;
 
     [_activeTransactionsIDs removeAllObjects];
     [self setTotalNumberOfEntities:-1];
@@ -1144,7 +1145,6 @@ NUModuleTabViewModeIcon                = 2;
 
     if (_usesPagination && [_categories count])
     {
-        _currentPaginatedCategoryIndex = 0;
         var context = [_contextRegistry valueForKey:[_categories[_currentPaginatedCategoryIndex] contextIdentifier]];
         [self _reloadUsingContext:context];
     }
