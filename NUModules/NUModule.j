@@ -1397,6 +1397,9 @@ NUModuleTabViewModeIcon                = 2;
 
     if ([_categories count])
     {
+        if (_currentPaginatedCategoryIndex >= [_categories count])
+            return;
+
         var category       = _categories[_currentPaginatedCategoryIndex],
             context        = [_contextRegistry valueForKey:[category contextIdentifier]],
             fetcher        = [_currentParent valueForKeyPath:[context fetcherKeyPath]];
@@ -3457,6 +3460,9 @@ NUModuleTabViewModeIcon                = 2;
             break;
         }
     }
+
+    if ([_categories count] && _usesPagination)
+        _currentPaginatedCategoryIndex = 0;
 }
 
 /*! @ignore
