@@ -33,6 +33,8 @@
     BOOL        _dataSourceFilterShouldIgnore   @accessors(getter=dataSourceFilterShouldIgnore);
     CPArray     _children                       @accessors(property=children);
     CPString    _name                           @accessors(property=name);
+    CPString    _contextIdentifier              @accessors(property=contextIdentifier);
+    CPPredicate _filter                         @accessors(property=filter);
 }
 
 + (id)categoryWithName:(CPString)aName
@@ -40,13 +42,39 @@
     return [[NUCategory alloc] initWithName:aName];
 }
 
++ (id)categoryWithName:(CPString)aName contextIdentifier:(CPString)aContext
+{
+    return [[NUCategory alloc] initWithName:aName
+                          contextIdentifier:aContext];
+}
+
+
++ (id)categoryWithName:(CPString)aName contextIdentifier:(CPString)aContext filter:(id)aFilter
+{
+    return [[NUCategory alloc] initWithName:aName
+                          contextIdentifier:aContext
+                                     filter:aFilter];
+}
+
 - (id)initWithName:(CPString)aName
+{
+    return [self initWithName:aName contextIdentifier:nil filter:nil];
+}
+
+- (id)initWithName:(CPString)aName contextIdentifier:(CPString)aContext
+{
+    return [self initWithName:aName contextIdentifier:aContext filter:nil];
+}
+
+- (id)initWithName:(CPString)aName contextIdentifier:(CPString)aContext filter:(id)aFilter
 {
     if (self = [super init])
     {
-        _name = aName;
-        _children = [];
+        _children                     = [];
+        _contextIdentifier            = aContext;
         _dataSourceFilterShouldIgnore = YES;
+        _filter                       = aFilter;
+        _name                         = aName;
     }
 
     return self;
