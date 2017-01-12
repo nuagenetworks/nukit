@@ -1126,7 +1126,7 @@ NUModuleTabViewModeIcon                = 2;
     _latestPageLoaded                = -1;
     _maxPossiblePage                 = -1;
     _removedObjectsIDs               = [];
-    _numberOfRemainingContextsToLoad = [_contextRegistry count];
+    _numberOfRemainingContextsToLoad = [[self moduleCurrentActiveContexts] count];
 
     [self _removeScrollViewObservers];
 
