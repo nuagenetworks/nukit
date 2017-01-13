@@ -556,7 +556,7 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
         [_associatedObjectChooser configureFetcherKeyPath:fetcherKeyPath forClass:objectClass];
 
         if (categoryName)
-            [_categoriesRegistry setObject:[NUCategory categoryWithName:categoryName contextIdentifier:RESTName filter:nil] forKey:RESTName];
+            [_categoriesRegistry setObject:[NUCategory categoryWithName:categoryName contextIdentifier:RESTName] forKey:RESTName];
     }
 }
 
@@ -940,6 +940,16 @@ NUObjectAssociatorSettingsAssociatedObjectFetcherKeyPathKey = @"NUObjectAssociat
 - (void)didObjectChooserCancelSelection:(NUObjectsChooser)anObjectChooser
 {
     [self closePopover];
+}
+
+/*! @ignore
+*/
+- (NUCategory)categoryForObject:(id)anObject
+{
+    if (![_categoriesRegistry count])
+        return;
+
+    return [_categoriesRegistry objectForKey:[anObject RESTName]];
 }
 
 /*! @ignore

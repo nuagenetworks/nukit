@@ -1281,17 +1281,17 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (BOOL)_isResourceAlreadyFetched
 {
-    var currentCategory = _categories[_currentPaginatedCategoryIndex],
-        currentFilter = [[currentCategory filter] isKindOfClass:CPPredicate] ? [[currentCategory filter] predicateFormat] : [currentCategory filter],
-        currentContextId = [currentCategory contextIdentifier];
+    var currentCategory   = _categories[_currentPaginatedCategoryIndex],
+        currentFilter     = [[currentCategory filter] isKindOfClass:CPPredicate] ? [[currentCategory filter] predicateFormat] : [currentCategory filter],
+        currentIdentifier = [currentCategory contextIdentifier];
 
     for (var i = 0; i < _currentPaginatedCategoryIndex; i++)
     {
-        var category = _categories[i],
-            filter = [[category filter] isKindOfClass:CPPredicate] ? [[category filter] predicateFormat] : [category filter],
-            contextId = [category contextIdentifier];
+        var category   = _categories[i],
+            filter     = [[category filter] isKindOfClass:CPPredicate] ? [[category filter] predicateFormat] : [category filter],
+            identifier = [category contextIdentifier];
 
-        if (filter == currentFilter && contextId == currentContextId)
+        if (filter == currentFilter && identifier == currentIdentifier)
             return YES;
     }
 
@@ -1310,7 +1310,7 @@ NUModuleTabViewModeIcon                = 2;
         {
             _currentPaginatedCategoryIndex++;
 
-            if (_currentPaginatedCategoryIndex >= [_categories count])
+            if (![self _shouldLoadNextCategory])
                 return;
 
             if ([self _isResourceAlreadyFetched])
@@ -3473,6 +3473,13 @@ NUModuleTabViewModeIcon                = 2;
         [[_categories[i] children] removeAllObjects];
 }
 
+/*! @ignore
+*/
+- (void)_shouldLoadNextCategory
+{
+    return [_categories count] && _currentPaginatedCategoryIndex <= [_categories count] - 1;
+}
+
 
 #pragma mark -
 #pragma mark Content Management
@@ -3575,7 +3582,12 @@ NUModuleTabViewModeIcon                = 2;
     if (_usesPagination)
     {
         [self _synchronizePagination];
-        [self _addScrollViewObservers];
+
+        if ([self _shouldLoadNextCategory] && [someContents count] < NUModuleRESTPageSize)
+            [self _loadNextPage];
+        else
+            [self _addScrollViewObservers];
+
         [self _restorePreviousSelection];
     }
 
@@ -3583,9 +3595,6 @@ NUModuleTabViewModeIcon                = 2;
         [self restoreArchivedSelection];
 
     [self performPostFetchOperation];
-
-    if (_usesPagination && [_categories count] && [someContents count] < NUModuleRESTPageSize)
-        [self _loadNextPage];
 }
 
 /*! Performs the sorting of the data source
@@ -3993,7 +4002,7 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
 {
-    if (_latestPageLoaded >= _maxPossiblePage && _currentPaginatedCategoryIndex > [_categories count])
+    if (_latestPageLoaded >= _maxPossiblePage && ![self _shouldLoadNextCategory]) //_currentPaginatedCategoryIndex > [_categories count])
         return;
 
     var scrollPosition = CGRectGetMaxY([object bounds]);
