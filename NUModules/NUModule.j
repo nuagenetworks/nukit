@@ -1363,18 +1363,25 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)_performReloadLatestPage:(CPTimer)aTimer
 {
-    var fetcherKeyPath = [_currentContext fetcherKeyPath],
-        fetcher = [_currentParent valueForKeyPath:fetcherKeyPath];
+    var contexts = [self moduleCurrentActiveContexts];
+    _totalNumberOfEntities = 0;
 
-    if (fetcher)
-        [fetcher countWithMatchingFilter:[self filter]
-                               masterFilter:[self masterFilter]
-                                  groupedBy:[self masterGrouping]
-                            andCallSelector:@selector(_fetcher:ofObject:didCountChildren:)
-                                   ofObject:self
-                                      block:nil];
-    else
-        [self _setPaginationSynchronizing:NO];
+    for (var i = [contexts count] - 1 ; i >= 0 ; i --)
+    {
+        var context        = contexts[i],
+            fetcherKeyPath = [context fetcherKeyPath],
+            fetcher        = [_currentParent valueForKeyPath:fetcherKeyPath];
+
+        if (fetcher)
+            [fetcher countWithMatchingFilter:[self filter]
+                                   masterFilter:[self masterFilter]
+                                      groupedBy:[self masterGrouping]
+                                andCallSelector:@selector(_fetcher:ofObject:didCountChildren:)
+                                       ofObject:self
+                                          block:nil];
+        else
+            [self _setPaginationSynchronizing:NO];
+    }
 }
 
 /*! @ignore
@@ -1382,7 +1389,7 @@ NUModuleTabViewModeIcon                = 2;
 - (void)_fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didCountChildren:(int)aCount
 {
     [self _setPaginationSynchronizing:NO];
-    [self setTotalNumberOfEntities:aCount];
+    [self setTotalNumberOfEntities:(_totalNumberOfEntities + aCount)];
     [self _synchronizePagination];
 
     [self __reloadLatestPageUsingFetcher:aFetcher];
@@ -2580,7 +2587,7 @@ NUModuleTabViewModeIcon                = 2;
     {
         [array addObject:anObject];
 
-        if (shouldUpdateTotal && !_usesPagination)
+        if (shouldUpdateTotal)
             [self setTotalNumberOfEntities:(_totalNumberOfEntities + 1)];
     }
 
@@ -3552,10 +3559,8 @@ NUModuleTabViewModeIcon                = 2;
 
         for (var i = [someContents count] - 1; i >= 0; i--)
         {
-            var object = someContents[i],
-                currentCategory;
-
-            currentCategory = [self categoryForObject:object];
+            var object          = someContents[i],
+                currentCategory = [self categoryForObject:object];
 
             if (_usesPagination && !currentCategory)
                 currentCategory = _categories[_currentPaginatedCategoryIndex];
@@ -4002,7 +4007,7 @@ NUModuleTabViewModeIcon                = 2;
 */
 - (void)observeValueForKeyPath:(CPString)keyPath ofObject:(id)object change:(CPDictionary)change context:(id)aContext
 {
-    if (_latestPageLoaded >= _maxPossiblePage && ![self _shouldLoadNextCategory]) //_currentPaginatedCategoryIndex > [_categories count])
+    if (_latestPageLoaded >= _maxPossiblePage && ![self _shouldLoadNextCategory])
         return;
 
     var scrollPosition = CGRectGetMaxY([object bounds]);
