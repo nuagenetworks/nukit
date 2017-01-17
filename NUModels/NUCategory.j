@@ -30,11 +30,13 @@
 
 @implementation NUCategory : CPObject
 {
-    BOOL        _dataSourceFilterShouldIgnore   @accessors(getter=dataSourceFilterShouldIgnore);
-    CPArray     _children                       @accessors(property=children);
-    CPString    _name                           @accessors(property=name);
-    CPString    _contextIdentifier              @accessors(property=contextIdentifier);
-    CPPredicate _filter                         @accessors(property=filter);
+    BOOL            _dataSourceFilterShouldIgnore   @accessors(getter=dataSourceFilterShouldIgnore);
+    CPArray         _children                       @accessors(property=children);
+    CPString        _name                           @accessors(property=name);
+    CPString        _contextIdentifier              @accessors(property=contextIdentifier);
+    CPPredicate     _filter                         @accessors(property=filter);
+    CPNumber        _currentPage                    @accessors(property=currentPage);
+    CPNumber        _currentTotalCount              @accessors(property=currentTotalCount);
 }
 
 + (id)categoryWithName:(CPString)aName
@@ -75,6 +77,8 @@
         _dataSourceFilterShouldIgnore = YES;
         _filter                       = aFilter;
         _name                         = aName;
+        _currentPage                  = -1;
+        _currentTotalCount            = -1;
     }
 
     return self;

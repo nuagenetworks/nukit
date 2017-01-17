@@ -702,6 +702,13 @@ NUModuleTabViewModeIcon                = 2;
     }
 }
 
+/*! Returns the registered NUModuleContext for the given identifier.
+*/
+- (NUModuleContext)_contextForCategory:(NUCategory)aCategory
+{
+    return [self contextWithIdentifier:[aCategory contextIdentifier]];
+}
+
 /*! Sets the current active module context.
 */
 - (void)setCurrentContext:(NUModuleContext)aContext
@@ -1144,18 +1151,26 @@ NUModuleTabViewModeIcon                = 2;
     if (!_isProcessingPush)
         [self showLoading];
 
-    if (_usesPagination && [_categories count])
+    if ([[self class] automaticContextManagement])
     {
-        _currentPaginatedCategoryIndex = 0;
-        var context = [_contextRegistry valueForKey:[_categories[_currentPaginatedCategoryIndex] contextIdentifier]];
-        [self _reloadUsingContext:context];
-    }
-    else if ([[self class] automaticContextManagement])
-    {
-        var contexts = [self moduleCurrentActiveContexts];
+        if ([_categories count])
+        {
+            _currentPaginatedCategoryIndex = 0;
 
-        for (var i = [contexts count] - 1; i >= 0; i--)
-            [self _reloadUsingContext:contexts[i]];
+            var currentCategory = _categories[_currentPaginatedCategoryIndex],
+                context         = [self _contextForCategory:currentCategory];
+
+            [self _reloadUsingContext:context];
+        }
+        else
+        {
+            var contexts = [self moduleCurrentActiveContexts];
+
+            // Doing a for loop in case the user defines multiple contexts
+            // without defining categories
+            for (var i = [contexts count] - 1; i >= 0; i--)
+                [self _reloadUsingContext:contexts[i]];
+        }
     }
 
     [self moduleDidReload];
@@ -1182,15 +1197,15 @@ NUModuleTabViewModeIcon                = 2;
 
 /*! @ignore
 */
-- (id)_currentPaginationFilterForFetcher:(NURESTFetcher)aFetcher
+- (id)_filterForCategory:(NUCategory)aCategory
 {
+    if (!aCategory || ![aCategory filter])
+        return [self filter];
+
     var userFilter        = [self filter],
-        categoryPredicate = [_categories[_currentPaginatedCategoryIndex] filter],
+        categoryPredicate = [aCategory filter],
         userPredicate,
         resultPredicate;
-
-    if (!categoryPredicate)
-        return userFilter;
 
     if (!userFilter)
         return categoryPredicate;
@@ -1200,9 +1215,16 @@ NUModuleTabViewModeIcon                = 2;
         userPredicate = userFilter
     else
         userPredicate = [CPPredicate predicateWithFormat:userFilter];
+
     // if it didn't work, create full text search predicate
     if (!userPredicate)
-        userPredicate = [[aFetcher newManagedObject] fullTextSearchPredicate:userFilter];
+    {
+        var context = [self _contextForCategory:aCategory],
+            fetcher = [_currentParent valueForKeyPath:[context fetcherKeyPath]];
+
+        userPredicate = [[fetcher newManagedObject] fullTextSearchPredicate:userFilter];
+    }
+
 
     resultPredicate = [[CPCompoundPredicate alloc] initWithType:CPAndPredicateType
                                                   subpredicates:[userPredicate, categoryPredicate]];
@@ -1227,11 +1249,8 @@ NUModuleTabViewModeIcon                = 2;
 
     CPLog.debug("PAGINATION: Loading page #%@ using fetcher %@", aPage, aFetcher);
 
-    var filter;
-    if ([_categories count])
-        filter = [self _currentPaginationFilterForFetcher:aFetcher]
-    else
-        filter = [self filter]
+    var currentCategory = [_categories count] ? _categories[_currentPaginatedCategoryIndex] : nil,
+        filter          = [self _filterForCategory:currentCategory];
 
     var ID = [aFetcher fetchWithMatchingFilter:filter
                                   masterFilter:[self masterFilter]
@@ -1392,7 +1411,8 @@ NUModuleTabViewModeIcon                = 2;
     [self setTotalNumberOfEntities:(_totalNumberOfEntities + aCount)];
     [self _synchronizePagination];
 
-    [self __reloadLatestPageUsingFetcher:aFetcher];
+    if (![_categories count])
+        [self __reloadLatestPageUsingFetcher:aFetcher];
 }
 
 /*! ignore
@@ -1501,6 +1521,44 @@ NUModuleTabViewModeIcon                = 2;
 /*! @ignore
 */
 - (void)_updateGrandTotal
+{
+    if ([_categories count])
+        [self _updateGrandTotalWithCategories];
+    else
+        [self _updateGrandTotalWithNoCategories];
+}
+
+/*! @ignore
+*/
+- (void)_updateGrandTotalWithCategories
+{
+    var grandTotal      = 0,
+        managedIdentifiers = [];
+
+    for (var i = 0; i < [_categories count]; i++)
+    {
+        var category = _categories[i],
+            context  = [self _contextForCategory:category];
+
+        if ([category filter])
+        {
+            grandTotal += [category currentTotalCount];
+            continue;
+        }
+
+        if  ([managedIdentifiers containsObject:[context identifier]])
+            continue;
+
+        grandTotal += [[_currentParent valueForKeyPath:[context fetcherKeyPath]] currentTotalCount];
+        [managedIdentifiers addObject:[context identifier]];
+    }
+
+    [self setTotalNumberOfEntities:grandTotal];
+}
+
+/*! @ignore
+*/
+- (void)_updateGrandTotalWithNoCategories
 {
     var grandTotal  = 0,
         contexts    = [self moduleCurrentActiveContexts];
@@ -3474,17 +3532,17 @@ NUModuleTabViewModeIcon                = 2;
 
 /*! @ignore
 */
-- (void)_flushCategoriesContent
+- (void)_shouldLoadNextCategory
 {
-    for (var i = [_categories count] - 1; i >= 0; i--)
-        [[_categories[i] children] removeAllObjects];
+    return [_categories count] && _currentPaginatedCategoryIndex <= [_categories count] - 1;
 }
 
 /*! @ignore
 */
-- (void)_shouldLoadNextCategory
+- (void)_flushCategoriesContent
 {
-    return [_categories count] && _currentPaginatedCategoryIndex <= [_categories count] - 1;
+    for (var i = [_categories count] - 1; i >= 0; i--)
+        [[_categories[i] children] removeAllObjects];
 }
 
 
@@ -3548,22 +3606,31 @@ NUModuleTabViewModeIcon                = 2;
 
     [self performPreFetchOperation:someContents];
     [self _saveCurrentSelection];
-    [self _updateGrandTotal];
 
     _latestSortDescriptors = [aFetcher currentSortDescriptors];
     _numberOfRemainingContextsToLoad--;
 
     if ([_categories count] > 0)
     {
+        var currentCategory = _categories[_currentPaginatedCategoryIndex];
+
+        // When categories have no filter, it uses the context to store
+        // paginated information. If it has filters, store the total number
+        // of entities in the current category.
+        if ([currentCategory filter])
+        {
+            [currentCategory setCurrentPage:[aFetcher currentPage]];
+            [currentCategory setCurrentTotalCount:[aFetcher currentTotalCount]];
+        }
+
         var categorizedContent = [_categories copy];
 
         for (var i = [someContents count] - 1; i >= 0; i--)
         {
-            var object          = someContents[i],
-                currentCategory = [self categoryForObject:object];
+            var object = someContents[i];
 
-            if (_usesPagination && !currentCategory)
-                currentCategory = _categories[_currentPaginatedCategoryIndex];
+            if (![currentCategory filter])
+                currentCategory = [self categoryForObject:object];
 
             if (currentCategory && ![[currentCategory children] containsObject:object])
                 [[currentCategory children] addObject:object];
@@ -3583,6 +3650,8 @@ NUModuleTabViewModeIcon                = 2;
         else
             [self setDataSourceContent:someContents];
     }
+
+    [self _updateGrandTotal];
 
     if (_usesPagination)
     {
