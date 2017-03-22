@@ -59,11 +59,12 @@ NUKitParameterCat                  = NO;
 NUKitParameterExperimentalMode     = NO;
 NUKitParameterVeryExperimentalMode = NO;
 
-NUPermissionLevelSystem            = @"system";
-NUPermissionLevelRoot              = @"root";
-NUPermissionLevelOperator          = @"operator";
 NUPermissionLevelAdmin             = @"admin";
+NUPermissionLevelAdminOperator     = @"adminoperator"
+NUPermissionLevelOperator          = @"operator";
 NUPermissionLevelPowerUser         = @"poweruser";
+NUPermissionLevelRoot              = @"root";
+NUPermissionLevelSystem            = @"system";
 NUPermissionLevelUser              = @"user";
 
 
@@ -89,6 +90,10 @@ function nukit_set_permission_level_power_user_value(value) {
 
 function nukit_set_permission_level_user_value_value(value) {
     NUPermissionLevelUser = value;
+}
+
+function nukit_set_permission_level_adminoperator_value_value(value) {
+    NUPermissionLevelAdminOperator = value;
 }
 
 
