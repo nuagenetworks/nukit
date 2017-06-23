@@ -38,6 +38,7 @@
 @implementation NUNumericTextField : CPTextField
 {
     BOOL    _allowDecimals     @accessors(property=allowDecimals);
+    BOOL    _allowNegative     @accessors(property=allowNegative);
 }
 
 /*! @ignore
@@ -78,9 +79,30 @@
         return NO;
 
     if ([self allowDecimals])
-        return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.$/);
+    {
+        if ([self allowNegative])
+        {
+            return !value.match(/^-?\d+\.\d+$/) && !value.match(/^-?\d+$/) && !value.match(/^-?\d+\.$/) && !value.match(/^-?$/);
+        }
+        else
+        {
+            return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.$/);
+        }
+    }
+    else
+    {
+        if ([self allowNegative])
+        {
+            return !value.match(/^-?\d+$/) && !value.match(/^-?$/);
+        }
+        else
+        {
+            return !value.match(/^\d+$/);
+        }
+    }
 
-    return !value.match(/^\d+$/);
+    return YES;
+
 }
 
 /*! Returns the object value of the object
