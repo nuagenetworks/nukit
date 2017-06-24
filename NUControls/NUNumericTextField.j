@@ -79,30 +79,9 @@
         return NO;
 
     if ([self allowDecimals])
-    {
-        if ([self allowNegative])
-        {
-            return !value.match(/^-?\d+\.\d+$/) && !value.match(/^-?\d+$/) && !value.match(/^-?\d+\.$/) && !value.match(/^-?$/);
-        }
-        else
-        {
-            return !value.match(/^\d+\.\d+$/) && !value.match(/^\d+$/) && !value.match(/^\d+\.$/);
-        }
-    }
+        return [self allowNegative] ? !value.match(/^-?\d*\.?\d*$/) : !value.match(/^\d+\.?\d*$/);
     else
-    {
-        if ([self allowNegative])
-        {
-            return !value.match(/^-?\d+$/) && !value.match(/^-?$/);
-        }
-        else
-        {
-            return !value.match(/^\d+$/);
-        }
-    }
-
-    return YES;
-
+        return [self allowNegative] ? !value.match(/^-?\d*$/) :!value.match(/^\d*$/);
 }
 
 /*! Returns the object value of the object
