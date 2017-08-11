@@ -246,8 +246,6 @@ generate_war = function (project_name, target, build_type)
     OS.system(["rm", "-rf", "webapp/Resources"]);
     OS.system(["rm", "-rf", "webapp/index.html"]);
     OS.system(["rm", "-rf", "webapp/index.html"]);
-    OS.system(["rm", "-rf", "webapp/clickthrough.html"]);
-    OS.system(["rm", "-rf", "webapp/css"]);
     OS.system(["rm", "-rf", "webapp/Info.plist"]);
     OS.system(["rm", "-rf", "webapp/Application.js"]);
     OS.system(["rm", "-rf", "webapp/app.manifest"]);
@@ -257,8 +255,6 @@ generate_war = function (project_name, target, build_type)
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Frameworks", "webapp/"]);
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Resources", "webapp/"]);
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/index.html", "webapp/"]);
-    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/clickthrough.html", "webapp/"]);
-    OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/css", "webapp/"]);
     OS.system(["cp", "-a", "./Build/" + target + "/" + project_name + build_type + "/Info.plist", "webapp/"]);
 
     if (target != "Debug")
