@@ -34,6 +34,7 @@
 @import "NUNetworkTextField.j"
 @import "NUNumericTextField.j"
 @import "NUOverlayTextField.j"
+@import "NUPasswordField.j"
 @import "NUStackView.j"
 @import "NUTabViewItemPrototype.j"
 @import "NUUsageIndicator.j"
