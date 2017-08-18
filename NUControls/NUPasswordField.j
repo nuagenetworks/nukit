@@ -259,11 +259,10 @@ var TogglePasswordFieldDelegate_passwordFieldModeChanged_      = 1 << 1;
     if (![self isClearText])
         return element;
 
-        // hack to turn on/off text on the password input
 #if PLATFORM(DOM)
-        if (element)
-            element.type = [self _shouldShow] ? "text" : "password";
+        element && element.type = [self _shouldShow] ? "text" : "password";
 #endif
+
     return element;
 }
 
