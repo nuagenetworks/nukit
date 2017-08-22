@@ -259,9 +259,11 @@ var TogglePasswordFieldDelegate_passwordFieldModeChanged_      = 1 << 1;
     if (![self isClearText])
         return element;
 
+    if (element) {
 #if PLATFORM(DOM)
-        element && element.type = [self _shouldShow] ? "text" : "password";
+    element.type = [self _shouldShow] ? "text" : "password";
 #endif
+    }
 
     return element;
 }
