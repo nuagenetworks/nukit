@@ -2909,13 +2909,8 @@ NUModuleTabViewModeIcon                = 2;
             tabViewItem         = [tabViewPrototype tabViewItem],
             control             = [[tabViewItem view] subviewWithTag:aPropertyName recursive:YES];
 
-        if (!control)
-        {
-            control = [[tabViewItem view] subviewWithTag:@"validation_"+aPropertyName recursive:YES];
-        }
-        
         if (control)
-            return tabViewPrototype;    
+            return tabViewPrototype;
     }
 
     return nil;
