@@ -538,7 +538,7 @@ var _isCPArrayControllerKind = function(object, keyPath)
 
                 [control bind:CPValueBinding toObject:_editedObject withKeyPath:keyPath options:opts];
             }
-            else if (![control isKindOfClass:CPView])
+            else
                 [CPException raise:CPInternalInconsistencyException reason:"NUModuleContext doesn't support binding for control class: " + [control class]];
         }
     }
