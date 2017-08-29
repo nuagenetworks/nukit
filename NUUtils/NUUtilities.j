@@ -529,15 +529,14 @@ function _rangePattern(aPattern, min, max)
     else
         return "Not a correct range pattern";
 }
-
-function _complexRangePattern(aPattern, min, max)
+function _complexNumberRangePattern(aPattern, delimiter, min, max)
 {
     if (!aPattern)
         return "Not a correct range pattern";
 
     aPattern = aPattern.replace(/ /g, "");
 
-    var digits = aPattern.split(",");
+    var digits = aPattern.split(delimiter);
 
     for (var i = digits.length - 1; i >= 0; i--)
     {
@@ -556,6 +555,11 @@ function _complexRangePattern(aPattern, min, max)
     }
 
     return nil;
+}
+
+function _complexRangePattern(aPattern, min, max)
+{
+    return _complexNumberRangePattern(aPattern, ',', min, max);
 }
 
 function _PolicyEntryPort(aPort)
