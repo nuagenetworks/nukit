@@ -1402,8 +1402,9 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
     {
         // TODO: compute the algo for the mask
         var networkElementTextFields = _delegate._networkElementTextFields,
-            mask = (_delegate._mode == NUNetworkIPV4Mode) ? 32 : 128,
-            stopMask = NO;
+            mask                     = (_delegate._mode == NUNetworkIPV4Mode) ? 32 : 128,
+            conditionIPv6            = _delegate._mode == NUNetworkIPV6Mode,
+            stopMask                 = NO;
 
         for (var i = [networkElementTextFields count] - 1; i >= 0; i--)
         {
@@ -1413,8 +1414,12 @@ var NUNetworkMaskKey = @"NUNetworkMaskKey",
                 [networkElementTextField setNetworkValue:@"0"];
 
             if (![networkElementTextField isMask] && [networkElementTextField stringValue] == @"0" && !stopMask)
+            {
                 mask -= (_delegate._mode == NUNetworkIPV4Mode) ? 8 : 16;
-            else if (parseInt([networkElementTextField stringValue]) > 0)
+                if (conditionIPv6 && mask == 64)
+                    stopMask = YES;
+            }
+            else if (parseInt([networkElementTextField stringValue]) > 0) 
                 stopMask = YES;
         }
 
