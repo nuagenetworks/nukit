@@ -529,6 +529,7 @@ function _rangePattern(aPattern, min, max)
     else
         return "Not a correct range pattern";
 }
+
 function _complexNumberRangePattern(aPattern, delimiter, min, max)
 {
     if (!aPattern)
