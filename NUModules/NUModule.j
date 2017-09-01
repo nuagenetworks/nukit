@@ -3392,10 +3392,14 @@ NUModuleTabViewModeIcon                = 2;
     // now if if we have one single selected object
     if ([_currentSelectedObjects count] == 1)
     {
+        var currentSelectedObject = _currentSelectedObjects[0];
+        
         [self hideCurrentMaskingView];
         [self moduleDidSelectObjects:_currentSelectedObjects];
         [self refreshActiveSubModules];
         [self updateModuleSubtitle];
+        [self setCurrentContextWithIdentifier:[currentSelectedObject RESTName]];
+        [_currentContext setEditedObject:currentSelectedObject];
     }
     else
     {
