@@ -3010,13 +3010,15 @@ NUModuleTabViewModeIcon                = 2;
         _cucappID([filterField searchButton], @"button_search_" + [aContext identifier]);
     }
 
-    if (_buttonFirstCreate)
+    if (_buttonFirstCreate && ![_buttonFirstCreate cucappIdentifier])
         _cucappID(_buttonFirstCreate, @"button_" + [self cuccapPrefixForAction:NUModuleActionAdd] + @"_" + [aContext identifier]);
 
     if (_buttonFirstImport)
         _cucappID(_buttonFirstImport, @"button_" + [self cuccapPrefixForAction:NUModuleActionImport] + @"_" + [aContext identifier]);
 
-    _cucappID(_buttonAddObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionAdd] + @"_" + [aContext identifier]);
+    if (![_buttonAddObject cucappIdentifier])
+        _cucappID(_buttonAddObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionAdd] + @"_" + [aContext identifier]);
+    
     _cucappID(_buttonEditObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionEdit] + @"_" + [aContext identifier]);
     _cucappID(_buttonDeleteObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionDelete] + @"_" + [aContext identifier]);
     _cucappID(_buttonInstantiateObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionInstantiate] + @"_" + [aContext identifier]);
