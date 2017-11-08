@@ -64,6 +64,7 @@ NUPermissionLevelAdminOperator     = @"adminoperator"
 NUPermissionLevelOperator          = @"operator";
 NUPermissionLevelPowerUser         = @"poweruser";
 NUPermissionLevelRoot              = @"root";
+NUPermissionLevelSecurityAdmin     = @"securityadmin"
 NUPermissionLevelSystem            = @"system";
 NUPermissionLevelUser              = @"user";
 
@@ -96,6 +97,9 @@ function nukit_set_permission_level_adminoperator_value_value(value) {
     NUPermissionLevelAdminOperator = value;
 }
 
+function nukit_set_permission_level_securityadmin_value_value(value) {
+    NUPermissionLevelSecurityAdmin = value;
+}
 
 @implementation NUKit : CPObject
 {
