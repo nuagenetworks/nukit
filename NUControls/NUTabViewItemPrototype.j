@@ -46,8 +46,11 @@
     if (!anItem)
         return;
 
+    if (anItem._tooltip)
+        [self._button setToolTip: anItem._tooltip];
+        
     _cucappID(self._button, anItem._cucappID);
-
+        
     [super setTabViewItem:anItem];
 }
 
