@@ -1432,7 +1432,7 @@ NUModuleTabViewModeIcon                = 2;
             fetcher        = [_currentParent valueForKeyPath:[context fetcherKeyPath]];
 
         _maxPossiblePage    = MAX(Math.ceil([fetcher currentTotalCount] / NUModuleRESTPageSize) - 1, 0);
-        _latestPageLoaded   = MAX(Math.ceil([[fetcher array] count] / NUModuleRESTPageSize) - 1, 0);
+        _latestPageLoaded   = MAX(Math.ceil([fetcher currentResponseCount] / NUModuleRESTPageSize) - 1, 0);
     }
     else
     {
