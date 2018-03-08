@@ -88,7 +88,7 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 */
 + (BOOL)commitFetchedObjects
 {
-    return NO;
+    return YES;
 }
 
 /*! @ignore
