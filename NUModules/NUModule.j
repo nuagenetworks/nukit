@@ -1438,7 +1438,7 @@ NUModuleTabViewModeIcon                = 2;
     {
         var context = [self moduleCurrentActiveContexts][0],
             fetcher = fetcher = [_currentParent valueForKeyPath:[context fetcherKeyPath]];
-            
+
         _maxPossiblePage    = MAX(Math.ceil(_totalNumberOfEntities / NUModuleRESTPageSize) - 1, 0);
         _latestPageLoaded   = MAX(Math.ceil([[fetcher array] count] / NUModuleRESTPageSize) - 1, 0);
     }
@@ -2077,9 +2077,34 @@ NUModuleTabViewModeIcon                = 2;
 }
 
 /*! Apply the advanced given filers.
+Date filters will return the default date toString in format Mon May 21 2018 10:59:06 GMT-0700 (PDT)
+We need to intercept predicates and translate dates to format: MM/DD/YYYY HH:MIN:SS timezoneoffset
 */
-- (void)applyAdvancedFilters:(CPString)aString
+- (void)applyAdvancedFilters:(CPPredicate)aPredicate
 {
+    var subpredicates = [aPredicate subpredicates];
+    var isModified = false;
+    var predicateSubPredicates = [];
+    for (var i = 0; i < [subpredicates count]; i++) {
+      var predicate = subpredicates[i];
+      var lhs = [predicate leftExpression];
+      var valueForKeyPath = [[predicate rightExpression] expressionValueWithObject:nil context:nil];
+      var date = new Date(valueForKeyPath);
+      if ( (typeof valueForKeyPath === 'string') && !isNaN(date) ) {
+          var dateString = [CPString stringWithFormat:@"%02d/%02d/%04d %02d:%02d:%02d %s", date.getMonth() + 1, date.getDate(), date.getFullYear(), date.getHours(), date.getMinutes(), date.getSeconds(), [CPDate timezoneOffsetString:date.getTimezoneOffset()]];
+          var rhs = [CPExpression expressionForConstantValue:dateString];
+          predicate = [CPComparisonPredicate predicateWithLeftExpression:lhs
+                                                         rightExpression:rhs
+                                                          modifier:[predicate comparisonPredicateModifier]
+                                                          type: [predicate predicateOperatorType]
+                                                          options: [predicate options]
+                       ];
+          isModified = true;
+      }
+      predicateSubPredicates.push(predicate);
+    }
+    var compoundPredicate = isModified ? [[CPCompoundPredicate alloc] initWithType:[aPredicate compoundPredicateType] subpredicates:predicateSubPredicates] : aPredicate;
+    var aString = [compoundPredicate predicateFormat];
     [filterField setStringValue:aString];
     [filterField _updateCancelButtonVisibility];
     [self filterObjects:filterField];
@@ -3021,7 +3046,7 @@ NUModuleTabViewModeIcon                = 2;
 
     if (![_buttonAddObject cucappIdentifier])
         _cucappID(_buttonAddObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionAdd] + @"_" + [aContext identifier]);
-    
+
     _cucappID(_buttonEditObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionEdit] + @"_" + [aContext identifier]);
     _cucappID(_buttonDeleteObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionDelete] + @"_" + [aContext identifier]);
     _cucappID(_buttonInstantiateObject, @"button_" + [self cuccapPrefixForAction:NUModuleActionInstantiate] + @"_" + [aContext identifier]);
@@ -3398,7 +3423,7 @@ NUModuleTabViewModeIcon                = 2;
     if ([_currentSelectedObjects count] == 1)
     {
         var currentSelectedObject = _currentSelectedObjects[0];
-        
+
         [self hideCurrentMaskingView];
         [self moduleDidSelectObjects:_currentSelectedObjects];
         [self refreshActiveSubModules];
