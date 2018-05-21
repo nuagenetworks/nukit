@@ -2084,13 +2084,13 @@ We need to intercept predicates and translate dates to format: MM/DD/YYYY HH:MIN
 {
     var subpredicates = [aPredicate subpredicates];
     var isModified = false;
-    var subPredicates = [];
+    var predicateSubPredicates = [];
     for (var i = 0; i < [subpredicates count]; i++) {
       var predicate = subpredicates[i];
       var lhs = [predicate leftExpression];
       var valueForKeyPath = [[predicate rightExpression] expressionValueWithObject:nil context:nil];
       var date = new Date(valueForKeyPath);
-      if ( !isNaN(date) ) {
+      if ( (typeof valueForKeyPath === 'string') && !isNaN(date) ) {
           var dateString = [CPString stringWithFormat:@"%02d/%02d/%04d %02d:%02d:%02d %s", date.getMonth() + 1, date.getDate(), date.getFullYear(), date.getHours(), date.getMinutes(), date.getSeconds(), [CPDate timezoneOffsetString:date.getTimezoneOffset()]];
           var rhs = [CPExpression expressionForConstantValue:dateString];
           predicate = [CPComparisonPredicate predicateWithLeftExpression:lhs
@@ -2101,9 +2101,9 @@ We need to intercept predicates and translate dates to format: MM/DD/YYYY HH:MIN
                        ];
           isModified = true;
       }
-      subPredicates.push(predicate);
+      predicateSubPredicates.push(predicate);
     }
-    var compoundPredicate = isModified ? [[CPCompoundPredicate alloc] initWithType:[aPredicate compoundPredicateType] subpredicates:subPredicates] : aPredicate;
+    var compoundPredicate = isModified ? [[CPCompoundPredicate alloc] initWithType:[aPredicate compoundPredicateType] subpredicates:predicateSubPredicates] : aPredicate;
     var aString = [compoundPredicate predicateFormat];
     [filterField setStringValue:aString];
     [filterField _updateCancelButtonVisibility];
