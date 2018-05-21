@@ -116,7 +116,7 @@ var NUAdvancedFilteringViewControllerDefault;
     [self closePopover];
 
     [self _switchPredicateLeftExpressionValue];
-    [_currentModule applyAdvancedFilters:[[predicateEditorSearch predicate] predicateFormat]];
+    [_currentModule applyAdvancedFilters:[predicateEditorSearch predicate] ];
 }
 
 
