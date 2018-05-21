@@ -190,6 +190,8 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
 */
 - (void)fetcher:(NURESTFetcher)aFetcher ofObject:(id)anObject didFetchContent:(CPArray)someContents
 {
+    [someContents removeObjectsInArray:_ignoredObjects];
+
     if (_displayFilter)
         someContents = [someContents filteredArrayUsingPredicate:_displayFilter];
 
@@ -346,6 +348,5 @@ var NUObjectsChooser_categoryForObject_                 = 1 << 1,
     if (_implementedDelegateMethods & NUObjectsChooser_didObjectChooser_selectObjects_)
         [_delegate didObjectChooser:self selectObjects:selectedObjects];
 }
-
 
 @end
