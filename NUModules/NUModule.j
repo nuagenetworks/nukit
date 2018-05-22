@@ -2089,8 +2089,9 @@ We need to intercept predicates and translate dates to format: MM/DD/YYYY HH:MIN
       var predicate = subpredicates[i];
       var lhs = [predicate leftExpression];
       var valueForKeyPath = [[predicate rightExpression] expressionValueWithObject:nil context:nil];
-      var date = new Date(valueForKeyPath);
-      if ( (typeof valueForKeyPath === 'string') && !isNaN(date) ) {
+      var mills = (typeof valueForKeyPath === 'string') ? Date.parse(valueForKeyPath) : -1;
+      if (!isNaN(mills) && mills > 0) {
+          var date = new Date(valueForKeyPath);
           var dateString = [CPString stringWithFormat:@"%02d/%02d/%04d %02d:%02d:%02d %s", date.getMonth() + 1, date.getDate(), date.getFullYear(), date.getHours(), date.getMinutes(), date.getSeconds(), [CPDate timezoneOffsetString:date.getTimezoneOffset()]];
           var rhs = [CPExpression expressionForConstantValue:dateString];
           predicate = [CPComparisonPredicate predicateWithLeftExpression:lhs
