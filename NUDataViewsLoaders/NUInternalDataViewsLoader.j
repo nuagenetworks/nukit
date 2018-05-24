@@ -40,7 +40,9 @@
 
 @implementation NUInternalDataViewsLoader : NUAbstractDataViewsLoader
 {
+    @outlet CPPopover                   popoverAssignConfirmation   @accessors(readonly);
     @outlet CPPopover                   popoverConfirmation         @accessors(readonly);
+    @outlet CPPopover                   popoverUnassignConfirmation @accessors(readonly);
     @outlet CPView                      viewInvalidInput            @accessors(readonly);
     @outlet NUCategoryDataView          categoryDataView            @accessors(readonly);
     @outlet NUGenealogyDataView         genealogyDataView           @accessors(readonly);
@@ -57,6 +59,7 @@
     [popoverConfirmation setAppearance:CPPopoverAppearanceHUD];
     [[[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"] setBGColor:@"red"];
     [viewInvalidInput setBackgroundColor:NUSkinColorOrange];
+    [[[[popoverUnassignConfirmation contentViewController] view] subviewWithTag:@"confirm"] setBGColor:@"red"];
 }
 
 @end

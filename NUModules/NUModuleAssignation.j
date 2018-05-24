@@ -75,7 +75,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         [_buttonAssignObject setAlternateImage:NUSkinImageButtonLinkAlt];
         [_buttonAssignObject setButtonType:CPMomentaryChangeButton];
         [_buttonAssignObject setTarget:self];
-        [_buttonAssignObject setAction:@selector(openAssignObjectPopover:)];
+        [_buttonAssignObject setAction:@selector(openAssignConfirmation:)];
         [self registerControl:_buttonAssignObject forAction:NUModuleAssignationActionAssign];
 
         _buttonUnassignObject = [CPButtonBar minusButton];
@@ -233,10 +233,26 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 #pragma mark -
 #pragma mark Assignation & Unassignation
 
+/*! Opens the assign object confirmation window
+*/
+- (@action)openAssignConfirmation:(id)aSender
+{
+    var popoverAssignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverAssignConfirmation"],
+        buttonConfirm = [[[popoverAssignConfirmation contentViewController] view] subviewWithTag:@"confirm"],
+        relativeRect;
+
+    [buttonConfirm setTarget:self];
+    [buttonConfirm setAction:@selector(openAssignObjectPopover:)];
+    _cucappID(buttonConfirm, @"button_popover_confirm_assign");
+
+    [popoverAssignConfirmation showRelativeToRect:relativeRect ofView:aSender preferredEdge:CPMinYEdge];
+    [popoverAssignConfirmation setDefaultButton:buttonConfirm];    
+}
+
 /*! Opens the assign object chooser
 */
-- (@action)openAssignObjectPopover:(id)aSender
-{
+- (void)openAssignObjectPopover:(id)aSender
+{    
     var action = [aSender isKindOfClass:CPMenuItem] ? [self actionForMenuItem:aSender] : [self actionForControl:aSender];
 
     if ([aSender isKindOfClass:CPMenuItem])
@@ -261,13 +277,13 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         return;
     }
 
-    var popoverConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"],
-        buttonConfirm = [[[popoverConfirmation contentViewController] view] subviewWithTag:@"confirm"],
+    var popoverUnassignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverUnassignConfirmation"],
+        buttonConfirm = [[[popoverUnassignConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
     [buttonConfirm setTarget:self];
     [buttonConfirm setAction:@selector(_performUnassignObjects:)];
-    _cucappID(buttonConfirm, @"button_popover_confirm_delete");
+    _cucappID(buttonConfirm, @"button_popover_confirm_unassign");
 
     if ([aSender isKindOfClass:CPMenuItem])
         aSender = [self defaultPopoverTargetForMenuItem];
@@ -278,8 +294,8 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         aSender = [aSender enclosingScrollView];
     }
 
-    [popoverConfirmation showRelativeToRect:relativeRect ofView:aSender preferredEdge:CPMinYEdge];
-    [popoverConfirmation setDefaultButton:buttonConfirm];
+    [popoverUnassignConfirmation showRelativeToRect:relativeRect ofView:aSender preferredEdge:CPMinYEdge];
+    [popoverUnassignConfirmation setDefaultButton:buttonConfirm];
 }
 
 /*! @ignore
@@ -290,7 +306,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [content removeObjectsInArray:_currentSelectedObjects];
     [self assignObjects:content];
 
-    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
+    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverUnassignConfirmation"] close];
 }
 
 
@@ -305,6 +321,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [content addObjectsFromArray:selectedObjects];
     [self assignObjects:content];
     [_chooser closeModulePopover];
+    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverAssignConfirmation"] close];
 }
 
 @end
