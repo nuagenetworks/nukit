@@ -237,16 +237,21 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
 */
 - (@action)openAssignConfirmation:(id)aSender
 {
-    var popoverAssignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverAssignConfirmation"],
-        buttonConfirm = [[[popoverAssignConfirmation contentViewController] view] subviewWithTag:@"confirm"],
-        relativeRect;
+    if (_maxPossiblePage > 0) 
+    {
+        var popoverAssignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverAssignConfirmation"],
+            buttonConfirm = [[[popoverAssignConfirmation contentViewController] view] subviewWithTag:@"confirm"],
+            relativeRect;
 
-    [buttonConfirm setTarget:self];
-    [buttonConfirm setAction:@selector(openAssignObjectPopover:)];
-    _cucappID(buttonConfirm, @"button_popover_confirm_assign");
+        [buttonConfirm setTarget:self];
+        [buttonConfirm setAction:@selector(openAssignObjectPopover:)];
+        _cucappID(buttonConfirm, @"button_popover_confirm_assign");
 
-    [popoverAssignConfirmation showRelativeToRect:relativeRect ofView:aSender preferredEdge:CPMinYEdge];
-    [popoverAssignConfirmation setDefaultButton:buttonConfirm];    
+        [popoverAssignConfirmation showRelativeToRect:relativeRect ofView:aSender preferredEdge:CPMinYEdge];
+        [popoverAssignConfirmation setDefaultButton:buttonConfirm];   
+    }  
+    else 
+        [self openAssignObjectPopover:aSender];
 }
 
 /*! Opens the assign object chooser
@@ -277,7 +282,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
         return;
     }
 
-    var popoverUnassignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:@"popoverUnassignConfirmation"],
+    var popoverUnassignConfirmation = [[NUKit kit] registeredDataViewWithIdentifier:_maxPossiblePage > 0 ? @"popoverUnassignConfirmation" : @"popoverConfirmation"],
         buttonConfirm = [[[popoverUnassignConfirmation contentViewController] view] subviewWithTag:@"confirm"],
         relativeRect;
 
@@ -307,6 +312,7 @@ NUModuleAssignationActionUnassign = @"NUModuleAssignationctionUnassign";
     [self assignObjects:content];
 
     [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverUnassignConfirmation"] close];
+    [[[NUKit kit] registeredDataViewWithIdentifier:@"popoverConfirmation"] close];
 }
 
 
