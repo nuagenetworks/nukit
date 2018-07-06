@@ -36,6 +36,7 @@
 @import "NUBoolToUpTransformer.j"
 @import "NUCheckboxStateToBooleanValueTransformer.j"
 @import "NUCompoundTransformer.j"
+@import "NUDynamicIPv6AssignmentTransformer.j"
 @import "NUInfinityTransformer.j"
 @import "NUIPToDefaultStringTransformer.j"
 @import "NUIPv6ToStringTransformer.j"
