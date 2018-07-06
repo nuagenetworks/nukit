@@ -29,7 +29,7 @@
 
 - (id)transformedValue:(id)aValue
 {
-    return value ? @"Auto IPv6 assignment" : @"";
+    return aValue ? @"Auto IPv6 assignment" : @"";
 }
 
 - (id)reverseTransformedValue:(id)aValue
