@@ -41,7 +41,7 @@
 
 - (id)transformedValue:(id)value
 {
-    return value === nil || value == @"" ? @"No information" : value;
+    return value === nil || value == @"" || !value ? @"No information" : value;
 }
 
 @end

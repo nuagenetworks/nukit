@@ -41,6 +41,9 @@
 
 - (id)transformedValue:(id)aValue
 {
+    if (!aValue)
+	return @"Not specified";
+
     switch (aValue)
     {
         case nil:
